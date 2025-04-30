@@ -1,0 +1,25 @@
+<form>
+  <h3>{{ title() }} Here</h3>
+
+  <label for="username">Username</label>
+
+  <input
+    (change)="changeUser(txtUsername.value)"
+    type="text"
+    placeholder="Email"
+    id="username"
+    #txtUsername
+  />
+
+  <label for="password">Password</label>
+  <input
+    (input)="changePassword(txtPassword.value)"
+    type="password"
+    placeholder="Password"
+    id="password"
+    #txtPassword
+  />
+
+  <button type="button" (click)="submitClient()">{{ title() }}</button>
+  <auth-ask-account [text]="text()"></auth-ask-account>
+</form>

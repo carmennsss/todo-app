@@ -1,0 +1,44 @@
+h3 {
+    font-family: Poppins, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.newTags {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+mat-dialog-content {
+    padding: 10px;
+    background-color: #000;
+}
+
+mat-dialog-content > p {
+    color: white;
+    display: flex;
+    font-style: italic;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-family: Poppins, sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    color: white;
+}

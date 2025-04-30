@@ -1,0 +1,48 @@
+
+.sidebar {
+  width: 250px;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: #666 solid 1px;
+}
+
+.sidebar h2 {
+  font-family: Poppins, sans-serif;
+  letter-spacing: 4px;
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+sidebar-task-status-list,
+sidebar-categories,
+sidebar-tag-list,
+sidebar-footer {
+  display: block;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+sidebar-task-status-list {
+  /* Puedes añadir más estilos si hay contenido adentro */
+}
+
+sidebar-categories {
+  /* Ejemplo: puedes usar ::before para un título simulado */
+}
+
+sidebar-tag-list {
+  /* Si después agregas tags adentro, aquí va su estilo */
+}
+
+sidebar-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+  font-size: 13px;
+  color: #666;
+}

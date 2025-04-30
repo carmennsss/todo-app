@@ -1,0 +1,15 @@
+<div>
+  <h3>Tags</h3>
+  <div class="flex flex-wrap gap-2 mb-4" id="tag-list"></div>
+  <p-tag
+    severity="danger"
+    (click)="addTag()"
+    value="+ Add Tag"
+    [rounded]="true"
+  />
+  <div class="newTags">
+    <!-- Metodo para imprimir tantas p-tag con tags haya en la base de datos -->
+    <!-- <p-tag *ngFor="let tag of tags()" [value]="tag" [rounded]="true"></p-tag> -->
+    <p-tag *ngFor="let tag of tags" value="{{ tag.tag_title }}" [rounded]="true"></p-tag>
+  </div>
+</div>

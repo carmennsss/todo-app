@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "tailwindcss";
+@plugin "tailwindcss-primeui";
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  margin: 0;
+  height: 100vh;
+  padding: 0;
+}
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  z-index: 1;
+  width: 200px;
+  height: auto;
+  background-color: #ffffff;
+}
+
+.main {
+  flex-grow: 1;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  margin-left: 60px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

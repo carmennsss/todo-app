@@ -1,0 +1,11 @@
+
+<p-divider />
+<div>
+    <task-add-new (click)="createTask()" ></task-add-new>
+</div>
+<p-divider />
+<div class="list">
+    <p-panelmenu [model]="items" #txtPageLabel></p-panelmenu>
+</div>
+<editing-sidebar [visible]="visible()" [selectedTask]="newTask">
+</editing-sidebar>

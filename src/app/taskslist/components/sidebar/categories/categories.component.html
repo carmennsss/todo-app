@@ -1,0 +1,6 @@
+<div class="sidebar">
+  <h3>Category</h3>
+  <p-panelmenu (click)="addCategory()" [model]="items"></p-panelmenu>
+  <div class="newCategories">
+    <p-tag *ngFor="let category of categories" [value]="category.category_title" severity="secondary"></p-tag>
+</div>
