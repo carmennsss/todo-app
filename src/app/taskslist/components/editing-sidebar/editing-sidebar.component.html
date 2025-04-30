@@ -6,20 +6,33 @@
   id="drawer"
 >
   <label for="title">Title: </label>
-  <input type="text" id="title" [value]="selectedTask().title" />
+  <input
+    type="text"
+    id="title"
+    (change)="changeTitle(txtTitle.value)"
+    [value]="selectedTask().title"
+    #txtTitle
+  />
   <label for="desc">Description: </label>
   <textarea
     id="desc"
     cols="30"
     rows="10"
+    (change)="changeDesc(txtDesc.value)"
     [value]="selectedTask().desc"
+    #txtDesc
   ></textarea>
-  <p id="date">Date:</p>
+  <p id="date">Date: {{ selectedTask().date }}</p>
   <div class="card flex justify-center" id="categories-list">
     <p>List:</p>
     <select>
-      <option selected>{{ selectedTask().list }}</option>
-      <option *ngFor="let category of currentClient.categories">
+      <option selected>{{ selectedTask().list.category_title }}</option>
+      <option
+        *ngFor="let category of currentClient.categories"
+        [hidden]="
+          selectedTask().list.category_title === category.category_title
+        "
+      >
         {{ category.category_title }}
       </option>
     </select>

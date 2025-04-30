@@ -38,6 +38,8 @@ export class EditingSidebarComponent {
     localStorage.getItem('currentClient') || '{}'
   ) as Client;
 
+  titleAux = '';
+  descAux = '';
   selectedTags: CustomTag[] = [];
 
   showDialog() {
@@ -58,8 +60,6 @@ export class EditingSidebarComponent {
   }
 
   saveItemsLocalStorage() {
-    this.selectedTask().taglist = this.selectedTags;
-    
     for (let i = 0; i < this.currentClient.tasks.length; i++) {
       if (this.currentClient.tasks[i].id === this.selectedTask().id) {
         this.currentClient.tasks[i] = this.selectedTask();
@@ -79,9 +79,30 @@ export class EditingSidebarComponent {
     localStorage.setItem('model', JSON.stringify(model));
   }
 
+  changeTitle(title: string) {
+    this.titleAux = title;
+  }
+
+  changeDesc(desc: string) {
+    this.descAux = desc;
+  }
+
   saveChanges() {
+    if (this.titleAux === '') {
+      this.titleAux = this.selectedTask().title;
+    }
+    if (this.descAux === '') {
+      this.descAux = this.selectedTask().desc;
+    }
+    if (this.selectedTags.length === 0) {
+      this.selectedTags = this.selectedTask().taglist;
+    }
+
+    this.selectedTask().taglist = this.selectedTags;
+    this.selectedTask().title = this.titleAux;
+    this.selectedTask().desc = this.descAux;
+
     this.saveItemsLocalStorage();
-    this.visibleDialog = false;
     alert('Changes saved');
   }
 }
