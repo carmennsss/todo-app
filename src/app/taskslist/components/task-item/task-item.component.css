@@ -38,6 +38,17 @@
   gap: 20px;
 }
 
+.subtasks-length {
+  background-color: #000000;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+}
+
 
 button {
   align-self: flex-end;

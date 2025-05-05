@@ -6,12 +6,11 @@ import {
 } from '@angular/core';
 import { AddNewComponent } from '../../components/add-new/add-new.component';
 import { DividerModule } from 'primeng/divider';
-import { Client } from '../../../interfaces/Client';
-import { Model } from '../../../interfaces/Model';
 import { Task } from '../../../interfaces/Task';
 import { EditingSidebarComponent } from '../editing-sidebar/editing-sidebar.component';
 import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'tasks-page-template',
@@ -27,12 +26,10 @@ import { TaskItemComponent } from '../task-item/task-item.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class PageTemplateComponent {
-  visibleInput = input.required<boolean>();
   pageTitle = input.required<string>();
+  localService: LocalStorageService = new LocalStorageService();
 
-  currentClient = JSON.parse(
-    localStorage.getItem('currentClient') || '{}'
-  ) as Client;
+  currentClient = this.localService.getCurrentClient();
 
   statusTasks: Task[] = [];
   newTask: Task = {
@@ -45,8 +42,13 @@ export default class PageTemplateComponent {
     date: '',
     subtasks: [],
   };
+  isDrawerVisible: boolean = false;
   selectedTask: Task = this.newTask;
-  
+
+  selectTask(task: Task) {
+    this.selectedTask = task;
+    this.isDrawerVisible = !this.isDrawerVisible;
+  }
   getItemsStatus() {
     this.statusTasks = [];
     for (let i = 0; i < this.currentClient.tasks.length; i++) {
@@ -54,28 +56,21 @@ export default class PageTemplateComponent {
         this.currentClient.tasks[i].status ===
         this.pageTitle().toLowerCase().replace(' ', '')
       ) {
-        this.statusTasks.push(this.currentClient.tasks[i]);
+        this.statusTasks = [...this.statusTasks, this.currentClient.tasks[i]];
       }
     }
     return this.statusTasks;
   }
 
   saveItemsLocalStorage() {
-    localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
-
-    let model = JSON.parse(localStorage.getItem('model') || '{}') as Model;
-
-    for (let i = 0; i < model.clients.length; i++) {
-      if (model.clients[i].username === this.currentClient.username) {
-        model.clients[i].tasks = this.currentClient.tasks;
-      }
-    }
-
-    localStorage.setItem('model', JSON.stringify(model));
+    console.log(this.currentClient);
+    this.localService.setCurrentClient(this.currentClient);
+    this.localService.saveCurrentClientTasksToModel(this.currentClient);
   }
 
   createTask() {
-    this.statusTasks = this.getItemsStatus();
+    this.statusTasks = this.getItemsStatus(); // OBTIENE las tareas del estado
+  
     this.newTask = {
       id: this.currentClient.tasks.length,
       title: 'Task ' + this.statusTasks.length,
@@ -86,7 +81,9 @@ export default class PageTemplateComponent {
       taglist: [],
       subtasks: [],
     };
-    this.currentClient.tasks.push(this.newTask);
+  
+    this.currentClient.tasks = [...this.currentClient.tasks, this.newTask];
     this.saveItemsLocalStorage();
-  }
+    this.statusTasks = this.getItemsStatus(); 
+  }  
 }

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Input,
   input,
   InputSignal,
   signal,
@@ -19,6 +20,7 @@ import { Model } from '../../../interfaces/Model';
 import { Category } from '../../../interfaces/Category';
 import { AddNewComponent } from "../add-new/add-new.component";
 import { SubTask } from '../../../interfaces/SubTask';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'editing-sidebar',
@@ -39,13 +41,13 @@ export class EditingSidebarComponent {
   selectedTask = input.required<Task>();
   visibleDialogTag: boolean = false;
   visibleDialogSub: boolean = false;
+  localService: LocalStorageService = new LocalStorageService();
 
-  currentClient = JSON.parse(
-    localStorage.getItem('currentClient') || '{}'
-  ) as Client;
+  currentClient = this.localService.getCurrentClient();
 
   newSubtasks: SubTask[] = [];
   selectedTags: CustomTag[] = [];
+  @Input() isDrawerVisible: boolean = false;
 
   constructor() {}
 
@@ -67,27 +69,9 @@ export class EditingSidebarComponent {
   }
 
   saveItemsLocalStorage() {
-    for (let i = 0; i < this.currentClient.tasks.length; i++) {
-      console.log(this.currentClient.tasks[i].id);
-      console.log(this.selectedTask().id);
-      if (this.currentClient.tasks[i].id === this.selectedTask().id) {
-        console.log(this.selectedTask());
-        this.currentClient.tasks[i] = this.selectedTask();
-      }
-    }
-
-    localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
-
-    let model = JSON.parse(localStorage.getItem('model') || '{}') as Model;
-
-    for (let i = 0; i < model.clients.length; i++) {
-      if (model.clients[i].username === this.currentClient.username) {
-        model.clients[i].tasks = this.currentClient.tasks;
-      }
-    }
-
+    this.localService.saveTaskToCurrentClient(this.selectedTask());
+    this.localService.saveCurrentClientTasksToModel(this.currentClient);
     this.newSubtasks = [];
-    localStorage.setItem('model', JSON.stringify(model));
   }
 
   changeCategory(category: string) {
@@ -98,6 +82,10 @@ export class EditingSidebarComponent {
     }
   }
 
+  closeDrawer() {
+    this.isDrawerVisible = false;
+  }
+
   saveNewSubTask(title: string) {
     this.visibleDialogSub = false;
     this.newSubtasks.push({
@@ -106,11 +94,15 @@ export class EditingSidebarComponent {
   }
 
   saveChanges() {
-    if (this.selectedTags.length === 0) {
+    if (!this.selectedTags || this.selectedTags.length === 0) {
       this.selectedTags = this.selectedTask().taglist;
     }
-    this.selectedTask().taglist = this.selectedTags;
-    this.selectedTask().subtasks = this.selectedTask().subtasks.concat(this.newSubtasks);
+    if (this.selectedTask().taglist) {
+      this.selectedTask().taglist = this.selectedTags;
+    }
+    if (this.selectedTask().subtasks) {
+      this.selectedTask().subtasks = this.selectedTask().subtasks.concat(this.newSubtasks);
+    }
 
     this.saveItemsLocalStorage();
 
