@@ -16,7 +16,7 @@ export class AddNewComponent {
   ngOnInit() {
     this.items = [
       {
-        label: 'Add New Task',
+        label: 'Add New',
         icon: 'pi pi-plus',
       },
     ];

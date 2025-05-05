@@ -10,10 +10,8 @@
     </div>
     <div>
       <i class="pi pi-list"></i>
-      <p>{{ task().list.category_title }}</p>
+      <p *ngIf="task().list">{{ task().list.category_title }}</p>
     </div>
     
   </div>
 </div>
-
-<p-divider />

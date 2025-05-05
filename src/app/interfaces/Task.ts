@@ -1,5 +1,6 @@
 import { Category } from "./Category";
 import { CustomTag } from "./CustomTag";
+import { SubTask } from "./SubTask";
 
 export interface Task {
     id: number,
@@ -9,4 +10,6 @@ export interface Task {
     list: Category,
     taglist: CustomTag[],
     date: string
+    subtasks: SubTask[]
+
 }

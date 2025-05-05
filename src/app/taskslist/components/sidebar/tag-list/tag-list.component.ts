@@ -32,24 +32,15 @@ export class TagListComponent {
   ) as Client;
 
   title = signal<string>('');
-  tags : CustomTag[] = this.currentClient.tags || [];
+  tags: CustomTag[] = this.currentClient.tags || [];
   readonly dialog = inject(MatDialog);
-
-  newTag: CustomTag = {
-    tag_title: this.title(),
-  };
 
   constructor(private tagsService: TagsService) {}
 
   saveItemsLocalStorage() {
-    localStorage.setItem(
-      'currentClient',
-      JSON.stringify(this.currentClient)
-    );
+    localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
 
-    let model = JSON.parse(
-      localStorage.getItem('model') || '{}'
-    ) as Model;
+    let model = JSON.parse(localStorage.getItem('model') || '{}') as Model;
 
     for (let i = 0; i < model.clients.length; i++) {
       if (model.clients[i].username === this.currentClient.username) {
@@ -57,10 +48,7 @@ export class TagListComponent {
       }
     }
 
-    localStorage.setItem(
-      'model',
-      JSON.stringify(model)
-    );
+    localStorage.setItem('model', JSON.stringify(model));
   }
 
   addTag() {
@@ -73,20 +61,22 @@ export class TagListComponent {
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
+          const newTag: CustomTag = {
+            tag_title: this.title(),
+          };
           /*
           this.tagsService.addTag(this.title()).subscribe((response) => {
             console.log('Tag added successfully:', response);
           });
           */
-          this.newTag.tag_title = this.title();
-          this.currentClient.tags.push(this.newTag);
+          newTag.tag_title = this.title();
+          this.currentClient.tags.push(newTag);
           this.tags = this.currentClient.tags;
           this.saveItemsLocalStorage();
         }
       }
     });
 
-    
     // this.getTags();
   }
 

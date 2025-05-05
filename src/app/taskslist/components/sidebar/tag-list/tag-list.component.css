@@ -11,6 +11,13 @@ h3 {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    overflow-y: scroll;
+    scrollbar-color: #000000 #ffffff;
+    scrollbar-width: thin;
+    display: flex;
+    height: 60px;
+    flex-direction: row;
+    gap: 8px;
 }
 
 mat-dialog-content {

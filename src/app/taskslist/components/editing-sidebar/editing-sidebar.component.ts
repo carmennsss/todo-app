@@ -17,6 +17,8 @@ import { Dialog } from 'primeng/dialog';
 import { CustomTag } from '../../../interfaces/CustomTag';
 import { Model } from '../../../interfaces/Model';
 import { Category } from '../../../interfaces/Category';
+import { AddNewComponent } from "../add-new/add-new.component";
+import { SubTask } from '../../../interfaces/SubTask';
 
 @Component({
   selector: 'editing-sidebar',
@@ -27,43 +29,49 @@ import { Category } from '../../../interfaces/Category';
     MultiSelectModule,
     TagModule,
     CommonModule,
-  ],
+    AddNewComponent
+],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditingSidebarComponent {
   selectedTask = input.required<Task>();
-  visibleDialog: boolean = false;
+  visibleDialogTag: boolean = false;
+  visibleDialogSub: boolean = false;
 
   currentClient = JSON.parse(
     localStorage.getItem('currentClient') || '{}'
   ) as Client;
 
+  newSubtasks: SubTask[] = [];
   selectedTags: CustomTag[] = [];
 
   constructor() {}
 
-  showDialog() {
+  showDialogTag() {
     this.selectedTags = this.selectedTask().taglist;
     if (
       this.currentClient.tags.length != this.selectedTask().taglist.length &&
       this.currentClient.tags.length != 0
     ) {
-      this.visibleDialog = true;
+      this.visibleDialogTag = true;
     }
   }
 
   selectTag(tag: any) {
     this.selectedTags.push(tag);
     if (this.currentClient.tags.length <= this.selectedTags.length) {
-      this.visibleDialog = false;
+      this.visibleDialogTag = false;
     }
   }
 
   saveItemsLocalStorage() {
     for (let i = 0; i < this.currentClient.tasks.length; i++) {
+      console.log(this.currentClient.tasks[i].id);
+      console.log(this.selectedTask().id);
       if (this.currentClient.tasks[i].id === this.selectedTask().id) {
+        console.log(this.selectedTask());
         this.currentClient.tasks[i] = this.selectedTask();
       }
     }
@@ -78,6 +86,7 @@ export class EditingSidebarComponent {
       }
     }
 
+    this.newSubtasks = [];
     localStorage.setItem('model', JSON.stringify(model));
   }
 
@@ -89,11 +98,19 @@ export class EditingSidebarComponent {
     }
   }
 
+  saveNewSubTask(title: string) {
+    this.visibleDialogSub = false;
+    this.newSubtasks.push({
+      subtask_title : title,
+    });
+  }
+
   saveChanges() {
     if (this.selectedTags.length === 0) {
       this.selectedTags = this.selectedTask().taglist;
     }
     this.selectedTask().taglist = this.selectedTags;
+    this.selectedTask().subtasks = this.selectedTask().subtasks.concat(this.newSubtasks);
 
     this.saveItemsLocalStorage();
 

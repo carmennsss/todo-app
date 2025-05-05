@@ -29,13 +29,15 @@
       *ngIf="selectedTask().list"
       [value]="selectedTask().list.category_title"
       severity="danger"
-      (click)="showDialog()"
       [rounded]="false"
     />
     <select #txtCategory (change)="changeCategory(txtCategory.value)">
-      <option 
-      [hidden] = "selectedTask().list.category_title === category.category_title"
-        *ngFor="let category of currentClient.categories">
+      <option
+        [hidden]="
+          selectedTask().list.category_title === category.category_title
+        "
+        *ngFor="let category of currentClient.categories"
+      >
         {{ category.category_title }}
       </option>
     </select>
@@ -44,14 +46,14 @@
     <p>Tags:</p>
     <p-tag
       severity="danger"
-      (click)="showDialog()"
+      (click)="showDialogTag()"
       value="+ Add Tag"
       [rounded]="true"
     />
     <p-dialog
       header="Choose a tag"
       [modal]="true"
-      [(visible)]="visibleDialog"
+      [(visible)]="visibleDialogTag"
       [style]="{ width: '25rem' }"
     >
       <p-tag
@@ -65,7 +67,7 @@
         <p-button
           label="Close"
           severity="secondary"
-          (click)="visibleDialog = false"
+          (click)="visibleDialogTag = false"
         />
       </div>
     </p-dialog>
@@ -77,8 +79,42 @@
       ></p-tag>
     </div>
   </div>
-  <div>
+  <div id="subtasks-list">
     <h2>SUBTASKS:</h2>
+    <task-add-new (click)="visibleDialogSub = true"></task-add-new>
+    <p *ngFor="let subtask of selectedTask().subtasks">
+      {{ subtask.subtask_title }}
+    </p>
+    <p-dialog
+      header="Create a subtask"
+      [modal]="true"
+      [(visible)]="visibleDialogSub"
+      [style]="{ width: '25rem' }"
+    >
+      <div class="flex items-center gap-4 mb-4">
+        <label for="title" class="font-semibold w-24">Title</label>
+        <input
+          #txtTitleSub
+          type="text"
+          pInputText
+          id="title"
+          class="flex-auto"
+          autocomplete="off"
+        />
+      </div>
+      <div class="flex justify-end gap-2">
+        <p-button
+          label="Save"
+          severity="secondary"
+          (click)="saveNewSubTask(txtTitleSub.value)"
+        />
+        <p-button
+          label="Close"
+          severity="secondary"
+          (click)="visibleDialogSub = false"
+        />
+      </div>
+    </p-dialog>
   </div>
 
   <ng-template #footer>

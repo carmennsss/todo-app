@@ -6,6 +6,11 @@
   border-radius: 15px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   border: #666 solid 1px;
+  overflow-y: scroll;
+  scrollbar-color: #000000 #ffffff;
+  scrollbar-width: thin;
+  height: 100vh;
+  position: fixed;
 }
 
 .sidebar h2 {
@@ -26,18 +31,6 @@ sidebar-footer {
   color: #333;
   font-size: 14px;
   line-height: 1.6;
-}
-
-sidebar-task-status-list {
-  /* Puedes añadir más estilos si hay contenido adentro */
-}
-
-sidebar-categories {
-  /* Ejemplo: puedes usar ::before para un título simulado */
-}
-
-sidebar-tag-list {
-  /* Si después agregas tags adentro, aquí va su estilo */
 }
 
 sidebar-footer {

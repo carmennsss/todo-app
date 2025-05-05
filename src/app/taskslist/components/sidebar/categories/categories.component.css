@@ -8,7 +8,14 @@ h3, h2 {
 .newCategories {
     margin-top: 10px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow-y: scroll;
+    scrollbar-color: #000000 #ffffff;
+    scrollbar-width: thin;
+    display: flex;
+    height: 60px;
+    flex-direction: row;
     gap: 8px;
 }
 
@@ -40,4 +47,8 @@ mat-dialog-content > p {
 input {
     width: 100%;
     color: white;
+}
+
+p-tag {
+    width: 100%;
 }

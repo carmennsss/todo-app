@@ -6,11 +6,9 @@ import {
 } from '@angular/core';
 import { AddNewComponent } from '../../components/add-new/add-new.component';
 import { DividerModule } from 'primeng/divider';
-import { PanelMenu } from 'primeng/panelmenu';
 import { Client } from '../../../interfaces/Client';
 import { Model } from '../../../interfaces/Model';
 import { Task } from '../../../interfaces/Task';
-import { MenuItem } from 'primeng/api';
 import { EditingSidebarComponent } from '../editing-sidebar/editing-sidebar.component';
 import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';
@@ -20,7 +18,6 @@ import { TaskItemComponent } from '../task-item/task-item.component';
   imports: [
     AddNewComponent,
     DividerModule,
-    PanelMenu,
     EditingSidebarComponent,
     CommonModule,
     TaskItemComponent,
@@ -46,6 +43,7 @@ export default class PageTemplateComponent {
     list: this.currentClient.categories[0],
     taglist: [],
     date: '',
+    subtasks: [],
   };
   selectedTask: Task = this.newTask;
   
@@ -86,6 +84,7 @@ export default class PageTemplateComponent {
       date: new Date().toLocaleString().split(',')[0],
       list: this.currentClient.categories[0],
       taglist: [],
+      subtasks: [],
     };
     this.currentClient.tasks.push(this.newTask);
     this.saveItemsLocalStorage();
