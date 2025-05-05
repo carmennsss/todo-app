@@ -1,0 +1,19 @@
+<div class="task-item">
+  <div class="header">
+    <p>{{ task().title }}</p>
+    <button (click)="selected = !selected">. . .</button>
+  </div>
+  <div [hidden]="!selected" class="body">
+    <div>
+      <i class="pi pi-calendar"></i>
+      <p>{{ task().date }}</p>
+    </div>
+    <div>
+      <i class="pi pi-list"></i>
+      <p>{{ task().list.category_title }}</p>
+    </div>
+    
+  </div>
+</div>
+
+<p-divider />

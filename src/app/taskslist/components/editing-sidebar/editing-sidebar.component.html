@@ -1,7 +1,7 @@
 <p-drawer
   header="Edit Task"
   [closable]="true"
-  [visible]="visible()"
+  [visible]="true"
   position="right"
   id="drawer"
 >
@@ -9,7 +9,7 @@
   <input
     type="text"
     id="title"
-    (change)="changeTitle(txtTitle.value)"
+    (change)="this.selectedTask().title = txtTitle.value"
     [value]="selectedTask().title"
     #txtTitle
   />
@@ -18,21 +18,24 @@
     id="desc"
     cols="30"
     rows="10"
-    (change)="changeDesc(txtDesc.value)"
+    (change)="this.selectedTask().desc = txtDesc.value"
     [value]="selectedTask().desc"
     #txtDesc
   ></textarea>
   <p id="date">Date: {{ selectedTask().date }}</p>
   <div class="card flex justify-center" id="categories-list">
     <p>List:</p>
-    <select>
-      <option selected>{{ selectedTask().list.category_title }}</option>
-      <option
-        *ngFor="let category of currentClient.categories"
-        [hidden]="
-          selectedTask().list.category_title === category.category_title
-        "
-      >
+    <p-tag
+      *ngIf="selectedTask().list"
+      [value]="selectedTask().list.category_title"
+      severity="danger"
+      (click)="showDialog()"
+      [rounded]="false"
+    />
+    <select #txtCategory (change)="changeCategory(txtCategory.value)">
+      <option 
+      [hidden] = "selectedTask().list.category_title === category.category_title"
+        *ngFor="let category of currentClient.categories">
         {{ category.category_title }}
       </option>
     </select>

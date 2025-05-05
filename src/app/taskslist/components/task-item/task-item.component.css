@@ -1,0 +1,53 @@
+:host {
+  display: block;
+}
+* {
+  color: black;
+}
+
+.task-item {
+  background-color: #f8f8f8;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: #666 solid 1px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.body {
+  margin-top: 12px;
+  background-color: #f8f8f8;
+  border-radius: 15px;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: #666 solid 1px;
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+}
+
+.body > div {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+
+button {
+  align-self: flex-end;
+  border: none;
+  background-color: #f8f8f8;
+  cursor: pointer;
+}
+
+p {
+  margin: 0;
+  width: 80px;
+  word-wrap: break-word;
+}

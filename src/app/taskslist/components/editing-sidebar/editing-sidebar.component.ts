@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
+  InputSignal,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
@@ -14,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { Dialog } from 'primeng/dialog';
 import { CustomTag } from '../../../interfaces/CustomTag';
 import { Model } from '../../../interfaces/Model';
+import { Category } from '../../../interfaces/Category';
 
 @Component({
   selector: 'editing-sidebar',
@@ -31,16 +34,15 @@ import { Model } from '../../../interfaces/Model';
 })
 export class EditingSidebarComponent {
   selectedTask = input.required<Task>();
-  visible = input.required<boolean>();
   visibleDialog: boolean = false;
 
   currentClient = JSON.parse(
     localStorage.getItem('currentClient') || '{}'
   ) as Client;
 
-  titleAux = '';
-  descAux = '';
   selectedTags: CustomTag[] = [];
+
+  constructor() {}
 
   showDialog() {
     this.selectedTags = this.selectedTask().taglist;
@@ -79,30 +81,22 @@ export class EditingSidebarComponent {
     localStorage.setItem('model', JSON.stringify(model));
   }
 
-  changeTitle(title: string) {
-    this.titleAux = title;
-  }
-
-  changeDesc(desc: string) {
-    this.descAux = desc;
+  changeCategory(category: string) {
+    for (let i = 0; i < this.currentClient.categories.length; i++) {
+      if (this.currentClient.categories[i].category_title === category) {
+        this.selectedTask().list = this.currentClient.categories[i];
+      }
+    }
   }
 
   saveChanges() {
-    if (this.titleAux === '') {
-      this.titleAux = this.selectedTask().title;
-    }
-    if (this.descAux === '') {
-      this.descAux = this.selectedTask().desc;
-    }
     if (this.selectedTags.length === 0) {
       this.selectedTags = this.selectedTask().taglist;
     }
-
     this.selectedTask().taglist = this.selectedTags;
-    this.selectedTask().title = this.titleAux;
-    this.selectedTask().desc = this.descAux;
 
     this.saveItemsLocalStorage();
+
     alert('Changes saved');
   }
 }

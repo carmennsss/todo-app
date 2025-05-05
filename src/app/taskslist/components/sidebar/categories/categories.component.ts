@@ -48,10 +48,6 @@ export class SidebarCategoriesComponent {
   categories: Category[] = this.currentClient.categories || [];
   readonly dialog = inject(MatDialog);
 
-  newCategory: Category = {
-    category_title: this.title(),
-  };
-
   saveItemsLocalStorage() {
     localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
 
@@ -70,20 +66,22 @@ export class SidebarCategoriesComponent {
     const dialogRef = this.dialog.open(DialogCategoriesComponent, {
       data: { title: this.title() },
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          this.newCategory.category_title = this.title();
-          this.currentClient.categories.push(this.newCategory);
+          const newCategory: Category = {
+            category_title: this.title(),
+          };
+          this.currentClient.categories.push(newCategory);
           this.categories = this.currentClient.categories;
           this.saveItemsLocalStorage();
         }
       }
     });
-  }
+  }  
 }
 
 @Component({
