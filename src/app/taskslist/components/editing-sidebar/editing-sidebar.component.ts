@@ -21,6 +21,7 @@ import { Category } from '../../../interfaces/Category';
 import { AddNewComponent } from "../add-new/add-new.component";
 import { SubTask } from '../../../interfaces/SubTask';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'editing-sidebar',
@@ -49,8 +50,7 @@ export class EditingSidebarComponent {
   selectedTags: CustomTag[] = [];
   @Input() isDrawerVisible: boolean = false;
 
-  constructor() {}
-
+  constructor(private router: Router, private route: ActivatedRoute) {}
   showDialogTag() {
     this.selectedTags = this.selectedTask().taglist;
     if (
@@ -105,6 +105,10 @@ export class EditingSidebarComponent {
     }
 
     this.saveItemsLocalStorage();
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl(currentUrl);
+    });
 
     alert('Changes saved');
   }

@@ -19,6 +19,7 @@ import { TagsService } from '../../../services/tags.service';
 import { CustomTag } from '../../../../interfaces/CustomTag';
 import { Client } from '../../../../interfaces/Client';
 import { Model } from '../../../../interfaces/Model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -35,7 +36,7 @@ export class TagListComponent {
   tags: CustomTag[] = this.currentClient.tags || [];
   readonly dialog = inject(MatDialog);
 
-  constructor(private tagsService: TagsService) {}
+  constructor(private tagsService: TagsService, private router: Router) {}
 
   saveItemsLocalStorage() {
     localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
@@ -73,6 +74,12 @@ export class TagListComponent {
           this.currentClient.tags.push(newTag);
           this.tags = this.currentClient.tags;
           this.saveItemsLocalStorage();
+          const currentUrl = this.router.url;
+          this.router
+            .navigateByUrl('/', { skipLocationChange: true })
+            .then(() => {
+              this.router.navigateByUrl(currentUrl);
+            });
         }
       }
     });

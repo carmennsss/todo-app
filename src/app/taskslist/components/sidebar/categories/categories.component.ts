@@ -21,15 +21,23 @@ import { Client } from '../../../../interfaces/Client';
 import { Model } from '../../../../interfaces/Model';
 import { MenuItem } from 'primeng/api';
 import { Category } from '../../../../interfaces/Category';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'sidebar-categories',
-  imports: [TagModule, CommonModule, FormsModule, MatButtonModule, PanelMenuModule],
+  imports: [
+    TagModule,
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    PanelMenuModule,
+  ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
 export class SidebarCategoriesComponent {
   items: MenuItem[] = [];
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.items = [
@@ -62,11 +70,21 @@ export class SidebarCategoriesComponent {
     localStorage.setItem('model', JSON.stringify(model));
   }
 
+  getCategoryItemCount(category: string) {
+    let count = 0;
+    for (let i = 0; i < this.currentClient.tasks.length; i++) {
+      if (this.currentClient.tasks[i].list.category_title === category) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   addCategory() {
     const dialogRef = this.dialog.open(DialogCategoriesComponent, {
       data: { title: this.title() },
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
       if (result !== undefined) {
@@ -78,10 +96,16 @@ export class SidebarCategoriesComponent {
           this.currentClient.categories.push(newCategory);
           this.categories = this.currentClient.categories;
           this.saveItemsLocalStorage();
+          const currentUrl = this.router.url;
+          this.router
+            .navigateByUrl('/', { skipLocationChange: true })
+            .then(() => {
+              this.router.navigateByUrl(currentUrl);
+            });
         }
       }
     });
-  }  
+  }
 }
 
 @Component({

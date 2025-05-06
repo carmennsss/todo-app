@@ -33,16 +33,19 @@
         severity="danger"
         [rounded]="false"
       />
-      <select #txtCategory (change)="changeCategory(txtCategory.value)">
-        <option
-          [hidden]="
-            selectedTask().list.category_title === category.category_title
-          "
-          *ngFor="let category of currentClient.categories"
-        >
-          {{ category.category_title }}
-        </option>
+      <select #txtCategory (click)="changeCategory(txtCategory.value)">
+        <ng-container *ngIf="selectedTask().list">
+          <option
+            *ngFor="let category of currentClient.categories"
+            [hidden]="
+              selectedTask().list.category_title === category.category_title
+            "
+          >
+            {{ category.category_title }}
+          </option>
+        </ng-container>
       </select>
+
     </div>
     <div id="tag-list">
       <p>Tags:</p>

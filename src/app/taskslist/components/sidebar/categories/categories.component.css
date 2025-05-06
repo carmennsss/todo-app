@@ -67,6 +67,22 @@ input {
   color: white;
 }
 
-p-tag {
+.category-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   width: 100%;
+}
+
+.category-item > p {
+  background-color: #fa9792;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 0 10px;
+  font-weight: 600;
+}
+
+p-tag {
+  width: 85%;
 }
