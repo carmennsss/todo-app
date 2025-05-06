@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Client } from '../../../../interfaces/Client';
 import { Task } from '../../../../interfaces/Task';
+import { LocalStorageService } from '../../../services/local-storage.service';
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -16,15 +17,19 @@ import { Task } from '../../../../interfaces/Task';
 export class TaskStatusListComponent implements OnInit {
   items: MenuItem[] = [];
   currentItems: Task[] = [];
+  localService : LocalStorageService = new LocalStorageService();
 
   constructor(private router : Router) {}
 
-  currentClient: Client = JSON.parse(
-    localStorage.getItem('currentClient') || '{}'
-  ) as Client;
+  currentClient: Client = this.localService.getCurrentClient();
 
   goToPage(page: string) {
-    this.router.navigate(['/main/', page.toLowerCase().trim()]);
+    this.localService.setCurrentStatus(page);
+    const currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl(currentUrl);
+    });
+
     this.items.forEach((item) => {
       if (item.label === page) {
         item.styleClass = 'active';
@@ -44,8 +49,6 @@ export class TaskStatusListComponent implements OnInit {
     return this.currentItems.length;
   }
 
-
-
   ngOnInit() {
     this.items = [
       {
@@ -53,7 +56,7 @@ export class TaskStatusListComponent implements OnInit {
         icon: 'pi pi-clock',
         badge: this.getItemsStatusCount('nonstarted').toString(),
         command: () => {
-          this.goToPage('nonstarted');
+          this.goToPage('Non Started');
         },
       },
       {
@@ -61,7 +64,7 @@ export class TaskStatusListComponent implements OnInit {
         icon: 'pi pi-spinner',
         badge: this.getItemsStatusCount('inprogress').toString(),
         command: () => {
-          this.goToPage('inprogress');
+          this.goToPage('In Progress');
         },
       },
       {
@@ -69,7 +72,7 @@ export class TaskStatusListComponent implements OnInit {
         icon: 'pi pi-pause',
         badge: this.getItemsStatusCount('paused').toString(),
         command: () => {
-          this.goToPage('paused');
+          this.goToPage('Paused');
         },
       },
       {
@@ -77,7 +80,7 @@ export class TaskStatusListComponent implements OnInit {
         icon: 'pi pi-exclamation-triangle',
         badge: this.getItemsStatusCount('late').toString(),
         command: () => {
-          this.goToPage('late');
+          this.goToPage('Late');
         },
       },
       {
@@ -85,7 +88,7 @@ export class TaskStatusListComponent implements OnInit {
         icon: 'pi pi-check',
         badge: this.getItemsStatusCount('finished').toString(),
         command: () => {
-          this.goToPage('finished');
+          this.goToPage('Finished');
         },
       },
     ];

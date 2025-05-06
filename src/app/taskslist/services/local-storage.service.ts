@@ -10,11 +10,20 @@ import { Task } from '../../interfaces/Task';
 export class LocalStorageService {
   clientKey = 'currentClient';
   modelKey = 'model';
+  statusKey = 'currentStatus';
 
   constructor() {}
 
   getCurrentClient() {
     return JSON.parse(localStorage.getItem(this.clientKey) || '{}') as Client;
+  }
+
+  getCurrentStatus() {
+    return JSON.parse(localStorage.getItem(this.statusKey) || '{}');
+  }
+
+  setCurrentStatus(status: string) {
+    localStorage.setItem(this.statusKey, JSON.stringify(status));
   }
 
   saveTaskToCurrentClient(selectedTask: Task) {
