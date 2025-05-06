@@ -29,14 +29,6 @@ export class TaskStatusListComponent implements OnInit {
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigateByUrl(currentUrl);
     });
-
-    this.items.forEach((item) => {
-      if (item.label === page) {
-        item.styleClass = 'active';
-      } else {
-        item.styleClass = '';
-      }
-    });
   }
 
   getItemsStatusCount(label: string) {

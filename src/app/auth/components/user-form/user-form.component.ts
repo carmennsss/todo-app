@@ -11,6 +11,7 @@ import { Select, Store } from '@ngxs/store';
 import { ClientDB } from '../../../interfaces/ClientDB';
 import { Client } from '../../../interfaces/Client';
 import { Model } from '../../../interfaces/Model';
+import { LocalStorageService } from '../../../taskslist/services/local-storage.service';
 
 @Component({
   selector: 'auth-user-form',
@@ -20,6 +21,7 @@ import { Model } from '../../../interfaces/Model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserFormComponent {
+  localService : LocalStorageService = new LocalStorageService();
   title = input.required<string>();
   text = input.required<string>();
   model : Model = {
@@ -69,8 +71,8 @@ export class UserFormComponent {
       let found = false;
       for (let i = 0; i < this.model.clients.length; i++) {
         if (this.model.clients[i].username === this.username && this.model.clients[i].password === this.password) {
-          localStorage.setItem('currentClient', JSON.stringify(this.model.clients[i]));
-          this.router.navigate(['/main/nonstarted']);
+          this.localService.setCurrentClient(this.model.clients[i]);
+          this.router.navigate(['/main/status']);
           found = true;
         }
       }
@@ -136,7 +138,7 @@ export class UserFormComponent {
       categories: []
     }
     this.model.clients.push(this.newClient);
-    localStorage.setItem('model', JSON.stringify(this.model));
+    this.localService.setModel(this.model);
     alert('User registered successfully, you can now log in');
     this.router.navigate(['']);
     /*
@@ -152,8 +154,8 @@ export class UserFormComponent {
   }
 
   getItemsLocal() {
-    if (localStorage.getItem('model')) {
-      this.model = JSON.parse(localStorage.getItem('model') || '');
+    if (this.localService.getModel()) {
+      this.model = this.localService.getModel();
     }
   }
 }

@@ -11,6 +11,7 @@ import { changeClient } from '../../../../auth/client-state/client.actions';
 import { ClientState } from '../../../../auth/client-state/client.state';
 import { ClientDB } from '../../../../interfaces/ClientDB';
 import { Client } from '../../../../interfaces/Client';
+import { LocalStorageService } from '../../../services/local-storage.service';
 
 @Component({
   selector: 'sidebar-footer',
@@ -21,6 +22,7 @@ import { Client } from '../../../../interfaces/Client';
 })
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];
+  localService: LocalStorageService = new LocalStorageService();
   constructor(
     private messageService: MessageService,
     private router: Router,
@@ -58,7 +60,7 @@ export class SidebarFooterComponent implements OnInit {
             .dispatch(new changeClient({ currentUser: emptyClient }))
             .subscribe();
             */
-          localStorage.setItem('currentClient', JSON.stringify(emptyClient));
+          this.localService.setCurrentClient(emptyClient);
           this.router.navigate(['']);
         },
       },

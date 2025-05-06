@@ -36,6 +36,26 @@ export class LocalStorageService {
     localStorage.setItem(this.clientKey, JSON.stringify(currentClient));
   }
 
+  saveCurrentClientCategoriesToModel(currentClient: Client) {
+    let model = this.getModel();
+    for (let i = 0; i < model.clients.length; i++) {
+      if (model.clients[i].username === currentClient.username) {
+        model.clients[i].categories = currentClient.categories;
+      }
+    }
+    localStorage.setItem(this.modelKey, JSON.stringify(model));
+  }
+
+  saveCurrentClientTagsToModel(currentClient: Client) {
+    let model = this.getModel();
+    for (let i = 0; i < model.clients.length; i++) {
+      if (model.clients[i].username === currentClient.username) {
+        model.clients[i].tags = currentClient.tags;
+      }
+    }
+    localStorage.setItem(this.modelKey, JSON.stringify(model));
+  }
+
   setCurrentClient(currentClient: Client) {
     localStorage.setItem(this.clientKey, JSON.stringify(currentClient));
   }

@@ -16,12 +16,12 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PanelMenuModule } from 'primeng/panelmenu';
-import { CustomTag } from '../../../../interfaces/CustomTag';
-import { Client } from '../../../../interfaces/Client';
-import { Model } from '../../../../interfaces/Model';
 import { MenuItem } from 'primeng/api';
 import { Category } from '../../../../interfaces/Category';
 import { Router } from '@angular/router';
+import { AddNewComponent } from '../../add-new/add-new.component';
+import { LocalStorageService } from '../../../services/local-storage.service';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'sidebar-categories',
@@ -31,12 +31,14 @@ import { Router } from '@angular/router';
     FormsModule,
     MatButtonModule,
     PanelMenuModule,
+    AddNewComponent,
   ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
 export class SidebarCategoriesComponent {
   items: MenuItem[] = [];
+  localService: LocalStorageService = new LocalStorageService();
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -48,26 +50,15 @@ export class SidebarCategoriesComponent {
     ];
   }
 
-  currentClient = JSON.parse(
-    localStorage.getItem('currentClient') || '{}'
-  ) as Client;
+  currentClient = this.localService.getCurrentClient();
 
-  title = signal<string>('');
+  title = signal<string>('Category');
   categories: Category[] = this.currentClient.categories || [];
   readonly dialog = inject(MatDialog);
 
   saveItemsLocalStorage() {
-    localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
-
-    let model = JSON.parse(localStorage.getItem('model') || '{}') as Model;
-
-    for (let i = 0; i < model.clients.length; i++) {
-      if (model.clients[i].username === this.currentClient.username) {
-        model.clients[i].categories = this.currentClient.categories;
-      }
-    }
-
-    localStorage.setItem('model', JSON.stringify(model));
+    this.localService.setCurrentClient(this.currentClient);
+    this.localService.saveCurrentClientCategoriesToModel(this.currentClient);
   }
 
   getCategoryItemCount(category: string) {
@@ -81,7 +72,7 @@ export class SidebarCategoriesComponent {
   }
 
   addCategory() {
-    const dialogRef = this.dialog.open(DialogCategoriesComponent, {
+    const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },
     });
 
@@ -105,30 +96,5 @@ export class SidebarCategoriesComponent {
         }
       }
     });
-  }
-}
-
-@Component({
-  selector: 'sidebar-categories-dialog',
-  templateUrl: './categories-dialog.component.html',
-  styleUrl: './categories.component.css',
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-  ],
-})
-export class DialogCategoriesComponent {
-  readonly dialogRef = inject(MatDialogRef<DialogCategoriesComponent>);
-  readonly data = inject(MAT_DIALOG_DATA);
-  readonly title = model(this.data.title);
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }

@@ -7,6 +7,7 @@ import { SidebarComponent } from "../../components/sidebar/sidebar/sidebar.compo
   selector: 'app-main-page',
   imports: [RouterOutlet, SidebarComponent],
   templateUrl: './main-page.component.html',
+  styleUrls: ['./main-page.component.css']
 })
 export default class MainPageComponent {
 }

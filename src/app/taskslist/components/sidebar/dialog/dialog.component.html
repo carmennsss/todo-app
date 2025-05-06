@@ -1,10 +1,10 @@
 <div>
   <h2 mat-dialog-title class="title">Hey!</h2>
   <mat-dialog-content>
-    <p>Choose a category name</p>
+    <p>Choose a {{ inputValue.toLowerCase() }} name</p>
     <mat-form-field>
-      <mat-label>Category</mat-label>
-      <input placeholder="Category Here" [(ngModel)]="title" />
+      <mat-label>{{ inputValue }}</mat-label>
+      <input placeholder="{{ inputValue }} Here" [(ngModel)]="title" />
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>

@@ -1,10 +1,10 @@
 <div class="sidebar">
   <h3>Category</h3>
-  <p-panelmenu (click)="addCategory()" [model]="items"></p-panelmenu>
+  <task-add-new (click)="addCategory()"></task-add-new>
   <div class="newCategories">
     <div *ngFor="let category of categories" class="category-item">
       <p-tag [value]="category.category_title" severity="secondary"></p-tag>
       <p>{{ getCategoryItemCount(category.category_title) }}</p>
     </div>
-    
+  </div>
 </div>

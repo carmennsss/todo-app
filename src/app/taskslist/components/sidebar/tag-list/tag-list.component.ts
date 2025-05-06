@@ -20,6 +20,8 @@ import { CustomTag } from '../../../../interfaces/CustomTag';
 import { Client } from '../../../../interfaces/Client';
 import { Model } from '../../../../interfaces/Model';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../../services/local-storage.service';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -28,32 +30,22 @@ import { Router } from '@angular/router';
   styleUrl: './tag-list.component.css',
 })
 export class TagListComponent {
-  currentClient = JSON.parse(
-    localStorage.getItem('currentClient') || '{}'
-  ) as Client;
+  localService : LocalStorageService = new LocalStorageService();
+  currentClient = this.localService.getCurrentClient();
 
-  title = signal<string>('');
+  title = signal<string>('Tag');
   tags: CustomTag[] = this.currentClient.tags || [];
   readonly dialog = inject(MatDialog);
 
   constructor(private tagsService: TagsService, private router: Router) {}
 
   saveItemsLocalStorage() {
-    localStorage.setItem('currentClient', JSON.stringify(this.currentClient));
-
-    let model = JSON.parse(localStorage.getItem('model') || '{}') as Model;
-
-    for (let i = 0; i < model.clients.length; i++) {
-      if (model.clients[i].username === this.currentClient.username) {
-        model.clients[i].tags = this.currentClient.tags;
-      }
-    }
-
-    localStorage.setItem('model', JSON.stringify(model));
+    this.localService.setCurrentClient(this.currentClient);
+    this.localService.saveCurrentClientTagsToModel(this.currentClient);
   }
 
   addTag() {
-    const dialogRef = this.dialog.open(DialogTagListComponent, {
+    const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },
     });
 
@@ -98,29 +90,4 @@ export class TagListComponent {
     this.getTags();
   }
   */
-}
-
-@Component({
-  selector: 'sidebar-tag-list-dialog',
-  templateUrl: './tag-list-dialog.component.html',
-  styleUrl: './tag-list.component.css',
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-  ],
-})
-export class DialogTagListComponent {
-  readonly dialogRef = inject(MatDialogRef<DialogTagListComponent>);
-  readonly data = inject(MAT_DIALOG_DATA);
-  readonly title = model(this.data.title);
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }
