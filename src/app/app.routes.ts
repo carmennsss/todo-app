@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { userGuard } from './auth/pruebas/user.guard';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'main',
+    canActivate:[userGuard],
     loadComponent: () =>
       import('./taskslist/pages/main-page/main-page.component'),
     children: [

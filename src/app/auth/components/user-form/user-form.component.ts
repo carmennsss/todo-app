@@ -3,9 +3,6 @@ import { AskAccountComponent } from '../ask-account/ask-account.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
-import { ClientState } from '../../client-state/client.state';
-import { ClientStateModel } from '../../client-state/client.state';
-import { changeClient } from '../../client-state/client.actions';
 import { Observable } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { ClientDB } from '../../../interfaces/ClientDB';

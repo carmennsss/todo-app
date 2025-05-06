@@ -7,8 +7,6 @@ import { Menu } from 'primeng/menu';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Store } from '@ngxs/store';
-import { changeClient } from '../../../../auth/client-state/client.actions';
-import { ClientState } from '../../../../auth/client-state/client.state';
 import { ClientDB } from '../../../../interfaces/ClientDB';
 import { Client } from '../../../../interfaces/Client';
 import { LocalStorageService } from '../../../services/local-storage.service';
