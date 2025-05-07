@@ -38,7 +38,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 })
 export class SidebarCategoriesComponent {
   items: MenuItem[] = [];
-  localService: LocalStorageService = new LocalStorageService();
+  localService = inject(LocalStorageService);
   constructor(private router: Router) {}
 
   ngOnInit() {

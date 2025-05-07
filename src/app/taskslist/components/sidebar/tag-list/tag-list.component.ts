@@ -30,7 +30,7 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrl: './tag-list.component.css',
 })
 export class TagListComponent {
-  localService : LocalStorageService = new LocalStorageService();
+  localService = inject(LocalStorageService);
   currentClient = this.localService.getCurrentClient();
 
   title = signal<string>('Tag');

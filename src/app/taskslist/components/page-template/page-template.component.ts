@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   signal,
 } from '@angular/core';
@@ -28,7 +29,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export default class PageTemplateComponent {
   pageTitle = input.required<string>();
-  localService: LocalStorageService = new LocalStorageService();
+  localService = inject(LocalStorageService);
 
   currentClient = this.localService.getCurrentClient();
 

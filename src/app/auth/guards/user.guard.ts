@@ -3,10 +3,9 @@ import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../../taskslist/services/local-storage.service';
 
 export const userGuard: CanActivateFn = (route, state) => {
-  debugger;
   const router = inject(Router);
-  const localService: LocalStorageService = new LocalStorageService();
-  console.log(localService.getCurrentClient().username);
+  const localService = inject(LocalStorageService);
+
   if (localService.getCurrentClient().username != undefined) {
     return true;
   } else {

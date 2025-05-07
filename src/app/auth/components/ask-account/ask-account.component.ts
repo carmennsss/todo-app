@@ -12,6 +12,9 @@ export class AskAccountComponent {
   text = input.required<string>();
 
   constructor(private router: Router) {}
+
+  // METHODS
+  
   changePage() {
     if (this.text().toLowerCase().trim() === 'have an account?') {
       this.router.navigate(['']);

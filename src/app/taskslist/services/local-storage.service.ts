@@ -3,6 +3,7 @@ import { Injectable, model } from '@angular/core';
 import { Client } from '../../interfaces/Client';
 import { Model } from '../../interfaces/Model';
 import { Task } from '../../interfaces/Task';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,11 @@ export class LocalStorageService {
   }
 
   getCurrentStatus() {
-    return JSON.parse(localStorage.getItem(this.statusKey) || '{}');
+    let status = JSON.parse(localStorage.getItem(this.statusKey) || '{}');
+    if (!(Object.keys(status).length === 0)) {
+      return status;
+    }
+    return 'Finished';
   }
 
   setCurrentStatus(status: string) {

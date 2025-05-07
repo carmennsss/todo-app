@@ -1,25 +1,40 @@
-<form>
+<form [formGroup]="authForm" (ngSubmit)="submitClient(authForm)">
   <h3>{{ title() }} Here</h3>
 
   <label for="username">Username</label>
 
   <input
-    (change)="changeUser(txtUsername.value)"
     type="text"
-    placeholder="Email"
+    placeholder="User"
     id="username"
+    formControlName="username"
     #txtUsername
   />
+  <error-message
+    message="Incorrect username"
+    *ngIf="
+      authForm.get('username')?.invalid &&
+      (authForm.get('username')?.dirty || authForm.get('username')?.touched)
+    "
+  ></error-message>
 
   <label for="password">Password</label>
   <input
-    (input)="changePassword(txtPassword.value)"
     type="password"
     placeholder="Password"
     id="password"
+    formControlName="password"
     #txtPassword
   />
+  <error-message
+    message="Incorrect password"
+    *ngIf="
+      authForm.get('password')?.invalid &&
+      (authForm.get('password')?.dirty || authForm.get('password')?.touched)
+    "
+  ></error-message>
 
-  <button type="button" (click)="submitClient()">{{ title() }}</button>
+  <button type="submit" [disabled]="authForm.invalid">{{ title() }}</button>
   <auth-ask-account [text]="text()"></auth-ask-account>
 </form>
+<pop-message></pop-message>

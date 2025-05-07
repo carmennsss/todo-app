@@ -8,7 +8,6 @@
     [rounded]="true"
   />
   <div class="newTags">
-    <!-- Metodo para imprimir tantas p-tag con tags haya en la base de datos -->
     <!-- <p-tag *ngFor="let tag of tags()" [value]="tag" [rounded]="true"></p-tag> -->
     <p-tag *ngFor="let tag of tags" value="{{ tag.tag_title }}" [rounded]="true"></p-tag>
   </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
@@ -20,7 +20,7 @@ import { LocalStorageService } from '../../../services/local-storage.service';
 })
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];
-  localService: LocalStorageService = new LocalStorageService();
+  localService = inject(LocalStorageService);
   constructor(
     private messageService: MessageService,
     private router: Router,

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   Input,
   input,
   InputSignal,
@@ -18,7 +19,7 @@ import { Dialog } from 'primeng/dialog';
 import { CustomTag } from '../../../interfaces/CustomTag';
 import { Model } from '../../../interfaces/Model';
 import { Category } from '../../../interfaces/Category';
-import { AddNewComponent } from "../add-new/add-new.component";
+import { AddNewComponent } from '../add-new/add-new.component';
 import { SubTask } from '../../../interfaces/SubTask';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,8 +33,8 @@ import { ActivatedRoute, Router } from '@angular/router';
     MultiSelectModule,
     TagModule,
     CommonModule,
-    AddNewComponent
-],
+    AddNewComponent,
+  ],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,7 +43,7 @@ export class EditingSidebarComponent {
   selectedTask = input.required<Task>();
   visibleDialogTag: boolean = false;
   visibleDialogSub: boolean = false;
-  localService: LocalStorageService = new LocalStorageService();
+  localService = inject(LocalStorageService);
 
   currentClient = this.localService.getCurrentClient();
 
@@ -89,7 +90,7 @@ export class EditingSidebarComponent {
   saveNewSubTask(title: string) {
     this.visibleDialogSub = false;
     this.newSubtasks.push({
-      subtask_title : title,
+      subtask_title: title,
     });
   }
 
@@ -101,7 +102,9 @@ export class EditingSidebarComponent {
       this.selectedTask().taglist = this.selectedTags;
     }
     if (this.selectedTask().subtasks) {
-      this.selectedTask().subtasks = this.selectedTask().subtasks.concat(this.newSubtasks);
+      this.selectedTask().subtasks = this.selectedTask().subtasks.concat(
+        this.newSubtasks
+      );
     }
 
     this.saveItemsLocalStorage();

@@ -1,26 +1,66 @@
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
-import { StatusAction } from './status.actions';
+import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { StatusNameAction, StatusTasksAction } from './status.actions';
+import { Task } from '../../interfaces/Task';
 
-export class StatusStateModel {
-  public status_name!: string;
+export interface StatusStateModel {
+  status_name: string;
+  statusTasks: Task[];
 }
-
-const defaults = {
-  status_name: '',
-};
 
 @State<StatusStateModel>({
   name: 'status',
-  defaults,
+  defaults : {
+    status_name: '',
+    statusTasks: [],
+  }
 })
 @Injectable()
 export class StatusState {
-  @Action(StatusAction)
+
+  @Selector()
+  static getStatus(state: StatusStateModel) {
+    return state.status_name;
+  }
+
+  @Selector()
+  static getStatusTasks(state: StatusStateModel) {
+    return state.statusTasks;
+  }
+
+  @Action(StatusNameAction)
+  
   setStatus(
-    { getState, setState }: StateContext<StatusStateModel>,
-    { payload }: StatusAction
-  ) {
-    setState({ status_name: payload.status_name });
+    { patchState }: StateContext<StatusStateModel>,
+    { payload }: StatusNameAction) {
+      debugger;
+    patchState({ status_name: payload.status_name });
+  }
+ /*
+  setStatus( ctx: StateContext<StatusStateModel>, action: StatusNameAction) {
+    debugger;
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      status_name: action.payload.status_name,
+    });
+  }*/
+
+  @Action(StatusTasksAction)
+  /*
+  setStatusTasks(
+    { patchState }: StateContext<StatusStateModel>,
+    { payload }: StatusTasksAction) {
+      debugger;
+      console.log(payload.statusTasks);
+    patchState({ statusTasks: payload.statusTasks });
+  }*/
+  setStatusTasks( ctx: StateContext<StatusStateModel>, action: StatusTasksAction) {
+    debugger;
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      statusTasks: action.payload.statusTasks,
+    });
   }
 }
