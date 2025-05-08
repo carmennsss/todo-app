@@ -1,5 +1,4 @@
-/* Control de APIs para la base de datos de clientes y su autenticacion */
-/* EN PAUSA */
+/* PAUSED */
 
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

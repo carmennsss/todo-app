@@ -13,8 +13,14 @@ export class AskAccountComponent {
 
   constructor(private router: Router) {}
 
-  // METHODS
-  
+  // ------------------------------------------------------------------
+  // ----------------------------  Methods  ----------------------------
+  // ------------------------------------------------------------------
+
+  /**
+   * Redirects to the sign-up page if the text is "Don't have an account?" or
+   * to the login page if the text is "Have an account?".
+   */
   changePage() {
     if (this.text().toLowerCase().trim() === 'have an account?') {
       this.router.navigate(['']);

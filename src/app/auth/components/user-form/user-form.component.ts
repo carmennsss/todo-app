@@ -1,37 +1,31 @@
+import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  ChangeDetectionStrategy,
+  OnInit,
   inject,
   input,
-  OnInit,
   ViewChild,
 } from '@angular/core';
-import { AskAccountComponent } from '../ask-account/ask-account.component';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-
-import { Observable } from 'rxjs';
-import { Select, Store } from '@ngxs/store';
-import { ClientDB } from '../../../interfaces/ClientDB';
-import { Client } from '../../../interfaces/Client';
-import { Model } from '../../../interfaces/Model';
-import { LocalStorageService } from '../../../taskslist/services/local-storage.service';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  FormGroup,
+  FormBuilder,
   Validators,
 } from '@angular/forms';
-import { PopMessageComponent } from '../../../shared/components/pop-message/pop-message.component';
+import { Router } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
-import { ButtonModule } from 'primeng/button';
-import { Ripple } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
+import { Client } from '../../../interfaces/Client';
+import { Model } from '../../../interfaces/Model';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
-import { CommonModule } from '@angular/common';
+import { PopMessageComponent } from '../../../shared/components/pop-message/pop-message.component';
+import { LocalStorageService } from '../../../shared/services/local-storage.service';
+import { AuthService } from '../../services/auth.service';
+import { AskAccountComponent } from '../ask-account/ask-account.component';
 
 @Component({
   selector: 'auth-user-form',
@@ -52,6 +46,7 @@ import { CommonModule } from '@angular/common';
 })
 export class UserFormComponent implements OnInit {
   localService = inject(LocalStorageService);
+
   title = input.required<string>();
   text = input.required<string>();
   authForm: FormGroup = new FormGroup({});
@@ -80,12 +75,20 @@ export class UserFormComponent implements OnInit {
   ngOnInit(): void {
     this.authForm = this.fb.group({
       username: ['', Validators.required],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
-  // METHODS
+  // ------------------------------------------------------------------
+  // ----------------------------  Methods  ----------------------------
+  // ------------------------------------------------------------------
 
+  /**
+   * Submit the form and log in or sign up the user.
+   * It checks if the model is empty and sets it to the current model if not.
+   * Then it checks if the title is 'login' or 'sign up' and calls the respective method.
+   * @param form The FormGroup containing the form values.
+   */
   submitClient(form: FormGroup) {
     if (!(Object.keys(this.localService.getModel()).length === 0)) {
       this.model = this.localService.getModel();
@@ -100,8 +103,19 @@ export class UserFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Attempts to log in the user using the provided form data.
+   * Checks if there are existing clients in the model and compares
+   * the form's username and password with each client's credentials.
+   * If a match is found, sets the current client in local storage
+   * and navigates to the main status page. If no match is found,
+   * displays a "User not found" message. If no clients exist,
+   * displays a "No users found" message.
+   *
+   * @param form The FormGroup containing the login form values.
+   */
+
   logClient(form: FormGroup) {
-    debugger;
     if (this.model.clients.length != 0) {
       let found = false;
       for (let i = 0; i < this.model.clients.length; i++) {
@@ -147,6 +161,14 @@ export class UserFormComponent implements OnInit {
     });*/
   }
 
+  /**
+   * Registers a new client and logs them in.
+   * Checks if the provided username and password are not empty,
+   * and if the username does not already exist in the model.
+   * If the checks pass, adds the new client to the model and local storage,
+   * and navigates to the main status page.
+   * @param form The FormGroup containing the registration form values.
+   */
   registerClient(form: FormGroup) {
     debugger;
     if (

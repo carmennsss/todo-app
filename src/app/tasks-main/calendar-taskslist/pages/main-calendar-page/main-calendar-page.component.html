@@ -1,0 +1,20 @@
+<div class="calendar-container">
+  <h2>Calendar</h2>
+  <p-divider />
+  <div class="card flex justify-content-center">
+    <p-datepicker
+      [(ngModel)]="task_date"
+      [showButtonBar]="true"
+      [iconDisplay]="'input'"
+      [showIcon]="true"
+      inputId="icondisplay"
+      dateFormat="dd/mm/yy"
+      placeholder="Select Date"
+      (onSelect)="onDateSelect()"
+    />
+  </div>
+  <p-divider />
+  <div class="task-list">
+    <task-item *ngFor="let task of dateTasks" [task]="task"></task-item>
+  </div>
+</div>

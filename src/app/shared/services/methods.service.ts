@@ -5,7 +5,12 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class MethodsService {
-  constructor(private router : Router) {}
+  
+  constructor(private router: Router) {}
+
+  // ------------------------------------------------------------------
+  // ----------------------------  Methods  ----------------------------
+  // ------------------------------------------------------------------
 
   reloadPage() {
     const currentUrl = this.router.url;

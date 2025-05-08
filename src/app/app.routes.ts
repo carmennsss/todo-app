@@ -13,15 +13,24 @@ export const routes: Routes = [
   },
   {
     path: 'main',
-    canActivate:[userGuard],
+    canActivate: [userGuard],
     loadComponent: () =>
-      import('./taskslist/pages/main-page/main-page.component'),
+      import('./tasks-main/pages/main-page/main-page.component'),
     children: [
       {
         path: 'status',
+        canActivate: [userGuard],
         loadComponent: () =>
           import(
-            './taskslist/pages/main-status-page/main-status-page.component'
+            './tasks-main/status-taskslist/pages/main-status-page/main-status-page.component'
+          ),
+      },
+      {
+        path: 'calendar',
+        canActivate: [userGuard],
+        loadComponent: () =>
+          import(
+            './tasks-main/calendar-taskslist/pages/main-calendar-page/main-calendar-page.component'
           ),
       },
       {

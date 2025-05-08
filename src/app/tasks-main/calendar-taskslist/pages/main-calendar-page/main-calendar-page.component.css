@@ -1,0 +1,27 @@
+h2 {
+  font-family: Poppins, sans-serif;
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  margin-top: 20px;
+}
+
+p {
+  color: rgb(255, 255, 255);
+  font-family: Poppins, sans-serif;
+  font-size: 30px;
+  background-color: rgb(210, 210, 210);
+  border-radius: 12px;
+  padding: 5px;
+  width: 48px;
+  margin-top: 13px;
+  text-align: center;
+  height: 50px;
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
