@@ -33,7 +33,6 @@ export class StatusState {
   setStatus(
     { patchState }: StateContext<StatusStateModel>,
     { payload }: StatusNameAction) {
-      debugger;
     patchState({ status_name: payload.status_name });
   }
  /*
@@ -56,11 +55,14 @@ export class StatusState {
     patchState({ statusTasks: payload.statusTasks });
   }*/
   setStatusTasks( ctx: StateContext<StatusStateModel>, action: StatusTasksAction) {
-    debugger;
     const state = ctx.getState();
+    debugger;
+    const filteredTasks = action.payload.statusTasks.filter(
+      (task : Task) => task.status === state.status_name.toLowerCase().replace(' ', '')
+    )
     ctx.setState({
       ...state,
-      statusTasks: action.payload.statusTasks,
+      statusTasks: filteredTasks,
     });
   }
 }

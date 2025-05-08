@@ -1,4 +1,4 @@
-import { Component, Signal } from '@angular/core';
+import { Component, OnInit, Signal } from '@angular/core';
 import { TagModule } from 'primeng/tag';
 import { ChangeDetectionStrategy, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -34,11 +34,18 @@ import { DialogComponent } from '../dialog/dialog.component';
     AddNewComponent,
   ],
   templateUrl: './categories.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
   styleUrl: './categories.component.css',
 })
-export class SidebarCategoriesComponent {
-  items: MenuItem[] = [];
+export class SidebarCategoriesComponent implements OnInit {
   localService = inject(LocalStorageService);
+  readonly dialog = inject(MatDialog);
+
+  title = signal<string>('Category');
+  items: MenuItem[] = [];
+  currentClient = this.localService.getCurrentClient();
+  categories: Category[] = this.currentClient.categories || [];
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -49,12 +56,6 @@ export class SidebarCategoriesComponent {
       },
     ];
   }
-
-  currentClient = this.localService.getCurrentClient();
-
-  title = signal<string>('Category');
-  categories: Category[] = this.currentClient.categories || [];
-  readonly dialog = inject(MatDialog);
 
   saveItemsLocalStorage() {
     this.localService.setCurrentClient(this.currentClient);

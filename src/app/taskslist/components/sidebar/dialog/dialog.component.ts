@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogActions,
     MatDialogClose,
   ],
+  standalone: true,
 })
 export class DialogComponent {
   readonly dialogRef = inject(MatDialogRef<DialogComponent>);

@@ -28,14 +28,18 @@ import { DialogComponent } from '../dialog/dialog.component';
   imports: [TagModule, CommonModule, FormsModule, MatButtonModule],
   templateUrl: './tag-list.component.html',
   styleUrl: './tag-list.component.css',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagListComponent {
   localService = inject(LocalStorageService);
+  readonly dialog = inject(MatDialog);
+
   currentClient = this.localService.getCurrentClient();
 
   title = signal<string>('Tag');
   tags: CustomTag[] = this.currentClient.tags || [];
-  readonly dialog = inject(MatDialog);
+  
 
   constructor(private tagsService: TagsService, private router: Router) {}
 

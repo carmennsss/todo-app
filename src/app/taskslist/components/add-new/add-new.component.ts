@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
@@ -10,8 +10,9 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './add-new.component.html',
   styleUrl: './add-new.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
-export class AddNewComponent {
+export class AddNewComponent implements OnInit {
   items: MenuItem[] = [];
   ngOnInit() {
     this.items = [

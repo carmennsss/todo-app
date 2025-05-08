@@ -38,18 +38,20 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class EditingSidebarComponent {
+  localService = inject(LocalStorageService);
+
   selectedTask = input.required<Task>();
+  @Input() isDrawerVisible: boolean = false;
   visibleDialogTag: boolean = false;
   visibleDialogSub: boolean = false;
-  localService = inject(LocalStorageService);
 
   currentClient = this.localService.getCurrentClient();
 
   newSubtasks: SubTask[] = [];
   selectedTags: CustomTag[] = [];
-  @Input() isDrawerVisible: boolean = false;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
   showDialogTag() {

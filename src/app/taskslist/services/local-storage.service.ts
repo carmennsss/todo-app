@@ -19,18 +19,6 @@ export class LocalStorageService {
     return JSON.parse(localStorage.getItem(this.clientKey) || '{}') as Client;
   }
 
-  getCurrentStatus() {
-    let status = JSON.parse(localStorage.getItem(this.statusKey) || '{}');
-    if (!(Object.keys(status).length === 0)) {
-      return status;
-    }
-    return 'Finished';
-  }
-
-  setCurrentStatus(status: string) {
-    localStorage.setItem(this.statusKey, JSON.stringify(status));
-  }
-
   saveTaskToCurrentClient(selectedTask: Task) {
     let currentClient = this.getCurrentClient();
     for (let i = 0; i < currentClient.tasks.length; i++) {

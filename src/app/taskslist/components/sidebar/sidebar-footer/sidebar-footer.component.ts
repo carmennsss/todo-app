@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
@@ -10,6 +10,7 @@ import { Store } from '@ngxs/store';
 import { ClientDB } from '../../../../interfaces/ClientDB';
 import { Client } from '../../../../interfaces/Client';
 import { LocalStorageService } from '../../../services/local-storage.service';
+import { StatusNameAction } from '../../../states/status.actions';
 
 @Component({
   selector: 'sidebar-footer',
@@ -17,6 +18,7 @@ import { LocalStorageService } from '../../../services/local-storage.service';
   standalone: true,
   imports: [PanelMenu, ToastModule, ButtonModule],
   providers: [MessageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];

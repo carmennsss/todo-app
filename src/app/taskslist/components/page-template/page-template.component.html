@@ -5,7 +5,7 @@
   </div>
   <p-divider />
   <div class="list">
-    <task-item (click)="selectTask(task)" [task]="task" *ngFor="let task of getItemsStatus()"></task-item>
+    <task-item (click)="selectTask(task)" [task]="task" *ngFor="let task of statusTasks"></task-item>
   </div>
 </div>
 <editing-sidebar [selectedTask]="selectedTask" [isDrawerVisible]="isDrawerVisible" (onDrawerHide)="isDrawerVisible = false">
