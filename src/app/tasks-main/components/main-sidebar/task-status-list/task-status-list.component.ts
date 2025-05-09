@@ -9,8 +9,8 @@ import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
-import { Client } from '../../../../interfaces/clients/Client';
-import { Task } from '../../../../interfaces/tasks/Task';
+import { Client } from '../../../../core/interfaces/clients/Client';
+import { Task } from '../../../../core/interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
 import {
   StatusNameAction,

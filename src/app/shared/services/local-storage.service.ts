@@ -1,9 +1,9 @@
 /* IMPLEMENTANDO PARA OPTIMIZAR */
 import { Injectable, model } from '@angular/core';
-import { Task } from '../../interfaces/tasks/Task';
+import { Task } from '../../core/interfaces/tasks/Task';
 import { Observable } from 'rxjs';
-import { Client } from '../../interfaces/clients/Client';
-import { Model } from '../../interfaces/Model';
+import { Client } from '../../core/interfaces/clients/Client';
+import { Model } from '../../core/interfaces/Model';
 
 @Injectable({
   providedIn: 'root',

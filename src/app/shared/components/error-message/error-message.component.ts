@@ -5,7 +5,6 @@ import { Message } from 'primeng/message';
   selector: 'error-message',
   imports: [Message],
   templateUrl: './error-message.component.html',
-  styleUrl: './error-message.component.css',
 })
 export class ErrorMessageComponent { 
   message = input.required<string>()

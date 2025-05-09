@@ -7,7 +7,7 @@ import {
 import { Select, Store } from '@ngxs/store';
 import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
-import { Task } from '../../../../interfaces/tasks/Task';
+import { Task } from '../../../../core/interfaces/tasks/Task';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import {
   StatusNameAction,

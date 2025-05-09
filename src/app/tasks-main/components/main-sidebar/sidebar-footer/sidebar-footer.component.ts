@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { Client } from '../../../../interfaces/clients/Client';
+import { Client } from '../../../../core/interfaces/clients/Client';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 
 @Component({

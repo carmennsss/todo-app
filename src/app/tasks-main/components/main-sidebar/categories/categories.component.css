@@ -1,5 +1,6 @@
-h3,
-h2 {
+/* TITLE */
+
+h3 {
   font-family: Poppins, sans-serif;
   font-size: 16px;
   font-weight: 600;
@@ -10,6 +11,8 @@ h2 {
 .sidebar {
   background-color: transparent;
 }
+
+/* NEW CATEGORIES */
 
 .newCategories {
   margin-top: 10px;
@@ -23,49 +26,11 @@ h2 {
   -ms-overflow-style: none;
 }
 
-.newCategories::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
 .newCategories:hover {
   scrollbar-width: thin;
 }
 
-.newCategories:hover::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-mat-dialog-content {
-  padding: 10px;
-  background-color: #000;
-}
-
-mat-dialog-content > p {
-  color: white;
-  display: flex;
-  font-style: italic;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.title {
-  font-family: Poppins, sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 10px;
-}
-
-input {
-  width: 100%;
-  color: white;
-}
+/* CATEGORY ITEM */
 
 .category-item {
   display: flex;

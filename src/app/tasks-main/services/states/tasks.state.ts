@@ -5,7 +5,7 @@ import {
   StatusNameAction,
   StatusTasksAction,
 } from './tasks.actions';
-import { Task } from '../../../interfaces/tasks/Task';
+import { Task } from '../../../core/interfaces/tasks/Task';
 
 export interface TasksStateModel {
   status_name: string;

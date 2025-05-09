@@ -13,11 +13,12 @@ import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { TagModule } from 'primeng/tag';
-import { Category } from '../../../../interfaces/tasks/Category';
+import { Category } from '../../../../core/interfaces/tasks/Category';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { AddNewComponent } from '../../../status-taskslist/components/add-new/add-new.component';
 import { DialogComponent } from '../dialog/dialog.component';
+import { Task } from '../../../../core/interfaces/tasks/Task';
 
 @Component({
   selector: 'sidebar-categories',
@@ -75,7 +76,7 @@ export class SidebarCategoriesComponent implements OnInit {
    */
   getCategoryItemCount(category: string) {
     return this.currentClient.tasks.filter(
-      (task) => task.list.category_title === category
+      (task : Task) => task.list.category_title === category
     ).length;
   }
 

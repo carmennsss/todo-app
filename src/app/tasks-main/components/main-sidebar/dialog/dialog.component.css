@@ -1,3 +1,4 @@
+/* DIALOG */
 
 mat-dialog-content {
   padding: 10px;
@@ -15,6 +16,8 @@ mat-dialog-content > p {
   justify-content: center;
   align-items: center;
 }
+
+/* INPUT */
 
 .title {
   font-family: Poppins, sans-serif;

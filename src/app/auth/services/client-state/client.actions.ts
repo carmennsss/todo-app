@@ -1,8 +1,8 @@
 /* PAUSED */
 
-import { ClientDB } from "../../../interfaces/clients/ClientDB";
+import { Client } from "../../../core/interfaces/clients/Client";
 
 export class changeClient {
-  static readonly type = '[Client] Change';
-  constructor(public payload: { currentUser: ClientDB }) {}
+  static readonly type = '[Client] Change user';
+  constructor(public payload: { currentUser: Client }) {}
 }

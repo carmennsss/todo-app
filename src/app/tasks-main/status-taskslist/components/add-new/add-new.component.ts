@@ -8,7 +8,6 @@ import { ButtonModule } from 'primeng/button';
   selector: 'task-add-new',
   imports: [PanelMenu, ToastModule, ButtonModule],
   templateUrl: './add-new.component.html',
-  styleUrl: './add-new.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })

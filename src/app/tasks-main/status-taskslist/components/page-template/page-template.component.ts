@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { AddNewComponent } from '../add-new/add-new.component';
 import { DividerModule } from 'primeng/divider';
-import { Task } from '../../../../interfaces/tasks/Task';
+import { Task } from '../../../../core/interfaces/tasks/Task';
 import { EditingSidebarComponent } from '../editing-sidebar/editing-sidebar.component';
 import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';

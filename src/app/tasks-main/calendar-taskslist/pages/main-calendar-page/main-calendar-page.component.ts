@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { TaskItemComponent } from '../../../status-taskslist/components/task-item/task-item.component';
 import { Router } from '@angular/router';
-import { Task } from '../../../../interfaces/tasks/Task';
+import { Task } from '../../../../core/interfaces/tasks/Task';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
