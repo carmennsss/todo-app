@@ -1,11 +1,11 @@
 <form [formGroup]="authForm" (ngSubmit)="submitClient(authForm)">
-  <h3>{{ title() }} Here</h3>
+  <h3>{{ title }} Here</h3>
 
   <label for="username">Username</label>
 
   <input
     type="text"
-    placeholder="User"
+    placeholder=""
     id="username"
     formControlName="username"
     #txtUsername
@@ -21,7 +21,7 @@
   <label for="password">Password</label>
   <input
     type="password"
-    placeholder="Password"
+    placeholder="Min. 8 characters"
     id="password"
     formControlName="password"
     #txtPassword
@@ -34,7 +34,10 @@
     "
   ></error-message>
 
-  <button type="submit" [disabled]="authForm.invalid">{{ title() }}</button>
-  <auth-ask-account [text]="text()"></auth-ask-account>
+  <button type="submit" [disabled]="authForm.invalid">{{ title }}</button>
+  <auth-ask-account
+    [text]="text"
+    (click)="changePageContent()"
+  ></auth-ask-account>
 </form>
 <pop-message></pop-message>

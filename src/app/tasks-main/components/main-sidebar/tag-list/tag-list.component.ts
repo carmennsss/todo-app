@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
-import { CustomTag } from '../../../../interfaces/CustomTag';
+import { CustomTag } from '../../../../interfaces/tasks/CustomTag';
 import { Router } from '@angular/router';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
@@ -32,15 +32,24 @@ export class TagListComponent {
 
   constructor(private tagsService: TagsService, private router: Router) {}
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ---------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
+  /**
+   * Saves the currentClient's tags to the model and updates the local storage.
+   */
   saveItemsLocalStorage() {
     this.localService.setCurrentClient(this.currentClient);
     this.localService.saveCurrentClientTagsToModel(this.currentClient);
   }
 
+  /**
+   * Opens a dialog to add a new tag. If the dialog is confirmed and the
+   * result is not empty, creates a new CustomTag with the given title,
+   * adds it to the currentClient's tags, and saves the currentClient
+   * to local storage. Then reloads the page to reflect the change.
+   */
   addTag() {
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },

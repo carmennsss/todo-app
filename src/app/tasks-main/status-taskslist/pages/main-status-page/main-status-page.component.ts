@@ -7,7 +7,7 @@ import {
 import { Select, Store } from '@ngxs/store';
 import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
-import { Task } from '../../../../interfaces/Task';
+import { Task } from '../../../../interfaces/tasks/Task';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import {
   StatusNameAction,
@@ -50,14 +50,22 @@ export default class MainSatusPageComponent implements OnInit {
     });
   }
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ---------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
+  /**
+   * Returns the number of tasks in the current client that have a given status.
+   * This method is used to display the number of tasks in the current client
+   * that have the status that corresponds to the current page.
+   *
+   * @returns The number of tasks with the given status.
+   */
   getItemStatus() {
     const currentClient = this.localService.getCurrentClient();
     return currentClient.tasks.filter(
-      (task) => task.status === this.pageTitle.toLowerCase().replace(' ', '')
+      (task: Task) =>
+        task.status === this.pageTitle.toLowerCase().replace(' ', '')
     ).length;
   }
 }

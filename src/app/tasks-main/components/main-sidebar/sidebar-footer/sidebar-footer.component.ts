@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { Client } from '../../../../interfaces/Client';
+import { Client } from '../../../../interfaces/clients/Client';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 
 @Component({
@@ -38,32 +38,7 @@ export class SidebarFooterComponent implements OnInit {
         label: 'Sign Out',
         icon: 'pi pi-sign-out',
         command: () => {
-          this.messageService.add({
-            severity: 'info',
-            summary: 'Signed out',
-            detail: 'User logged out',
-            life: 3000,
-          });
-          const emptyClient: Client = {
-            username: '',
-            password: '',
-            tags: [],
-            tasks: [],
-            categories: [],
-          };
-          /*
-          const emptyClient : ClientDB = {
-            username: '',
-            password: '',
-            client_name: ''
-          }
-
-          this.store
-            .dispatch(new changeClient({ currentUser: emptyClient }))
-            .subscribe();
-            */
-          this.localService.setCurrentClient(emptyClient);
-          this.router.navigate(['']);
+          this.signOut();
         },
       },
       {
@@ -71,8 +46,48 @@ export class SidebarFooterComponent implements OnInit {
         icon: 'pi pi-calendar',
         command: () => {
           this.router.navigate(['main/calendar']);
-        }
+        },
       },
     ];
+  }
+
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
+
+  /**
+   * Signs out the user.
+   * Adds a message to the message service of 'Signed out'.
+   * Resets the current client to an empty client
+   * and saves it to local storage.
+   * Navigates to the home page.
+   */
+  signOut() {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Signed out',
+      detail: 'User logged out',
+      life: 3000,
+    });
+    const emptyClient: Client = {
+      username: '',
+      password: '',
+      tags: [],
+      tasks: [],
+      categories: [],
+    };
+    /*
+    const emptyClient : ClientDB = {
+      username: '',
+      password: '',
+      client_name: ''
+    }
+
+    this.store
+      .dispatch(new changeClient({ currentUser: emptyClient }))
+      .subscribe();
+      */
+    this.localService.setCurrentClient(emptyClient);
+    this.router.navigate(['']);
   }
 }

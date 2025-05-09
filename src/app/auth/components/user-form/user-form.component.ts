@@ -4,7 +4,6 @@ import {
   ChangeDetectionStrategy,
   OnInit,
   inject,
-  input,
   ViewChild,
 } from '@angular/core';
 import {
@@ -19,13 +18,13 @@ import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { Client } from '../../../interfaces/Client';
-import { Model } from '../../../interfaces/Model';
+import { Client } from '../../../interfaces/clients/Client';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { PopMessageComponent } from '../../../shared/components/pop-message/pop-message.component';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { AuthService } from '../../services/auth.service';
 import { AskAccountComponent } from '../ask-account/ask-account.component';
+import { Model } from '../../../interfaces/Model';
 
 @Component({
   selector: 'auth-user-form',
@@ -46,9 +45,8 @@ import { AskAccountComponent } from '../ask-account/ask-account.component';
 })
 export class UserFormComponent implements OnInit {
   localService = inject(LocalStorageService);
-
-  title = input.required<string>();
-  text = input.required<string>();
+  title = 'Login';
+  text = "Don't have an account?";
   authForm: FormGroup = new FormGroup({});
 
   model: Model = {
@@ -79,9 +77,9 @@ export class UserFormComponent implements OnInit {
     });
   }
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ----------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
   /**
    * Submit the form and log in or sign up the user.
@@ -94,11 +92,9 @@ export class UserFormComponent implements OnInit {
       this.model = this.localService.getModel();
     }
 
-    if (this.title().toLowerCase() === 'login') {
+    if (this.title === 'Login') {
       this.logClient(form);
-    }
-
-    if (this.title().toLowerCase() === 'sign up') {
+    } else {
       this.registerClient(form);
     }
   }
@@ -162,6 +158,22 @@ export class UserFormComponent implements OnInit {
   }
 
   /**
+   * Toggles the page content between login and sign up.
+   * Resets the form and updates the text to reflect the
+   * current page state.
+   */
+  changePageContent() {
+    this.authForm.reset();
+    if (this.title === 'Login') {
+      this.title = 'Sign Up';
+      this.text = 'Already have an account?';
+    } else {
+      this.title = 'Login';
+      this.text = "Don't have an account?";
+    }
+  }
+
+  /**
    * Registers a new client and logs them in.
    * Checks if the provided username and password are not empty,
    * and if the username does not already exist in the model.
@@ -197,7 +209,9 @@ export class UserFormComponent implements OnInit {
     this.model.clients.push(this.newClient);
     this.localService.setModel(this.model);
     alert('User registered successfully, you can now log in');
-    this.router.navigate(['']);
+
+    this.authForm.reset();
+    this.changePageContent();
     /*
     this.authService.addClient(this.username, this.password).subscribe({
       next: (response: any) => {

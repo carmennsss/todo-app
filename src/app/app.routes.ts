@@ -7,11 +7,6 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/pages/login-page/login-page.component'),
   },
   {
-    path: 'signup',
-    loadComponent: () =>
-      import('./auth/pages/create-user-page/create-user-page.component'),
-  },
-  {
     path: 'main',
     canActivate: [userGuard],
     loadComponent: () =>

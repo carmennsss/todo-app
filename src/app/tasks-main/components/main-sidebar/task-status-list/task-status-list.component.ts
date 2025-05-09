@@ -1,15 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
-import { Client } from '../../../../interfaces/Client';
-import { Task } from '../../../../interfaces/Task';
+import { Client } from '../../../../interfaces/clients/Client';
+import { Task } from '../../../../interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
-import { StatusNameAction, StatusTasksAction } from '../../../services/states/tasks.actions';
+import {
+  StatusNameAction,
+  StatusTasksAction,
+} from '../../../services/states/tasks.actions';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-
+import { MethodsService } from '../../../../shared/services/methods.service';
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -17,15 +25,17 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
   templateUrl: './task-status-list.component.html',
   styleUrl: './task-status-list.component.css',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskStatusListComponent implements OnInit {
   localService = inject(LocalStorageService);
+  methodsService = inject(MethodsService);
+
   items: MenuItem[] = [];
   currentItems: Task[] = [];
   currentClient: Client = this.localService.getCurrentClient();
 
-  constructor(private router : Router, private store: Store) {}
+  constructor(private router: Router, private store: Store) {}
   ngOnInit() {
     this.items = [
       {
@@ -70,18 +80,48 @@ export class TaskStatusListComponent implements OnInit {
       },
     ];
   }
-  
-  goToPage(page: string) {
-    this.store.dispatch(new StatusNameAction({ status_name: page }));
-    this.store.dispatch(new StatusTasksAction({ statusTasks: this.currentClient.tasks }));
 
-    const currentUrl = this.router.url;
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigateByUrl('/main/status');
-    });
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
+
+  /**
+   * Navigates to a specified status page and updates the store with the current status and tasks.
+   *
+   * @param page - The name of the status page to navigate to. This also updates the store
+   * with the corresponding status name.
+   *
+   * Dispatches two actions to the store:
+   * 1. StatusNameAction to update the current status name.
+   * 2. StatusTasksAction to update the current tasks.
+   *
+   * After dispatching the actions, it reloads the current page.
+   */
+  goToPage(page: string) {
+    debugger;
+    let currentUrl = this.router.url;
+    if (currentUrl.includes(page.toLowerCase().replace(' ', ''))) {
+      return;
+    }
+    if (currentUrl.includes('status')) {
+      this.store.dispatch(new StatusNameAction({ status_name: page }));
+      this.store.dispatch(
+        new StatusTasksAction({ statusTasks: this.currentClient.tasks })
+      );
+      this.methodsService.reloadPage();
+    } else {
+      this.router.navigate(['main', page.toLowerCase().replace(' ', '')]);
+    }
   }
 
+  /**
+   * Returns the number of tasks in the current client that have a given status.
+   *
+   * @param label - The status of the tasks to count.
+   * @returns The number of tasks with the given status.
+   */
   getItemsStatusCount(label: string) {
-    return this.currentClient.tasks.filter((task) => task.status === label).length;
+    return this.currentClient.tasks.filter((task) => task.status === label)
+      .length;
   }
 }

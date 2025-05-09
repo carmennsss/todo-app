@@ -1,9 +1,9 @@
 /* IMPLEMENTANDO PARA OPTIMIZAR */
 import { Injectable, model } from '@angular/core';
-import { Client } from '../../interfaces/Client';
-import { Model } from '../../interfaces/Model';
-import { Task } from '../../interfaces/Task';
+import { Task } from '../../interfaces/tasks/Task';
 import { Observable } from 'rxjs';
+import { Client } from '../../interfaces/clients/Client';
+import { Model } from '../../interfaces/Model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,14 +15,29 @@ export class LocalStorageService {
 
   constructor() {}
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ---------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
+  // GETTERS
   getCurrentClient() {
     return JSON.parse(localStorage.getItem(this.clientKey) || '{}') as Client;
   }
 
+  getModel() {
+    return JSON.parse(localStorage.getItem(this.modelKey) || '{}') as Model;
+  }
+
+  // SETTERS
+  setCurrentClient(currentClient: Client) {
+    localStorage.setItem(this.clientKey, JSON.stringify(currentClient));
+  }
+
+  setModel(model: Model) {
+    localStorage.setItem(this.modelKey, JSON.stringify(model));
+  }
+
+  // SAVE
   saveTaskToCurrentClient(selectedTask: Task) {
     let currentClient = this.getCurrentClient();
     for (let i = 0; i < currentClient.tasks.length; i++) {
@@ -53,10 +68,6 @@ export class LocalStorageService {
     localStorage.setItem(this.modelKey, JSON.stringify(model));
   }
 
-  setCurrentClient(currentClient: Client) {
-    localStorage.setItem(this.clientKey, JSON.stringify(currentClient));
-  }
-
   saveCurrentClientTasksToModel(currentClient: Client) {
     let model = this.getModel();
     for (let i = 0; i < model.clients.length; i++) {
@@ -65,13 +76,5 @@ export class LocalStorageService {
       }
     }
     localStorage.setItem(this.modelKey, JSON.stringify(model));
-  }
-
-  setModel(model: Model) {
-    localStorage.setItem(this.modelKey, JSON.stringify(model));
-  }
-
-  getModel() {
-    return JSON.parse(localStorage.getItem(this.modelKey) || '{}') as Model;
   }
 }

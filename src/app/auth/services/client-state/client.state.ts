@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { changeClient } from './client.actions';
-import { ClientDB } from '../../../interfaces/ClientDB';
+import { ClientDB } from '../../../interfaces/clients/ClientDB';
 
 export class ClientStateModel {
   items: ClientDB = {

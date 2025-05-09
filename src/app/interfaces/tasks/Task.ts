@@ -1,6 +1,6 @@
-import { Category } from "./Category";
-import { CustomTag } from "./CustomTag";
-import { SubTask } from "./SubTask";
+import { Category } from "./Category"
+import { CustomTag } from "./CustomTag"
+import { SubTask } from "./SubTask"
 
 export interface Task {
     id: number,

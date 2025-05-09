@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { AskAccountComponent } from "../../components/ask-account/ask-account.component";
+import { Component, ViewChild } from '@angular/core';
 import { UserFormComponent } from "../../components/user-form/user-form.component";
 
 @Component({
@@ -8,7 +7,4 @@ import { UserFormComponent } from "../../components/user-form/user-form.componen
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-export default class LoginPageComponent {
-  title = 'Login';
-  text = 'Don\'t have an account?';
-}
+export default class LoginPageComponent {}

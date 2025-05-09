@@ -17,9 +17,9 @@ export class PopMessageComponent {
 
   constructor(public messageService: MessageService) {}
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ----------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
   /**
    * Show a confirmation message using the PrimeNG MessageService

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  Output,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,20 +17,4 @@ export class AskAccountComponent {
   text = input.required<string>();
 
   constructor(private router: Router) {}
-
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ----------------------------
-  // ------------------------------------------------------------------
-
-  /**
-   * Redirects to the sign-up page if the text is "Don't have an account?" or
-   * to the login page if the text is "Have an account?".
-   */
-  changePage() {
-    if (this.text().toLowerCase().trim() === 'have an account?') {
-      this.router.navigate(['']);
-    } else {
-      this.router.navigate(['/signup']);
-    }
-  }
 }

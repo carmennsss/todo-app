@@ -1,4 +1,4 @@
-import { Task } from '../../../interfaces/Task';
+import { Task } from '../../../interfaces/tasks/Task';
 
 export class StatusNameAction {
   static readonly type = '[StatusName] Set status';

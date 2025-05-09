@@ -13,14 +13,13 @@ import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CustomTag } from '../../../../interfaces/CustomTag';
-import { SubTask } from '../../../../interfaces/SubTask';
-import { Task } from '../../../../interfaces/Task';
+import { CustomTag } from '../../../../interfaces/tasks/CustomTag';
+import { SubTask } from '../../../../interfaces/tasks/SubTask';
+import { Task } from '../../../../interfaces/tasks/Task';
 import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { AddNewComponent } from '../add-new/add-new.component';
-
 
 @Component({
   selector: 'editing-sidebar',
@@ -32,7 +31,7 @@ import { AddNewComponent } from '../add-new/add-new.component';
     CommonModule,
     AddNewComponent,
     PopMessageComponent,
-    DialogModule
+    DialogModule,
   ],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
@@ -56,9 +55,9 @@ export class EditingSidebarComponent {
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ---------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
   /**
    * Show the dialog for selecting tags.

@@ -5,13 +5,18 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class MethodsService {
-  
   constructor(private router: Router) {}
 
-  // ------------------------------------------------------------------
-  // ----------------------------  Methods  ----------------------------
-  // ------------------------------------------------------------------
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
 
+  /**
+   * Reloads the current page.
+   *
+   * This method navigates to the root path ('/') with the skipLocationChange option set to true,
+   * and then navigates back to the current URL.
+   */
   reloadPage() {
     const currentUrl = this.router.url;
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
