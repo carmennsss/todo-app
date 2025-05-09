@@ -11,6 +11,10 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { TagsService } from '../../../status-taskslist/services/tags.service';
+import { Client } from '../../../../core/interfaces/clients/Client';
+import { ClientState } from '../../../../auth/services/client-state/client.state';
+import { changeCurrentClient } from '../../../../auth/services/client-state/client.actions';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -26,11 +30,22 @@ export class TagListComponent {
   readonly dialog = inject(MatDialog);
 
   currentClient = this.localService.getCurrentClient();
+  // currentClient = signal<Client>();
 
   title = signal<string>('Tag');
   tags: CustomTag[] = this.currentClient.tags || [];
 
-  constructor(private tagsService: TagsService, private router: Router) {}
+  constructor(
+    private tagsService: TagsService,
+    private router: Router,
+    private store: Store
+  ) {}
+  /*
+  ngOnInit() {
+    this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
+    this.tags = this.currentClient.tags || [];
+  }
+  */
 
   //---------------------------------------
   // METHODS
@@ -41,6 +56,7 @@ export class TagListComponent {
    */
   saveItemsLocalStorage() {
     this.localService.setCurrentClient(this.currentClient);
+    // this.store.dispatch(new changeCurrentClient({ currentUser : this.currentClient }));
     this.localService.saveCurrentClientTagsToModel(this.currentClient);
   }
 

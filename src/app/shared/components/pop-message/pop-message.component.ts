@@ -22,7 +22,8 @@ export class PopMessageComponent {
   //---------------------------------------
 
   /**
-   * Show a confirmation message using the PrimeNG MessageService
+   * Shows a confirmation message
+   *
    * @param message the error message to be displayed
    * @returns void
    */
@@ -39,7 +40,7 @@ export class PopMessageComponent {
   }
 
   /**
-   * Handles the confirmation action by clearing the confirmation message
+   * Handles the confirmation/reject action by clearing the confirmation message
    * and setting the visibility state to false.
    */
 

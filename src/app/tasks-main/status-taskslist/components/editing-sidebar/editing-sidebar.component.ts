@@ -4,6 +4,7 @@ import {
   inject,
   Input,
   input,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
@@ -20,6 +21,7 @@ import { PopMessageComponent } from '../../../../shared/components/pop-message/p
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { AddNewComponent } from '../add-new/add-new.component';
+import { Client } from '../../../../core/interfaces/clients/Client';
 
 @Component({
   selector: 'editing-sidebar',
@@ -49,11 +51,17 @@ export class EditingSidebarComponent {
 
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
   currentClient = this.localService.getCurrentClient();
+  // currentClient = signal<Client>();
 
   newSubtasks: SubTask[] = [];
   selectedTags: CustomTag[] = [];
 
   constructor(private router: Router, private route: ActivatedRoute) {}
+  /*
+  ngOnInit() {
+    this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
+  }
+  */
 
   //---------------------------------------
   // METHODS

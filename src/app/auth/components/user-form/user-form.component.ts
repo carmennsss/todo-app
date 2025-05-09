@@ -25,6 +25,8 @@ import { LocalStorageService } from '../../../shared/services/local-storage.serv
 import { AuthService } from '../../services/auth.service';
 import { AskAccountComponent } from '../ask-account/ask-account.component';
 import { Model } from '../../../core/interfaces/Model';
+import { changeCurrentClient } from '../../services/client-state/client.actions';
+import { ClientState } from '../../services/client-state/client.state';
 
 @Component({
   selector: 'auth-user-form',
@@ -82,7 +84,8 @@ export class UserFormComponent implements OnInit {
   //---------------------------------------
 
   /**
-   * Submit the form and log in or sign up the user.
+   * Submits the form and attempts to log in or register the user based on the form title.
+   *
    * It checks if the model is empty and sets it to the current model if not.
    * Then it checks if the title is 'login' or 'sign up' and calls the respective method.
    * @param form The FormGroup containing the form values.
@@ -101,8 +104,10 @@ export class UserFormComponent implements OnInit {
 
   /**
    * Attempts to log in the user using the provided form data.
+   *
    * Checks if there are existing clients in the model and compares
    * the form's username and password with each client's credentials.
+   *
    * If a match is found, sets the current client in local storage
    * and navigates to the main status page. If no match is found,
    * displays a "User not found" message. If no clients exist,
@@ -112,14 +117,21 @@ export class UserFormComponent implements OnInit {
    */
 
   logClient(form: FormGroup) {
+    debugger;
     if (this.model.clients.length != 0) {
       let found = false;
+
       for (let i = 0; i < this.model.clients.length; i++) {
         if (
           this.model.clients[i].username === form.value.username &&
           this.model.clients[i].password === form.value.password
         ) {
           this.localService.setCurrentClient(this.model.clients[i]);
+
+          this.store.dispatch(
+            new changeCurrentClient({ currentUser: this.model.clients[i] })
+          ); // IN PROGRESS
+
           this.router.navigate(['/main/status']);
           found = true;
         }
@@ -143,13 +155,11 @@ export class UserFormComponent implements OnInit {
           password: this.password,
           client_name: ''
         };
-        
         this.store.dispatch(new changeClient({ currentUser: currentClient })).subscribe(() => {
           this.store.select(ClientState.getClient).subscribe(client => {
             console.log('Client state updated:', client);
           });
         });
-        
       },
       error: (error: any) => {
         console.error('Error logging client:', error);
@@ -159,8 +169,7 @@ export class UserFormComponent implements OnInit {
 
   /**
    * Toggles the page content between login and sign up.
-   * Resets the form and updates the text to reflect the
-   * current page state.
+   * Resets the form and updates the text
    */
   changePageContent() {
     this.authForm.reset();
@@ -175,6 +184,7 @@ export class UserFormComponent implements OnInit {
 
   /**
    * Registers a new client and logs them in.
+   *
    * Checks if the provided username and password are not empty,
    * and if the username does not already exist in the model.
    * If the checks pass, adds the new client to the model and local storage,

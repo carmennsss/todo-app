@@ -4,6 +4,7 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
@@ -36,6 +37,7 @@ export default class MainCalendarPageComponent {
 
   task_date: Date = new Date();
   dateTasks: Task[] = [];
+  // dateTasks = signal<Task[]>([]);
 
   constructor(private router: Router, private store: Store) {}
 
@@ -57,5 +59,6 @@ export default class MainCalendarPageComponent {
     this.store.select(TasksState.getCalendarTasks).subscribe((tasks) => {
       this.dateTasks = tasks;
     });
+    // this.dateTasks.set(this.store.selectSignal(TasksState.getCalendarTasks)())
   }
 }

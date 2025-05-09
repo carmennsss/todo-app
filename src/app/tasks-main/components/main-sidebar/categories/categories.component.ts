@@ -19,6 +19,9 @@ import { MethodsService } from '../../../../shared/services/methods.service';
 import { AddNewComponent } from '../../../status-taskslist/components/add-new/add-new.component';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Task } from '../../../../core/interfaces/tasks/Task';
+import { Store } from '@ngxs/store';
+import { Client } from '../../../../core/interfaces/clients/Client';
+import { ClientState } from '../../../../auth/services/client-state/client.state';
 
 @Component({
   selector: 'sidebar-categories',
@@ -43,11 +46,13 @@ export class SidebarCategoriesComponent implements OnInit {
   title = signal<string>('Category');
   items: MenuItem[] = [];
   currentClient = this.localService.getCurrentClient();
+  // currentClient = signal<Client>();
   categories: Category[] = this.currentClient.categories || [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private store: Store) {}
 
   ngOnInit() {
+    // this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
     this.items = [
       {
         label: 'Add New List',
@@ -62,7 +67,6 @@ export class SidebarCategoriesComponent implements OnInit {
 
   /**
    * Save the selectedTask in the currentClient and in the model.
-   * Then reset the newSubtasks array.
    */
   saveItemsLocalStorage() {
     this.localService.setCurrentClient(this.currentClient);
@@ -70,7 +74,8 @@ export class SidebarCategoriesComponent implements OnInit {
   }
 
   /**
-   * Return the number of tasks in the currentClient that have the given category.
+   * Returns the number of tasks in the currentClient that have the given category.
+   * 
    * @param category The title of the category to count.
    * @returns The number of tasks with the given category title.
    */
@@ -81,7 +86,8 @@ export class SidebarCategoriesComponent implements OnInit {
   }
 
   /**
-   * Open a dialog to add a new category.
+   * Opens a dialog to add a new category.
+   * 
    * If the dialog is confirmed, set the title signal to the user's input.
    * If the title is not empty, create a new Category with the given title,
    * add it to the currentClient's categories, and save the currentClient to local storage.

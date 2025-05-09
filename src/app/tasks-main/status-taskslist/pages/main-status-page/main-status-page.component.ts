@@ -1,3 +1,4 @@
+import { changeCurrentClient } from './../../../../auth/services/client-state/client.actions';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -13,8 +14,9 @@ import {
   StatusNameAction,
   StatusTasksAction,
 } from '../../../services/states/tasks.actions';
-import { TasksState } from '../../../services/states/tasks.state';
+import { TasksState, TasksStateModel } from '../../../services/states/tasks.state';
 import PageTemplateComponent from '../../components/page-template/page-template.component';
+import { ClientState } from '../../../../auth/services/client-state/client.state';
 
 @Component({
   selector: 'main-status-page',
@@ -26,9 +28,6 @@ import PageTemplateComponent from '../../components/page-template/page-template.
 })
 export default class MainSatusPageComponent implements OnInit {
   localService = inject(LocalStorageService);
-
-  @Select(TasksState.getStatus) status$!: Observable<string>;
-  @Select(TasksState.getStatusTasks) statusTasks$!: Observable<Task[]>;
 
   pageTitle = 'Finished';
 
@@ -63,9 +62,13 @@ export default class MainSatusPageComponent implements OnInit {
    */
   getItemStatus() {
     const currentClient = this.localService.getCurrentClient();
+
+    // const changeCurrentClient = this.store.selectSignal(ClientState.getCurrentClient);
+    
     return currentClient.tasks.filter(
       (task: Task) =>
         task.status === this.pageTitle.toLowerCase().replace(' ', '')
     ).length;
   }
 }
+

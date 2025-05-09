@@ -21,6 +21,7 @@ import { Store } from '@ngxs/store';
 import { TasksState } from '../../../services/states/tasks.state';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
+import { ClientState } from '../../../../auth/services/client-state/client.state';
 
 @Component({
   selector: 'tasks-page-template',
@@ -65,9 +66,11 @@ export default class PageTemplateComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     debugger;
+
     this.store.select(TasksState.getStatus).subscribe((status) => {
       this.pageTitle = status;
     });
+    // this.pageTitle = this.store.selectSignal(TasksState.getStatus)
     this.updateTasks();
   }
 
@@ -90,6 +93,7 @@ export default class PageTemplateComponent implements OnInit {
     this.store.select(TasksState.getStatusTasks).subscribe((tasks) => {
       this.statusTasks = tasks;
     });
+    // this.statusTasks = this.store.selectSignal(TasksState.getStatusTasks)
   }
 
   /**

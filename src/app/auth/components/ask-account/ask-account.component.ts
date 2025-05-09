@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
-  Output,
 } from '@angular/core';
 import { Router } from '@angular/router';
 

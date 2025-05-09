@@ -3,6 +3,7 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
@@ -34,9 +35,12 @@ export class TaskStatusListComponent implements OnInit {
   items: MenuItem[] = [];
   currentItems: Task[] = [];
   currentClient: Client = this.localService.getCurrentClient();
+  // currentClient = signal<Client>();
 
   constructor(private router: Router, private store: Store) {}
   ngOnInit() {
+    // this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
+
     this.items = [
       {
         label: 'Non Started',
