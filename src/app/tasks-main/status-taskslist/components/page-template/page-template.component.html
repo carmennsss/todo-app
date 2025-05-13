@@ -1,12 +1,24 @@
 <div class="page-template">
   <p-divider />
+  <button (click)="deleteMode = !deleteMode">
+    <i class="pi pi-trash"></i>Toggle Delete
+    <p>{{ deleteMode ? "ON" : "OFF" }}</p>
+  </button>
   <div>
     <task-add-new (click)="createTask()"></task-add-new>
   </div>
   <p-divider />
   <div class="list">
-    <task-item (click)="selectTask(task)" [task]="task" *ngFor="let task of statusTasks"></task-item>
+    <task-item
+      (click)="selectTask(task)"
+      [task]="task"
+      *ngFor="let task of statusTasks"
+    ></task-item>
   </div>
 </div>
-<editing-sidebar [selectedTask]="selectedTask" [isDrawerVisible]="isDrawerVisible" (onDrawerHide)="isDrawerVisible = false">
+<editing-sidebar
+  [selectedTask]="selectedTask"
+  [isDrawerVisible]="isDrawerVisible"
+  (onDrawerHide)="isDrawerVisible = false"
+>
 </editing-sidebar>

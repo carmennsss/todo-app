@@ -44,6 +44,7 @@ export default class PageTemplateComponent implements OnInit {
   currentClient = this.localService.getCurrentClient();
 
   statusTasks: Task[] = [];
+  deleteMode: boolean = false;
   pageTitle = 'Finished';
   newTask: Task = {
     id: 0,
@@ -106,8 +107,20 @@ export default class PageTemplateComponent implements OnInit {
    */
 
   selectTask(task: Task) {
-    this.selectedTask = task;
-    this.isDrawerVisible = !this.isDrawerVisible;
+    if (this.deleteMode) {
+      this.deleteTask(task);
+    } else {
+      this.selectedTask = task;
+      this.isDrawerVisible = !this.isDrawerVisible;
+    }
+  }
+
+  deleteTask(task: Task) {
+    this.currentClient.tasks = this.currentClient.tasks.filter(
+      (t) => t.id !== task.id
+    );
+    this.saveItemsLocalStorage();
+    this.updateTasks();
   }
 
   /**
