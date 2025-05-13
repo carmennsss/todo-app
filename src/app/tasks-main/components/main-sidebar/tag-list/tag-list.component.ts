@@ -32,7 +32,7 @@ export class TagListComponent {
   currentClient = this.localService.getCurrentClient();
   // currentClient = signal<Client>();
 
-  title = signal<string>('Tag');
+  title = signal<string>('');
   tags: CustomTag[] = this.currentClient.tags || [];
 
   constructor(
@@ -67,11 +67,13 @@ export class TagListComponent {
    * to local storage. Then reloads the page to reflect the change.
    */
   addTag() {
+    debugger;
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
+      debugger;
       console.log('The dialog was closed');
       if (result !== undefined) {
         this.title.set(result);

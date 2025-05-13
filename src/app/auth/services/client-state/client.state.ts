@@ -32,7 +32,6 @@ export class ClientState {
 
   @Action(changeCurrentClient)
   setCurrentClient(ctx: StateContext<ClientStateModel>, action: changeCurrentClient) {
-    debugger;
     const state = ctx.getState();
     ctx.setState({
       ...state,

@@ -54,7 +54,6 @@ export class TasksState {
    * @param action StatusNameAction with the new status name
    */
   setStatus(ctx: StateContext<TasksStateModel>, action: StatusNameAction) {
-    debugger;
     const state = ctx.getState();
     ctx.setState({
       ...state,
@@ -76,7 +75,6 @@ export class TasksState {
     action: StatusTasksAction
   ) {
     const state = ctx.getState();
-    debugger;
     const filteredTasks = action.payload.statusTasks.filter(
       (task: Task) =>
         task.status === state.status_name.toLowerCase().replace(' ', '')

@@ -43,7 +43,7 @@ export class SidebarCategoriesComponent implements OnInit {
   methodsService = inject(MethodsService);
   readonly dialog = inject(MatDialog);
 
-  title = signal<string>('Category');
+  title = signal<string>('');
   items: MenuItem[] = [];
   currentClient = this.localService.getCurrentClient();
   // currentClient = signal<Client>();

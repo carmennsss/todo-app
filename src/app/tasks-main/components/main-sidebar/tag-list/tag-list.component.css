@@ -8,6 +8,12 @@ h3 {
   margin-bottom: 10px;
 }
 
+/* ADD TAG */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* NEW TAGS */
 
 .newTags {

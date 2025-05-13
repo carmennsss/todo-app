@@ -19,6 +19,7 @@ import {
 } from '../../../services/states/tasks.actions';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
+import { ClientState } from '../../../../auth/services/client-state/client.state';
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -34,11 +35,21 @@ export class TaskStatusListComponent implements OnInit {
 
   items: MenuItem[] = [];
   currentItems: Task[] = [];
-  currentClient: Client = this.localService.getCurrentClient();
+  currentClient: Client = {
+    username: '',
+    password: '',
+    tasks: [],
+    tags: [],
+    categories: [],
+  };
   // currentClient = signal<Client>();
 
   constructor(private router: Router, private store: Store) {}
   ngOnInit() {
+    this.currentClient = this.localService.getCurrentClient();
+    this.store.select(ClientState.getCurrentClient).subscribe((client) => {
+      this.currentClient = client;
+    });
     // this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
 
     this.items = [
@@ -125,7 +136,8 @@ export class TaskStatusListComponent implements OnInit {
    * @returns The number of tasks with the given status.
    */
   getItemsStatusCount(label: string) {
-    return this.currentClient.tasks.filter((task) => task.status === label)
+    const currentClient = this.localService.getCurrentClient();
+    return currentClient.tasks.filter((task) => task.status === label)
       .length;
   }
 }
