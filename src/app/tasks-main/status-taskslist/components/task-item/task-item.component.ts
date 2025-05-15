@@ -12,6 +12,7 @@ import { Task } from '../../../../core/interfaces/tasks/Task';
 })
 export class TaskItemComponent {
   task = input.required<Task>();
+  deleteMode = input.required<boolean>()
   visibleInput = false;
   selected = false
 }

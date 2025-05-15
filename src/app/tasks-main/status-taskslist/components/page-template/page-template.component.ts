@@ -51,7 +51,7 @@ export default class PageTemplateComponent implements OnInit {
     title: '',
     desc: '',
     status: '',
-    list: this.currentClient.categories[0],
+    list: { category_title: 'None' },
     taglist: [],
     date: '',
     subtasks: [],
@@ -97,14 +97,15 @@ export default class PageTemplateComponent implements OnInit {
     // this.statusTasks = this.store.selectSignal(TasksState.getStatusTasks)
   }
 
-  /**
-   * Toggles the visibility of the editing sidebar and sets the selected task.
-   *
-   * This method assigns the provided task to the `selectedTask` property.
-   * It also toggles the `isDrawerVisible` property to show or hide the editing sidebar.
-   *
-   * @param task - The task to be set as the selected task.
-   */
+
+/**
+ * Selects a task for editing or deletion.
+ * 
+ * If delete mode is enabled, the task is deleted.
+ * Otherwise, the task is selected for editing, and the editing drawer visibility is toggled.
+ * 
+ * @param task The task to select or delete.
+ */
 
   selectTask(task: Task) {
     if (this.deleteMode) {
@@ -114,6 +115,16 @@ export default class PageTemplateComponent implements OnInit {
       this.isDrawerVisible = !this.isDrawerVisible;
     }
   }
+
+/**
+ * Deletes a specified task from the current client's tasks list.
+ *
+ * This method filters out the task with the given id from the current client's
+ * tasks. After deletion, it updates the local storage with the current client's
+ * tasks and refreshes the status tasks list to reflect the changes.
+ *
+ * @param task - The task to be deleted.
+ */
 
   deleteTask(task: Task) {
     this.currentClient.tasks = this.currentClient.tasks.filter(
@@ -140,7 +151,7 @@ export default class PageTemplateComponent implements OnInit {
    * - desc: An empty string.
    * - status: The status of the page in lower case, with spaces removed.
    * - date: The current date, formatted as 'MMMM d, yyyy'.
-   * - list: The first category in the current client's categories list, or a default category with title 'None'.
+   * - list: The default category with title 'None'.
    * - taglist: An empty array.
    * - subtasks: An empty array.
    *
@@ -148,12 +159,12 @@ export default class PageTemplateComponent implements OnInit {
    */
   createTask() {
     this.newTask = {
-      id: this.currentClient.tasks.length,
+      id: Math.floor(Math.random() * 1000),
       title: 'Task ' + this.statusTasks.length,
       desc: '',
       status: this.pageTitle.toLowerCase().replace(' ', ''),
       date: new Date().toLocaleString().split(',')[0],
-      list: this.currentClient.categories[0] || { category_title: 'None' },
+      list: { category_title: 'None' },
       taglist: [],
       subtasks: [],
     };

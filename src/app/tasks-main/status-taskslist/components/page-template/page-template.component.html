@@ -10,6 +10,7 @@
   <p-divider />
   <div class="list">
     <task-item
+      [deleteMode]="deleteMode"
       (click)="selectTask(task)"
       [task]="task"
       *ngFor="let task of statusTasks"

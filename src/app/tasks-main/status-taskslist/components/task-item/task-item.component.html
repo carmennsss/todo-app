@@ -1,6 +1,6 @@
 <div class="task-item">
   <div class="header">
-    <p id="task-title">{{ task().title }}</p>
+    <p id="task-title" [ngClass]="{ 'deleteMode': deleteMode() }">{{ task().title }}</p>
     <button (click)="selected = !selected">. . .</button>
   </div>
   <div [hidden]="!selected" class="body">

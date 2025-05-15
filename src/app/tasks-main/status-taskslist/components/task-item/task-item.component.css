@@ -31,6 +31,10 @@ p {
   font-weight: 600;
 }
 
+.deleteMode:hover {
+  color: #ae3131;
+}
+
 .header {
   display: flex;
   flex-direction: row;
