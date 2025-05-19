@@ -2,7 +2,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
-import { ClientState } from '../../auth/services/client-state/client.state';
 
 /**
  * This guard checks if the user is logged in, if not, redirects to the root of the app.

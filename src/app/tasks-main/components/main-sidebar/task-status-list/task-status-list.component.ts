@@ -13,13 +13,11 @@ import { Router } from '@angular/router';
 import { Client } from '../../../../core/interfaces/clients/Client';
 import { Task } from '../../../../core/interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
-import {
-  StatusNameAction,
-  StatusTasksAction,
-} from '../../../services/states/tasks.actions';
+import { ClientState } from '../../../../auth/client-state/client.state';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { ClientState } from '../../../../auth/services/client-state/client.state';
+import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
+
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -47,9 +45,6 @@ export class TaskStatusListComponent implements OnInit {
   constructor(private router: Router, private store: Store) {}
   ngOnInit() {
     this.currentClient = this.localService.getCurrentClient();
-    this.store.select(ClientState.getCurrentClient).subscribe((client) => {
-      this.currentClient = client;
-    });
     // this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
 
     this.items = [

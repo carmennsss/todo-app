@@ -20,8 +20,6 @@ import { AddNewComponent } from '../../../status-taskslist/components/add-new/ad
 import { DialogComponent } from '../dialog/dialog.component';
 import { Task } from '../../../../core/interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
-import { Client } from '../../../../core/interfaces/clients/Client';
-import { ClientState } from '../../../../auth/services/client-state/client.state';
 
 @Component({
   selector: 'sidebar-categories',

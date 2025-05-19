@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TagModule } from 'primeng/tag';
+import { Tag, TagModule } from 'primeng/tag';
 import { ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,11 +10,10 @@ import { Router } from '@angular/router';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { TagsService } from '../../../status-taskslist/services/tags.service';
+import { TagsService } from '../../../../core/services/tags.service';
 import { Client } from '../../../../core/interfaces/clients/Client';
-import { ClientState } from '../../../../auth/services/client-state/client.state';
-import { changeCurrentClient } from '../../../../auth/services/client-state/client.actions';
 import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -33,19 +32,20 @@ export class TagListComponent {
   // currentClient = signal<Client>();
 
   title = signal<string>('');
-  tags: CustomTag[] = this.currentClient.tags || [];
+  tags : CustomTag[] = [];
 
   constructor(
     private tagsService: TagsService,
     private router: Router,
     private store: Store
   ) {}
-  /*
+
   ngOnInit() {
-    this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
-    this.tags = this.currentClient.tags || [];
+    this.tagsService.getTagsClient().subscribe((data) => {
+      this.tags = data as CustomTag[];
+    });
   }
-  */
+
 
   //---------------------------------------
   // METHODS
@@ -78,35 +78,11 @@ export class TagListComponent {
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          const newTag: CustomTag = {
-            tag_title: this.title(),
-          };
-          /*
-          this.tagsService.addTag(this.title()).subscribe((response) => {
-            console.log('Tag added successfully:', response);
-          });
-          */
-          newTag.tag_title = this.title();
-          this.currentClient.tags.push(newTag);
-          this.tags = this.currentClient.tags;
-          this.saveItemsLocalStorage();
+          this.tagsService.addTag(this.title());
           this.methodsService.reloadPage();
         }
       }
     });
-
-    // this.getTags();
+    
   }
-
-  /*
-  getTags() {
-    this.tagsService.getTags().subscribe((response) => {
-      this.tags.set(response.map((tag: any) => tag.tag_name));
-    });
-  }
-
-  ngOnInit() {
-    this.getTags();
-  }
-  */
 }

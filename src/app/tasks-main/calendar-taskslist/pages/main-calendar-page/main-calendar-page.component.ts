@@ -14,8 +14,8 @@ import { Task } from '../../../../core/interfaces/tasks/Task';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { CalendarTasksAction } from '../../../services/states/tasks.actions';
-import { TasksState } from '../../../services/states/tasks.state';
+import { TasksState } from '../../../states/tasks.state';
+import { CalendarTasksAction } from '../../../states/tasks.actions';
 
 @Component({
   selector: 'main-calendar-page',

@@ -10,7 +10,6 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { AuthService } from '../../../../auth/services/auth.service';
 import { Client } from '../../../../core/interfaces/clients/Client';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 
@@ -28,7 +27,6 @@ export class SidebarFooterComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private router: Router,
-    private authService: AuthService,
     private store: Store
   ) {}
 
@@ -76,17 +74,6 @@ export class SidebarFooterComponent implements OnInit {
       tasks: [],
       categories: [],
     };
-    /*
-    const emptyClient : ClientDB = {
-      username: '',
-      password: '',
-      client_name: ''
-    }
-
-    this.store
-      .dispatch(new changeClient({ currentUser: emptyClient }))
-      .subscribe();
-      */
     this.localService.setCurrentClient(emptyClient);
     this.router.navigate(['']);
   }

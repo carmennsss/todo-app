@@ -1,7 +1,4 @@
-import {
-  StatusNameAction,
-  StatusTasksAction,
-} from '../../../services/states/tasks.actions';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,10 +15,11 @@ import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { TasksState } from '../../../services/states/tasks.state';
-import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { ClientState } from '../../../../auth/services/client-state/client.state';
+import { MethodsService } from '../../../../shared/services/methods.service';
+import { StatusTasksAction } from '../../../states/tasks.actions';
+import { TasksState } from '../../../states/tasks.state';
+
 
 @Component({
   selector: 'tasks-page-template',

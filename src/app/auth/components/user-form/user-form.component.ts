@@ -22,11 +22,9 @@ import { Client } from '../../../core/interfaces/clients/Client';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { PopMessageComponent } from '../../../shared/components/pop-message/pop-message.component';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
-import { AuthService } from '../../services/auth.service';
 import { AskAccountComponent } from '../ask-account/ask-account.component';
 import { Model } from '../../../core/interfaces/Model';
-import { changeCurrentClient } from '../../services/client-state/client.actions';
-import { ClientState } from '../../services/client-state/client.state';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'auth-user-form',
@@ -47,6 +45,7 @@ import { ClientState } from '../../services/client-state/client.state';
 })
 export class UserFormComponent implements OnInit {
   localService = inject(LocalStorageService);
+  authService = inject(AuthService);
   title = 'Login';
   text = "Don't have an account?";
   authForm: FormGroup = new FormGroup({});
@@ -67,7 +66,6 @@ export class UserFormComponent implements OnInit {
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
   constructor(
     private router: Router,
-    private authService: AuthService,
     private store: Store,
     private fb: FormBuilder
   ) {}
@@ -118,53 +116,16 @@ export class UserFormComponent implements OnInit {
 
   logClient(form: FormGroup) {
     debugger;
-    if (this.model.clients.length != 0) {
-      let found = false;
+    this.authService.login(form.value.username, form.value.password).subscribe({
 
-      for (let i = 0; i < this.model.clients.length; i++) {
-        if (
-          this.model.clients[i].username === form.value.username &&
-          this.model.clients[i].password === form.value.password
-        ) {
-          this.localService.setCurrentClient(this.model.clients[i]);
-
-          this.store.dispatch(
-            new changeCurrentClient({ currentUser: this.model.clients[i] })
-          ); // IN PROGRESS
-
-          this.router.navigate(['/main/status']);
-          found = true;
-        }
-      }
-      if (!found) {
-        this.child?.showConfirm('User not found');
-        return;
-      }
-    } else {
-      this.child?.showConfirm('No users found');
-      return;
-    }
-
-    /*
-    this.authService.logClient(this.username, this.password).subscribe({
-      next: (response: any) => {
-        console.log('Client logged successfully:', response);
-        this.router.navigate(['/main/nonstarted']);
-        const currentClient : ClientDB = {
-          username: this.username,
-          password: this.password,
-          client_name: ''
-        };
-        this.store.dispatch(new changeClient({ currentUser: currentClient })).subscribe(() => {
-          this.store.select(ClientState.getClient).subscribe(client => {
-            console.log('Client state updated:', client);
-          });
-        });
-      },
       error: (error: any) => {
         console.error('Error logging client:', error);
+        this.child?.showConfirm('User not found');
       },
-    });*/
+      complete: () => {
+        this.router.navigate(['/main/status']);
+      }
+    });
   }
 
   /**
@@ -216,21 +177,21 @@ export class UserFormComponent implements OnInit {
       tags: [],
       categories: [],
     };
+    this.authService
+      .signup(form.value.username, form.value.password)
+      .subscribe({
+        next: (response: any) => {
+          this.router.navigate(['']);
+        },
+        error: (error: any) => {
+          console.error('Error registering client:', error);
+        },
+      });
     this.model.clients.push(this.newClient);
     this.localService.setModel(this.model);
     alert('User registered successfully, you can now log in');
 
     this.authForm.reset();
     this.changePageContent();
-    /*
-    this.authService.addClient(this.username, this.password).subscribe({
-      next: (response: any) => {
-        console.log('Client added successfully:', response);
-      },
-      error: (error: any) => {
-        console.error('Error adding client:', error);
-      },
-    });
-    */
   }
 }

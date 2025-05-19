@@ -1,4 +1,4 @@
-import { changeCurrentClient } from './../../../../auth/services/client-state/client.actions';
+
 import {
   Component,
   ChangeDetectionStrategy,
@@ -10,13 +10,10 @@ import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
 import { Task } from '../../../../core/interfaces/tasks/Task';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import {
-  StatusNameAction,
-  StatusTasksAction,
-} from '../../../services/states/tasks.actions';
-import { TasksState, TasksStateModel } from '../../../services/states/tasks.state';
+import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
+import { TasksState } from '../../../states/tasks.state';
 import PageTemplateComponent from '../../components/page-template/page-template.component';
-import { ClientState } from '../../../../auth/services/client-state/client.state';
+
 
 @Component({
   selector: 'main-status-page',

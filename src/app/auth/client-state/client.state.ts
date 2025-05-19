@@ -3,23 +3,18 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { changeCurrentClient } from './client.actions';
-import { Client } from '../../../core/interfaces/clients/Client';
-
-
+import { Client } from '../../core/interfaces/clients/Client';
+import { ClientDB } from '../../core/interfaces/clients/ClientDB';
 
 export class ClientStateModel {
-  items : Client = {
+  items : ClientDB = {
     username: '',
-    password: '',
-    tasks: [],
-    tags: [],
-    categories: [],
   };
 }
 
 @State<ClientStateModel>({
   name: 'client',
-  defaults: { items: { username: '', password: '', tasks: [], tags: [], categories: []} }
+  defaults: { items: { username: ''} }
 })
 
 @Injectable()
