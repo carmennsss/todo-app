@@ -115,15 +115,42 @@ export class UserFormComponent implements OnInit {
    */
 
   logClient(form: FormGroup) {
-    debugger;
-    this.authService.login(form.value.username, form.value.password).subscribe({
+    if (!this.authService) {
+      throw new Error('AuthService is null');
+    }
 
+    if (!form || !form.value) {
+      throw new Error('Form is null or empty');
+    }
+
+    this.authService.login(form.value.username, form.value.password).subscribe({
       error: (error: any) => {
+        if (!error) {
+          throw new Error('Error is null');
+        }
+
         console.error('Error logging client:', error);
-        this.child?.showConfirm('User not found');
+        if (this.child) {
+          this.child.showConfirm('User not found');
+        } else {
+          throw new Error('PopMessageComponent is null');
+        }
       },
       complete: () => {
-        this.router.navigate(['/main/status']);
+        if (!this.router) {
+          throw new Error('Router is null');
+        }
+
+        this.router.navigate(['/main/status']).then(
+          (success) => {
+            if (!success) {
+              throw new Error('Navigation failed');
+            }
+          },
+          (error) => {
+            console.error('Navigation error:', error);
+          }
+        );
       }
     });
   }

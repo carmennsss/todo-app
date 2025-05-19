@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { TasksState } from '../../../states/tasks.state';
 import { CalendarTasksAction } from '../../../states/tasks.actions';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 @Component({
   selector: 'main-calendar-page',
@@ -34,6 +35,7 @@ import { CalendarTasksAction } from '../../../states/tasks.actions';
 })
 export default class MainCalendarPageComponent {
   localService = inject(LocalStorageService);
+  tasksService = inject(TasksService);
 
   task_date: Date = new Date();
   dateTasks: Task[] = [];
@@ -50,15 +52,27 @@ export default class MainCalendarPageComponent {
    * the same date as the date selected in the date picker.
    */
   onDateSelect() {
-    this.store.dispatch(
-      new CalendarTasksAction({
-        calendarTasks: this.localService.getCurrentClient().tasks,
-        task_date: this.task_date,
-      })
-    );
-    this.store.select(TasksState.getCalendarTasks).subscribe((tasks) => {
-      this.dateTasks = tasks;
-    });
-    // this.dateTasks.set(this.store.selectSignal(TasksState.getCalendarTasks)())
+    debugger;
+    if (this.task_date === null) {
+      console.error('onDateSelect: task_date is null');
+      return;
+    }
+
+    console.log(this.task_date.toISOString().split('T')[0])
+    this.tasksService.getTasksDateClient(this.task_date.toISOString().split('T')[0])
+      .subscribe({
+        next: (tasks: Task[]) => {
+          if (tasks === null) {
+            console.error('onDateSelect: tasks is null');
+            return;
+          }
+
+          this.dateTasks = tasks;
+          console.log('onDateSelect: tasks', tasks);
+        },
+        error: (err) => {
+          console.error('onDateSelect: error', err);
+        },
+      });
   }
 }

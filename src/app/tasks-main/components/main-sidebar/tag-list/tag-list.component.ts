@@ -32,7 +32,7 @@ export class TagListComponent {
   // currentClient = signal<Client>();
 
   title = signal<string>('');
-  tags : CustomTag[] = [];
+  tags: CustomTag[] = [];
 
   constructor(
     private tagsService: TagsService,
@@ -45,7 +45,6 @@ export class TagListComponent {
       this.tags = data as CustomTag[];
     });
   }
-
 
   //---------------------------------------
   // METHODS
@@ -72,17 +71,17 @@ export class TagListComponent {
       data: { title: this.title() },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       debugger;
       console.log('The dialog was closed');
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          this.tagsService.addTag(this.title());
-          this.methodsService.reloadPage();
+          this.tagsService.addTag(this.title()).subscribe((response) => {
+            console.log('Tag added successfully:', response);
+          });
         }
       }
     });
-    
   }
 }

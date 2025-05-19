@@ -1,11 +1,14 @@
+import { Store } from '@ngxs/store';
 
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../../shared/services/local-storage.service';
+import { ClientState } from '../../auth/client-state/client.state';
+import { ClientDB } from '../interfaces/clients/ClientDB';
 
 /**
  * This guard checks if the user is logged in, if not, redirects to the root of the app.
- * 
+ *
  * It takes the current route and state as parameters and returns a boolean or an url.
  * @param route The route for the current location.
  * @param state The state of the router.
@@ -13,18 +16,22 @@ import { LocalStorageService } from '../../shared/services/local-storage.service
  */
 export const userGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const localService = inject(LocalStorageService);
-  
+  const store = inject(Store);
+  let currentClient: ClientDB = { username: '' };
+
+  store
+    .select(ClientState.getCurrentClient)
+    .subscribe((client: ClientDB) => {
+      currentClient = client;
+    });
   if (
-    localService.getCurrentClient().username === '' ||
-    localService.getCurrentClient().username === undefined ||
-    localService.getCurrentClient().username === null
+    currentClient.username == '' ||
+    currentClient.username == undefined ||
+    currentClient.username == null
   ) {
     return router.parseUrl('');
   }
-  if (Object.keys(localService.getCurrentClient().username).length === 0) {
-    return router.parseUrl('');
-  } else {
+  else {
     return true;
   }
 };
