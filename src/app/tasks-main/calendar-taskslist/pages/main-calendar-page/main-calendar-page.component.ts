@@ -61,23 +61,21 @@ export default class MainCalendarPageComponent {
     debugger;
     this.tasksService
       .getTasksDateClient(this.task_date.toISOString().split('T')[0])
-      .subscribe(
-        (tasks) => {
-          if (tasks === null) {
-            console.error('onDateSelect: tasks is null');
-            return;
-          }
-            this.dateTasks = tasks.map((task: TaskDB) => ({
-              id: task.id,
-              title: task.title,
-              desc: task.desc,
-              date: task.date,
-              status: task.status,
-              list: { category_title: 'None' },
-              taglist: [],
-              subtasks: [],
-            }));
-          });
-          console.log('onDateSelect: tasks', this.dateTasks);
+      .subscribe((tasks: any[]) => {
+        if (tasks === null) {
+          console.error('onDateSelect: tasks is null');
+          return;
         }
+        this.dateTasks = tasks.map((task: TaskDB) => ({
+          id: task.id,
+          title: task.title,
+          desc: task.desc,
+          date: task.date,
+          status: task.status,
+          list: { category_title: 'None' },
+          taglist: [],
+          subtasks: [],
+        }));
+      });
   }
+}

@@ -39,14 +39,16 @@ export class TasksService {
         },
       })
       .pipe(
-        map((tasks : TaskDB[]) =>
-          tasks.map((task : TaskDB) => ({
-            id: task.id || 0,
-            title: task.title || '',
-            desc: task.desc,
-            date: task.date,
-            status: task.status,
-            list_id: task.list_id,
+        map((tasks) =>
+          tasks.map((task) => ({
+            id: task.task_id,
+            title: task.task_name,
+            desc: task.task_desc,
+            date: task.task_due_date,
+            status: task.state_name,
+            list: { category_title: 'None' },
+            taglist: [],
+            subtasks: [],
           }))
         )
       );
