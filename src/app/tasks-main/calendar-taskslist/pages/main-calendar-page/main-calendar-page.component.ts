@@ -66,16 +66,7 @@ export default class MainCalendarPageComponent {
           console.error('onDateSelect: tasks is null');
           return;
         }
-        this.dateTasks = tasks.map((task: TaskDB) => ({
-          id: task.id,
-          title: task.title,
-          desc: task.desc,
-          date: task.date,
-          status: task.status,
-          list: { category_title: 'None' },
-          taglist: [],
-          subtasks: [],
-        }));
+        this.dateTasks = tasks;
       });
   }
 }
