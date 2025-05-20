@@ -64,8 +64,6 @@ export default class PageTemplateComponent implements OnInit {
     private store: Store
   ) {}
   ngOnInit(): void {
-    debugger;
-
     this.store.select(TasksState.getStatus).subscribe((status) => {
       this.pageTitle = status;
     });

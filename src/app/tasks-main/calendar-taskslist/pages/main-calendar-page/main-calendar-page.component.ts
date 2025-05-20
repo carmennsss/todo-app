@@ -17,6 +17,7 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 import { TasksState } from '../../../states/tasks.state';
 import { CalendarTasksAction } from '../../../states/tasks.actions';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 
 @Component({
   selector: 'main-calendar-page',
@@ -57,22 +58,26 @@ export default class MainCalendarPageComponent {
       console.error('onDateSelect: task_date is null');
       return;
     }
-
-    console.log(this.task_date.toISOString().split('T')[0])
-    this.tasksService.getTasksDateClient(this.task_date.toISOString().split('T')[0])
-      .subscribe({
-        next: (tasks: Task[]) => {
+    debugger;
+    this.tasksService
+      .getTasksDateClient(this.task_date.toISOString().split('T')[0])
+      .subscribe(
+        (tasks) => {
           if (tasks === null) {
             console.error('onDateSelect: tasks is null');
             return;
           }
-
-          this.dateTasks = tasks;
-          console.log('onDateSelect: tasks', tasks);
-        },
-        error: (err) => {
-          console.error('onDateSelect: error', err);
-        },
-      });
+            this.dateTasks = tasks.map((task: TaskDB) => ({
+              id: task.id,
+              title: task.title,
+              desc: task.desc,
+              date: task.date,
+              status: task.status,
+              list: { category_title: 'None' },
+              taglist: [],
+              subtasks: [],
+            }));
+          });
+          console.log('onDateSelect: tasks', this.dateTasks);
+        }
   }
-}

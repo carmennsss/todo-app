@@ -11,5 +11,4 @@ export interface Task {
     taglist: CustomTag[],
     date: string
     subtasks: SubTask[]
-
 }

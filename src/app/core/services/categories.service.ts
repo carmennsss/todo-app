@@ -10,7 +10,7 @@ import { ClientState } from '../../auth/client-state/client.state';
   providedIn: 'root',
 })
 export class CategoriesService {
-  private CATEGORIES_URL = environment.apiClientUrl + 'categories/';
+  private CATEGORIES_URL = environment.apiClientUrl + '/categories/';
   client: ClientDB = { username: '' };
 
   constructor(

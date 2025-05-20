@@ -6,12 +6,13 @@ import { Store } from '@ngxs/store';
 import { ClientDB } from '../interfaces/clients/ClientDB';
 import { ClientState } from '../../auth/client-state/client.state';
 import { tap } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TagsService {
-  private TAGS_URL = environment.apiClientUrl + '/tags';
+  private TAGS_URL = environment.apiClientUrl + '/tags/';
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -20,15 +21,15 @@ export class TagsService {
   client: ClientDB = { username: '' };
 
   public getTagsClient() {
-    this.store.select(ClientState.getCurrentClient).subscribe((client) => {
-      this.client = client as ClientDB;
-    });
-    return this.http.get<any>(this.TAGS_URL + '/user', {
-      params: {
-        username: this.client.username,
-      },
-    });
+    return this.http.get<any[]>(this.TAGS_URL + 'user').pipe(
+      map((tags) =>
+        tags.map((tag) => ({
+          tag_title: tag.tag_name,
+        }))
+      )
+    );
   }
+
   public addTag(tag: string) {
     return this.http
       .post<any>(this.TAGS_URL, {

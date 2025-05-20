@@ -16,22 +16,14 @@ import { ClientDB } from '../interfaces/clients/ClientDB';
  */
 export const userGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const store = inject(Store);
-  let currentClient: ClientDB = { username: '' };
 
-  store
-    .select(ClientState.getCurrentClient)
-    .subscribe((client: ClientDB) => {
-      currentClient = client;
-    });
   if (
-    currentClient.username == '' ||
-    currentClient.username == undefined ||
-    currentClient.username == null
+    localStorage.getItem('token') == null ||
+    localStorage.getItem('token') == undefined ||
+    localStorage.getItem('token') == ''
   ) {
     return router.parseUrl('');
-  }
-  else {
+  } else {
     return true;
   }
 };

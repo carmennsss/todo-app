@@ -33,6 +33,9 @@ export class TagListComponent {
 
   title = signal<string>('');
   tags: CustomTag[] = [];
+  newTag: CustomTag = {
+    tag_title: ''
+  };
 
   constructor(
     private tagsService: TagsService,
@@ -41,8 +44,10 @@ export class TagListComponent {
   ) {}
 
   ngOnInit() {
+    debugger;
+    this.tags = []
     this.tagsService.getTagsClient().subscribe((data) => {
-      this.tags = data as CustomTag[];
+      this.tags = data;
     });
   }
 
