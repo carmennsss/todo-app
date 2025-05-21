@@ -32,9 +32,10 @@ export class TagListComponent {
   // currentClient = signal<Client>();
 
   title = signal<string>('');
-  tags: CustomTag[] = [];
+  tags = signal<CustomTag[]>([]);
   newTag: CustomTag = {
-    tag_title: ''
+    tag_id: 0,
+    tag_title: '',
   };
 
   constructor(
@@ -44,25 +45,17 @@ export class TagListComponent {
   ) {}
 
   ngOnInit() {
-    debugger;
-    this.tags = []
     this.tagsService.getTagsClient().subscribe((data) => {
-      this.tags = data;
-    });
+      this.tags.update((tags) => tags = data.map((item: any) => ({
+        tag_id: item.tag_id,
+        tag_title: item.tag_title
+      })));
+    })
   }
 
   //---------------------------------------
   // METHODS
   //---------------------------------------
-
-  /**
-   * Saves the currentClient's tags to the model and updates the local storage.
-   */
-  saveItemsLocalStorage() {
-    this.localService.setCurrentClient(this.currentClient);
-    // this.store.dispatch(new changeCurrentClient({ currentUser : this.currentClient }));
-    this.localService.saveCurrentClientTagsToModel(this.currentClient);
-  }
 
   /**
    * Opens a dialog to add a new tag. If the dialog is confirmed and the
@@ -84,6 +77,12 @@ export class TagListComponent {
         if (this.title() !== '') {
           this.tagsService.addTag(this.title()).subscribe((response) => {
             console.log('Tag added successfully:', response);
+            this.tagsService.getTagsClient().subscribe((data) => {
+              this.tags.update((tags) => tags = data.map((item: any) => ({
+                tag_id: item.tag_id,
+                tag_title: item.tag_title
+              })));
+            });
           });
         }
       }

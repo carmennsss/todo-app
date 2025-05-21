@@ -13,12 +13,12 @@
       [deleteMode]="deleteMode"
       (click)="selectTask(task)"
       [task]="task"
-      *ngFor="let task of statusTasks"
+      *ngFor="let task of statusTasks()"
     ></task-item>
   </div>
 </div>
 <editing-sidebar
-  [selectedTask]="selectedTask"
+  [selectedTask]="selectedTask()"
   [isDrawerVisible]="isDrawerVisible"
   (onDrawerHide)="isDrawerVisible = false"
 >

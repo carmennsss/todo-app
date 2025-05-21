@@ -17,6 +17,7 @@ import { ClientState } from '../../../../auth/client-state/client.state';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 
 @Component({
@@ -30,23 +31,14 @@ import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actio
 export class TaskStatusListComponent implements OnInit {
   localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
+  tasksService = inject(TasksService);
 
   items: MenuItem[] = [];
   currentItems: Task[] = [];
-  currentClient: Client = {
-    username: '',
-    password: '',
-    tasks: [],
-    tags: [],
-    categories: [],
-  };
   // currentClient = signal<Client>();
 
   constructor(private router: Router, private store: Store) {}
   ngOnInit() {
-    this.currentClient = this.localService.getCurrentClient();
-    // this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
-
     this.items = [
       {
         label: 'Non Started',
@@ -95,18 +87,6 @@ export class TaskStatusListComponent implements OnInit {
   // METHODS
   //---------------------------------------
 
-  /**
-   * Navigates to a specified status page and updates the store with the current status and tasks.
-   *
-   * @param page - The name of the status page to navigate to. This also updates the store
-   * with the corresponding status name.
-   *
-   * Dispatches two actions to the store:
-   * 1. StatusNameAction to update the current status name.
-   * 2. StatusTasksAction to update the current tasks.
-   *
-   * After dispatching the actions, it reloads the current page.
-   */
   goToPage(page: string) {
     debugger;
     let currentUrl = this.router.url;
@@ -115,24 +95,17 @@ export class TaskStatusListComponent implements OnInit {
     }
     if (currentUrl.includes('status')) {
       this.store.dispatch(new StatusNameAction({ status_name: page }));
-      this.store.dispatch(
-        new StatusTasksAction({ statusTasks: this.currentClient.tasks })
-      );
       this.methodsService.reloadPage();
     } else {
       this.router.navigate(['main', page.toLowerCase().replace(' ', '')]);
     }
   }
 
-  /**
-   * Returns the number of tasks in the current client that have a given status.
-   *
-   * @param label - The status of the tasks to count.
-   * @returns The number of tasks with the given status.
-   */
   getItemsStatusCount(label: string) {
-    const currentClient = this.localService.getCurrentClient();
-    return currentClient.tasks.filter((task) => task.status === label)
-      .length;
+    var tasks_length = 0;
+    this.tasksService.getTasksStatusClient(label).subscribe((tasks) => {
+      tasks_length = tasks.length;
+    })
+    return tasks_length || 0;
   }
 }

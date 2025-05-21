@@ -102,6 +102,7 @@ export class SidebarCategoriesComponent implements OnInit {
         if (this.title() !== '') {
           const newCategory: Category = {
             category_title: this.title(),
+            category_id: 0,
           };
           this.currentClient.categories.push(newCategory);
           this.categories = this.currentClient.categories;

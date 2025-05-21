@@ -13,6 +13,7 @@ import { map } from 'rxjs/operators';
 })
 export class TagsService {
   private TAGS_URL = environment.apiClientUrl + '/tags/';
+  private TASKS_TAGS_URL = environment.apiClientUrl + '/tasks-tag/';
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -40,5 +41,27 @@ export class TagsService {
           console.log(res);
         })
       );
+  }
+
+  public getTagsTask(id_task: number) {
+    return this.http.get<any[]>(this.TASKS_TAGS_URL + 'task/included-tags').pipe(
+      map((tags) =>
+        tags.map((tag) => ({
+          tag_id: tag.tag_id,
+          tag_title: tag.tag_name,
+        }))
+      )
+    );
+  }
+
+  public getTagsNotInTask(id_task: number) {
+    return this.http.get<any[]>(this.TASKS_TAGS_URL + 'task/excluded-tags').pipe(
+      map((tags) =>
+        tags.map((tag) => ({
+          tag_id: tag.tag_id,
+          tag_title: tag.tag_name,
+        }))
+      )
+    );
   }
 }

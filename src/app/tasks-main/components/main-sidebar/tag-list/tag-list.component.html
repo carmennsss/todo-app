@@ -9,6 +9,6 @@
     class="cursor-pointer"
   />
   <div class="newTags">
-    <p-tag *ngFor="let tag of tags" value="{{ tag.tag_title }}" [rounded]="true"></p-tag>
+    <p-tag *ngFor="let tag of tags()" value="{{ tag.tag_title }}" [rounded]="true"></p-tag>
   </div>
 </div>

@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,7 +18,8 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { StatusTasksAction } from '../../../states/tasks.actions';
 import { TasksState } from '../../../states/tasks.state';
-
+import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 @Component({
   selector: 'tasks-page-template',
@@ -38,25 +38,22 @@ import { TasksState } from '../../../states/tasks.state';
 export default class PageTemplateComponent implements OnInit {
   localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
+  tasksService = inject(TasksService);
 
-  currentClient = this.localService.getCurrentClient();
-
-  statusTasks: Task[] = [];
+  statusTasks = signal<TaskDB[]>([]);
   deleteMode: boolean = false;
   pageTitle = 'Finished';
-  newTask: Task = {
+  newTask: TaskDB = {
     id: 0,
     title: '',
     desc: '',
     status: '',
-    list: { category_title: 'None' },
-    taglist: [],
+    list_id: 0,
     date: '',
-    subtasks: [],
   };
 
   isDrawerVisible: boolean = false;
-  selectedTask: Task = this.newTask;
+  selectedTask = signal<TaskDB>({} as TaskDB);
 
   constructor(
     private router: Router,
@@ -67,8 +64,12 @@ export default class PageTemplateComponent implements OnInit {
     this.store.select(TasksState.getStatus).subscribe((status) => {
       this.pageTitle = status;
     });
-    // this.pageTitle = this.store.selectSignal(TasksState.getStatus)
-    this.updateTasks();
+
+    this.tasksService
+      .getTasksStatusClient(this.pageTitle)
+      .subscribe((tasks) => {
+        this.statusTasks.set(tasks);
+      });
   }
 
   //---------------------------------------
@@ -76,98 +77,40 @@ export default class PageTemplateComponent implements OnInit {
   //---------------------------------------
 
   /**
-   * Updates the statusTasks array with tasks from the current client.
+   * Selects a task for editing or deletion.
    *
-   * This method dispatches a StatusTasksAction to update the store with the current client's tasks.
-   * It then subscribes to the store to retrieve the updated list of tasks with the current status
-   * and assigns them to the statusTasks array.
+   * If delete mode is enabled, the task is deleted.
+   * Otherwise, the task is selected for editing, and the editing drawer visibility is toggled.
+   *
+   * @param task The task to select or delete.
    */
 
-  updateTasks() {
-    this.store.dispatch(
-      new StatusTasksAction({ statusTasks: this.currentClient.tasks })
-    );
-    this.store.select(TasksState.getStatusTasks).subscribe((tasks) => {
-      this.statusTasks = tasks;
-    });
-    // this.statusTasks = this.store.selectSignal(TasksState.getStatusTasks)
-  }
-
-
-/**
- * Selects a task for editing or deletion.
- * 
- * If delete mode is enabled, the task is deleted.
- * Otherwise, the task is selected for editing, and the editing drawer visibility is toggled.
- * 
- * @param task The task to select or delete.
- */
-
-  selectTask(task: Task) {
+  selectTask(task: TaskDB) {
     if (this.deleteMode) {
       this.deleteTask(task);
     } else {
-      this.selectedTask = task;
+      this.selectedTask.update((task) => (task = task));
       this.isDrawerVisible = !this.isDrawerVisible;
     }
   }
 
-/**
- * Deletes a specified task from the current client's tasks list.
- *
- * This method filters out the task with the given id from the current client's
- * tasks. After deletion, it updates the local storage with the current client's
- * tasks and refreshes the status tasks list to reflect the changes.
- *
- * @param task - The task to be deleted.
- */
+  deleteTask(task: TaskDB) {}
 
-  deleteTask(task: Task) {
-    this.currentClient.tasks = this.currentClient.tasks.filter(
-      (t) => t.id !== task.id
-    );
-    this.saveItemsLocalStorage();
-    this.updateTasks();
-  }
-
-  /**
-   * Saves the currentClient's tasks to the model and updates the local storage.
-   */
-  saveItemsLocalStorage() {
-    this.localService.setCurrentClient(this.currentClient);
-    this.localService.saveCurrentClientTasksToModel(this.currentClient);
-  }
-
-  /**
-   * Creates a new task and saves it to the current client's tasks list.
-   *
-   * This method creates a new task with the following properties:
-   * - id: The next available id in the current client's tasks list.
-   * - title: 'Task ' + the length of the current client's tasks list.
-   * - desc: An empty string.
-   * - status: The status of the page in lower case, with spaces removed.
-   * - date: The current date, formatted as 'MMMM d, yyyy'.
-   * - list: The default category with title 'None'.
-   * - taglist: An empty array.
-   * - subtasks: An empty array.
-   *
-   * It then adds the new task to the current client's tasks list, reloads the page, updates the status tasks list, and saves the current client to local storage.
-   */
   createTask() {
     this.newTask = {
-      id: Math.floor(Math.random() * 1000),
-      title: 'Task ' + this.statusTasks.length,
+      id: 0,
+      title: 'New Task',
       desc: '',
       status: this.pageTitle.toLowerCase().replace(' ', ''),
       date: new Date().toLocaleString().split(',')[0],
-      list: { category_title: 'None' },
-      taglist: [],
-      subtasks: [],
+      list_id: 0,
     };
-
-    this.currentClient.tasks = [...this.currentClient.tasks, this.newTask];
-    this.methodsService.reloadPage();
-    this.updateTasks();
-    this.saveItemsLocalStorage();
+    this.tasksService.createNewTask(this.newTask).subscribe(() => {
+      this.tasksService
+        .getTasksStatusClient(this.pageTitle)
+        .subscribe((tasks) => {
+          this.statusTasks.update((tasks_status) => (tasks_status = tasks));
+        });
+    });
   }
 }

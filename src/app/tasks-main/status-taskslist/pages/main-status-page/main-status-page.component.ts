@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   OnInit,
   inject,
+  signal,
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { DividerModule } from 'primeng/divider';
@@ -13,6 +14,7 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
 import { TasksState } from '../../../states/tasks.state';
 import PageTemplateComponent from '../../components/page-template/page-template.component';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 
 @Component({
@@ -25,8 +27,10 @@ import PageTemplateComponent from '../../components/page-template/page-template.
 })
 export default class MainSatusPageComponent implements OnInit {
   localService = inject(LocalStorageService);
+  tasksService = inject(TasksService);
 
   pageTitle = 'Finished';
+  status_tasks = signal(0);
 
   constructor(private store: Store) {}
   ngOnInit() {
@@ -35,37 +39,25 @@ export default class MainSatusPageComponent implements OnInit {
         this.store.dispatch(
           new StatusNameAction({ status_name: this.pageTitle })
         );
-        this.store.dispatch(
-          new StatusTasksAction({
-            statusTasks: this.localService.getCurrentClient().tasks,
-          })
-        );
       } else {
         this.pageTitle = status;
       }
     });
+    this.getItemStatus();
   }
 
   //---------------------------------------
   // METHODS
   //---------------------------------------
 
-  /**
-   * Returns the number of tasks in the current client that have a given status.
-   * This method is used to display the number of tasks in the current client
-   * that have the status that corresponds to the current page.
-   *
-   * @returns The number of tasks with the given status.
-   */
-  getItemStatus() {
-    const currentClient = this.localService.getCurrentClient();
 
-    // const changeCurrentClient = this.store.selectSignal(ClientState.getCurrentClient);
-    
-    return currentClient.tasks.filter(
-      (task: Task) =>
-        task.status === this.pageTitle.toLowerCase().replace(' ', '')
-    ).length;
+  getItemStatus() {
+    this.tasksService
+      .getTasksStatusClient(this.pageTitle)
+      .subscribe((tasks) => {
+        this.status_tasks.set(tasks.length);
+      });
+    return this.status_tasks;
   }
 }
 

@@ -22,6 +22,11 @@ import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { AddNewComponent } from '../add-new/add-new.component';
 import { Client } from '../../../../core/interfaces/clients/Client';
+import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
+import { TagsService } from '../../../../core/services/tags.service';
+import { Category } from '../../../../core/interfaces/tasks/Category';
+import { CategoriesService } from '../../../../core/services/categories.service';
+import { SubtasksService } from '../../../../core/services/subtasks.service';
 
 @Component({
   selector: 'editing-sidebar',
@@ -43,25 +48,29 @@ import { Client } from '../../../../core/interfaces/clients/Client';
 export class EditingSidebarComponent {
   localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
+  tagsService = inject(TagsService);
+  subtasksService = inject(SubtasksService);
+  categoriesService = inject(CategoriesService);
 
-  selectedTask = input.required<Task>();
+  selectedTask = input.required<TaskDB>();
   @Input() isDrawerVisible: boolean = false;
   visibleDialogTag: boolean = false;
   visibleDialogSub: boolean = false;
 
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
-  currentClient = this.localService.getCurrentClient();
-  // currentClient = signal<Client>();
 
-  newSubtasks: SubTask[] = [];
-  selectedTags: CustomTag[] = [];
+  newSubtasks = signal<SubTask[]>([]);
+  selectedSubtasks = signal<SubTask[]>([]);
+  excludedTags = signal<CustomTag[]>([]);
+  selectedTags = signal<CustomTag[]>([]);
+  selectedTaskCategories = signal<Category[]>({} as Category[]);
 
   constructor(private router: Router, private route: ActivatedRoute) {}
-  /*
-  ngOnInit() {
-    this.currentClient = this.store.selectSignal(ClientState.getCurrentClient);
+  ngOnInit(): void {
+    this.getCategoriesClient();
+    this.getTagsClient();
+    this.getSubtasksTask();
   }
-  */
 
   //---------------------------------------
   // METHODS
@@ -73,10 +82,20 @@ export class EditingSidebarComponent {
    * show a confirmation message saying that you cannot add more tags.
    */
   showDialogTag() {
-    this.selectedTags = this.selectedTask().taglist;
+    var tags_client = this.getTagsClient();
+    this.tagsService.getTagsTask(this.selectedTask().id).subscribe((tags) => {
+      this.selectedTags.update((tags_task) => (tags_task = tags));
+    });
+
+    this.tagsService
+      .getTagsNotInTask(this.selectedTask().id)
+      .subscribe((tags) => {
+        this.excludedTags.update((tags_task) => (tags_task = tags));
+      });
+
     if (
-      this.currentClient.tags.length != this.selectedTask().taglist.length &&
-      this.currentClient.tags.length != 0
+      tags_client.length != this.selectedTags.length &&
+      tags_client.length != 0
     ) {
       this.visibleDialogTag = true;
     } else {
@@ -84,39 +103,62 @@ export class EditingSidebarComponent {
     }
   }
 
-  /**
-   * Add a tag to the selectedTask's taglist.
-   * If the number of tags in the selectedTask's taglist is equal to the number of tags in the currentClient,
-   * close the dialog.
-   * @param tag The tag to add to the selectedTask's taglist.
-   */
-  selectTag(tag: any) {
-    this.selectedTags.push(tag);
-    if (this.currentClient.tags.length <= this.selectedTags.length) {
+  getCategoriesClient() {
+    this.categoriesService.getCategoriesClient().subscribe((categories) => {
+      this.selectedTaskCategories.update(
+        (categories) => (categories = categories)
+      );
+    });
+  }
+
+  getListToString() {
+    if (this.selectedTask().list_id) {
+      this.categoriesService
+        .getCategoryName(this.selectedTask().list_id)
+        .subscribe({
+          next: (res) => {
+            return res.category_title;
+          },
+        });
+    }
+    return 'None';
+  }
+
+  getSubtasksTask() {
+    this.subtasksService
+      .getSubtasksFromTask(this.selectedTask().id)
+      .subscribe((subtasks) => {
+        this.selectedSubtasks.update(
+          (subtasks_task) => (subtasks_task = subtasks)
+        );
+      });
+  }
+
+  getTagsClient() {
+    var tags_client = signal<CustomTag[]>([]);
+    this.tagsService.getTagsClient().subscribe((tags) => {
+      tags_client.update((tags) => (tags = tags));
+    });
+    return tags_client;
+  }
+
+  selectTag(tag: CustomTag) {
+    var tags_client = this.getTagsClient();
+    this.selectedTags.update((tags) => [...tags, tag]);
+
+    this.tagsService
+      .getTagsNotInTask(this.selectedTask().id)
+      .subscribe((tags) => {
+        this.excludedTags.update((tags_task) => (tags_task = tags));
+      });
+
+    if (tags_client.length <= this.selectedTags.length) {
       this.visibleDialogTag = false;
     }
   }
 
-  /**
-   * Save the selectedTask in the currentClient and in the model.
-   * Then reset the newSubtasks array.
-   */
-  saveItemsLocalStorage() {
-    this.localService.saveTaskToCurrentClient(this.selectedTask());
-    this.localService.saveCurrentClientTasksToModel(this.currentClient);
-    this.newSubtasks = [];
-  }
-
-  /**
-   * Changes the selectedTask's list to the category with the given title.
-   * @param category The title of the category to change to.
-   */
-  changeCategory(category: string) {
-    for (let i = 0; i < this.currentClient.categories.length; i++) {
-      if (this.currentClient.categories[i].category_title === category) {
-        this.selectedTask().list = this.currentClient.categories[i];
-      }
-    }
+  changeCategory(category_id: string) {
+    this.selectedTask().list_id = parseInt(category_id, 10);
   }
 
   /**
@@ -132,9 +174,6 @@ export class EditingSidebarComponent {
    */
   saveNewSubTask(title: string) {
     this.visibleDialogSub = false;
-    this.newSubtasks.push({
-      subtask_title: title,
-    });
   }
 
   /**
@@ -146,6 +185,7 @@ export class EditingSidebarComponent {
    * Refreshes the current page to reflect the changes.
    */
   saveChanges() {
+    /*
     if (!this.selectedTags || this.selectedTags.length === 0) {
       this.selectedTags = this.selectedTask().taglist;
     }
@@ -164,5 +204,7 @@ export class EditingSidebarComponent {
     setTimeout(() => {
       this.methodsService.reloadPage();
     }, 1000);
+  }*/
+    console.log(this.selectedTask());
   }
 }

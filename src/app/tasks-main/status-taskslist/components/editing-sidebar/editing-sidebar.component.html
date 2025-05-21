@@ -30,8 +30,8 @@
     <div class="card flex justify-center" id="categories-list">
       <p>List:</p>
       <p-tag
-        *ngIf="selectedTask().list"
-        [value]="selectedTask().list.category_title"
+        *ngIf="selectedTask().list_id"
+        [value]="getListToString()"
         severity="danger"
         [rounded]="false"
       />
@@ -40,12 +40,13 @@
         (click)="changeCategory(txtCategory.value)"
         formControlName="categories-dropdown"
       >
-        <ng-container *ngIf="selectedTask().list">
+        <ng-container *ngIf="selectedTask().list_id">
           <option
-            *ngFor="let category of currentClient.categories"
+            *ngFor="let category of selectedTaskCategories()"
             [hidden]="
-              selectedTask().list.category_title === category.category_title
+              getListToString() === category.category_title
             "
+            [value]="category.category_id"
           >
             {{ category.category_title }}
           </option>
@@ -67,8 +68,7 @@
         [style]="{ width: '25rem' }"
       >
         <p-tag
-          *ngFor="let tag of currentClient.tags"
-          [hidden]="selectedTask().taglist.includes(tag)"
+          *ngFor="let tag of excludedTags()"
           (click)="selectTag(tag)"
           [value]="tag.tag_title"
           [rounded]="true"
@@ -83,7 +83,7 @@
       </p-dialog>
       <div class="newTags">
         <p-tag
-          *ngFor="let tag of selectedTask().taglist"
+          *ngFor="let tag of selectedTags()"
           [value]="tag.tag_title"
           [rounded]="true"
         ></p-tag>
@@ -92,7 +92,7 @@
     <div id="subtasks-list">
       <h2>SUBTASKS:</h2>
       <task-add-new (click)="visibleDialogSub = true"></task-add-new>
-      <p *ngFor="let subtask of selectedTask().subtasks">
+      <p *ngFor="let subtask of selectedSubtasks()">
         {{ subtask.subtask_title }}
       </p>
       <p-dialog

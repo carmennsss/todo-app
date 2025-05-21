@@ -39,7 +39,7 @@ export default class MainCalendarPageComponent {
   tasksService = inject(TasksService);
 
   task_date: Date = new Date();
-  dateTasks: Task[] = [];
+  dateTasks = signal<TaskDB[]>([]);
   // dateTasks = signal<Task[]>([]);
 
   constructor(private router: Router, private store: Store) {}
@@ -53,20 +53,18 @@ export default class MainCalendarPageComponent {
    * the same date as the date selected in the date picker.
    */
   onDateSelect() {
-    debugger;
     if (this.task_date === null) {
       console.error('onDateSelect: task_date is null');
       return;
     }
-    debugger;
     this.tasksService
-      .getTasksDateClient(this.task_date.toISOString().split('T')[0])
+      .getTasksDateClient(this.task_date.toLocaleDateString('en-CA').split('T')[0])
       .subscribe((tasks: any[]) => {
         if (tasks === null) {
           console.error('onDateSelect: tasks is null');
           return;
         }
-        this.dateTasks = tasks;
+        this.dateTasks.update((dateTasks) => dateTasks = tasks);
       });
   }
 }

@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ClientDB } from '../interfaces/clients/ClientDB';
 import { ClientState } from '../../auth/client-state/client.state';
+import { map, Observable } from 'rxjs';
+import { Category } from '../interfaces/tasks/Category';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +15,26 @@ export class CategoriesService {
   private CATEGORIES_URL = environment.apiClientUrl + '/categories/';
   client: ClientDB = { username: '' };
 
-  constructor(
-    private http: HttpClient,
-    private store: Store
-  ) {}
+  constructor(private http: HttpClient, private store: Store) {}
 
-  getCategoriesClient() {
-    this.store.select(ClientState.getCurrentClient).subscribe((client) => {
-      this.client = client as ClientDB;
-    });
-    return this.http.get(this.CATEGORIES_URL + 'user', {
-      params: {
-        username: this.client.username,
-      },
-    });
+  getCategoriesClient() : Observable<Category[]> {
+    return this.http.get<any[]>(this.CATEGORIES_URL + 'user').pipe(
+      map((categories) =>
+        categories.map((category) => ({
+            category_id: category.category_id,
+            category_title: category.category_name,
+        }))
+      )
+    );
   }
+
+  getCategoryName(category_id: number) : Observable<Category> {
+    return this.http.get<any>(this.CATEGORIES_URL + category_id).pipe(
+      map((category) => ({
+        category_id: category.category_id,
+        category_title: category.category_name,
+      }))
+    );
+  }
+  
 }

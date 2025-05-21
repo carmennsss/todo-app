@@ -7,14 +7,14 @@ import { environment } from '../../../environments/environment.development';
 import { Client } from '../interfaces/clients/Client';
 import { ClientDB } from '../interfaces/clients/ClientDB';
 import { ClientState } from '../../auth/client-state/client.state';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { TaskDB } from '../interfaces/tasks/TaskDB';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
-  private TASKS_URL = environment.apiClientUrl + '/tasks/';
+  private TASKS_URL = environment.apiClientUrl + '/tasks';
   client: ClientDB = { username: '' };
 
   constructor(
@@ -22,18 +22,46 @@ export class TasksService {
     private router: Router,
     private store: Store
   ) {}
-  getTasksStatusClient(status: string) {
-    return this.http.get<any>(this.TASKS_URL + 'user/status', {
+
+  getTasksStatusClient(status: string): Observable<TaskDB[]> {
+    return this.http
+      .get<any[]>(this.TASKS_URL + '/user/status/' + status, {
+        params: {
+          state_name: status,
+        },
+      })
+      .pipe(
+        map((tasks) =>
+          tasks.map((task) => ({
+            id: task.task_id,
+            title: task.task_name,
+            desc: task.task_desc,
+            date: task.task_due_date,
+            status: task.state_name,
+            list_id: task.list_id,
+          }))
+        )
+      );
+  }
+
+  
+
+  createNewTask(task: TaskDB): Observable<TaskDB> {
+    return this.http.post<TaskDB>(this.TASKS_URL, {
       params: {
-        status: status,
+        task_name: task.title,
+        task_desc: task.desc,
+        task_due_date: task.date,
+        state_name: task.status,
+        list_id: task.list_id,
       },
     });
   }
 
-  getTasksDateClient(date: string) {
+  getTasksDateClient(date: string): Observable<TaskDB[]> {
     debugger;
     return this.http
-      .get<any[]>(this.TASKS_URL + 'user/date/' + date, {
+      .get<any[]>(this.TASKS_URL + '/user/date/' + date, {
         params: {
           date: date,
         },
@@ -46,9 +74,7 @@ export class TasksService {
             desc: task.task_desc,
             date: task.task_due_date,
             status: task.state_name,
-            list: { category_title: 'None' },
-            taglist: [],
-            subtasks: [],
+            list_id: task.list_id,
           }))
         )
       );

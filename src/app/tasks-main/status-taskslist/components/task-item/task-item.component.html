@@ -10,10 +10,10 @@
     </div>
     <div>
       <i class="pi pi-list"></i>
-      <p *ngIf="task().list">{{ task().list.category_title }}</p>
+      <p *ngIf="task().list_id">{{ list_title() }}</p>
     </div>
-    <div *ngIf="task().subtasks">
-      <span class="subtasks-length">{{ task().subtasks.length }}</span>
+    <div *ngIf="subtaskCount()">
+      <span class="subtasks-length">{{ subtaskCount() }}</span>
       <p>Subtasks</p>
     </div>
   </div>

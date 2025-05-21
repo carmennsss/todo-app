@@ -9,7 +9,6 @@ export const userInterceptor: HttpInterceptorFn = (req, next) => {
           authorization: `Bearer ${ token }`,
         }
       });
-      console.log(req.headers.get('authorization'));
     }
   }
   return next(req);
