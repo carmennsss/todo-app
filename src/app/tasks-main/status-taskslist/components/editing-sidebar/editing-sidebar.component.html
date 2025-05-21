@@ -26,7 +26,15 @@
       formControlName="desc"
       #txtDesc
     ></textarea>
-    <p id="date">Date: {{ selectedTask().date }}</p>
+    <p>Date:</p>
+    <input
+      type="text"
+      id="title"
+      (change)="this.selectedTask().date = txtDate.value"
+      formControlName="title"
+      [value]="selectedTask().date"
+      #txtDate
+    />
     <div class="card flex justify-center" id="categories-list">
       <p>List:</p>
       <p-tag
@@ -43,9 +51,7 @@
         <ng-container *ngIf="selectedTask().list_id">
           <option
             *ngFor="let category of selectedTaskCategories()"
-            [hidden]="
-              getListToString() === category.category_title
-            "
+            [hidden]="getListToString() === category.category_title"
             [value]="category.category_id"
           >
             {{ category.category_title }}

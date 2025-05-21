@@ -67,6 +67,7 @@ export class SidebarCategoriesComponent implements OnInit {
   }
 
   getCategoryItemCount(category_id: number) {
+    var tasks_length = 0
     this.tasksService
       .getTasksFromCategory(category_id)
       .subscribe((tasks) => {

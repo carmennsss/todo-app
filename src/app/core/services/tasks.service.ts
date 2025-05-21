@@ -44,6 +44,13 @@ export class TasksService {
       );
   }
 
+  deleteTask(task_id: number): Observable<TaskDB> {
+    return this.http.delete<TaskDB>(this.TASKS_URL, {
+      params: {
+        task_id: task_id,
+      },
+    });
+  }
   
 
   createNewTask(task: TaskDB): Observable<TaskDB> {
@@ -59,8 +66,12 @@ export class TasksService {
   }
 
   getTasksFromCategory(category_id: number): Observable<TaskDB[]> {
+    debugger;
     return this.http
-      .get<any[]>(this.TASKS_URL + 'user/category/' + category_id)
+      .get<any[]>(this.TASKS_URL + '/user/category/' + category_id, {
+        params: {
+          category_id: category_id,
+      }})
       .pipe(
         map((tasks) =>
           tasks.map((task) => ({

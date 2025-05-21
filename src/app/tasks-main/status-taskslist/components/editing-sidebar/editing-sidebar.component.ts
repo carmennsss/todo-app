@@ -10,6 +10,7 @@ import {
 import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
@@ -27,6 +28,7 @@ import { TagsService } from '../../../../core/services/tags.service';
 import { Category } from '../../../../core/interfaces/tasks/Category';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { SubtasksService } from '../../../../core/services/subtasks.service';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'editing-sidebar',
@@ -39,6 +41,7 @@ import { SubtasksService } from '../../../../core/services/subtasks.service';
     AddNewComponent,
     PopMessageComponent,
     DialogModule,
+    DatePickerModule,
   ],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
@@ -58,6 +61,7 @@ export class EditingSidebarComponent {
   visibleDialogSub: boolean = false;
 
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
+  @ViewChild(PopConfirmMessageComponent) childConfirm: PopConfirmMessageComponent | undefined;
 
   newSubtasks = signal<SubTask[]>([]);
   selectedSubtasks = signal<SubTask[]>([]);

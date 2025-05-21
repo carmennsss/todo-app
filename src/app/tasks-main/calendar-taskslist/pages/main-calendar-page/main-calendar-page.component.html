@@ -15,6 +15,6 @@
   </div>
   <p-divider />
   <div class="task-list">
-    <task-item [deleteMode]="false" *ngFor="let task of dateTasks()" [task]="task"></task-item>
+    <task-item *ngFor="let task of dateTasks()" [task]="task"></task-item>
   </div>
 </div>

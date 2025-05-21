@@ -20,6 +20,7 @@ import { StatusTasksAction } from '../../../states/tasks.actions';
 import { TasksState } from '../../../states/tasks.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
   selector: 'tasks-page-template',
@@ -29,6 +30,7 @@ import { TasksService } from '../../../../core/services/tasks.service';
     EditingSidebarComponent,
     CommonModule,
     TaskItemComponent,
+    Dialog
   ],
   templateUrl: './page-template.component.html',
   styleUrl: './page-template.component.css',
@@ -41,7 +43,7 @@ export default class PageTemplateComponent implements OnInit {
   tasksService = inject(TasksService);
 
   statusTasks = signal<TaskDB[]>([]);
-  deleteMode: boolean = false;
+  isVisible = false;
   pageTitle = 'Finished';
   newTask: TaskDB = {
     id: 0,
@@ -86,25 +88,12 @@ export default class PageTemplateComponent implements OnInit {
    */
 
   selectTask(task: TaskDB) {
-    if (this.deleteMode) {
-      this.deleteTask(task);
-    } else {
-      this.selectedTask.update((task) => (task = task));
-      this.isDrawerVisible = !this.isDrawerVisible;
-    }
+    this.selectedTask.update((task) => (task = task));
+    this.isDrawerVisible = !this.isDrawerVisible;
   }
-
-  deleteTask(task: TaskDB) {}
-
+  
   createTask() {
-    this.newTask = {
-      id: 0,
-      title: 'New Task',
-      desc: '',
-      status: this.pageTitle.toLowerCase().replace(' ', ''),
-      date: new Date().toLocaleString().split(',')[0],
-      list_id: 0,
-    };
+    this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '')
     this.tasksService.createNewTask(this.newTask).subscribe(() => {
       this.tasksService
         .getTasksStatusClient(this.pageTitle)

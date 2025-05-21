@@ -1,16 +1,57 @@
 <div class="page-template">
   <p-divider />
-  <button (click)="deleteMode = !deleteMode">
-    <i class="pi pi-trash"></i>Toggle Delete
-    <p>{{ deleteMode ? "ON" : "OFF" }}</p>
-  </button>
   <div>
-    <task-add-new (click)="createTask()"></task-add-new>
+    <task-add-new (click)="isVisible = true"></task-add-new>
+    <div class="card flex justify-center">
+      <p-dialog
+        [(visible)]="isVisible"
+        [modal]="true"
+        [style]="{ width: '25rem' }"
+      >
+        <ng-template #header>
+          <h2>Create a new task</h2>
+        </ng-template>
+
+        <div class="flex items-center gap-4 mb-4">
+          <label for="title" class="font-semibold w-24">Title</label>
+          <input
+            pInputText
+            id="title"
+            class="flex-auto"
+            autocomplete="off"
+            #title
+            (change)="newTask.title = title.value"
+          />
+        </div>
+        <div class="flex items-center gap-4 mb-2">
+          <label for="desc" class="font-semibold w-24">Description</label>
+          <input
+            pInputText
+            id="desc"
+            class="flex-auto"
+            autocomplete="off"
+            #desc
+            (change)="newTask.desc = desc.value"
+          />
+        </div>
+        <ng-template #footer>
+          <button
+            label="Cancel"
+            severity="secondary"
+            (click)="isVisible = false"
+          >
+            Cancel
+          </button>
+          <button label="Save" severity="secondary" (click)="createTask()">
+            Save
+          </button>
+        </ng-template>
+      </p-dialog>
+    </div>
   </div>
   <p-divider />
   <div class="list">
     <task-item
-      [deleteMode]="deleteMode"
       (click)="selectTask(task)"
       [task]="task"
       *ngFor="let task of statusTasks()"
