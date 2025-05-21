@@ -2,9 +2,9 @@
   <h3>Category</h3>
   <task-add-new (click)="addCategory()"></task-add-new>
   <div class="newCategories">
-    <div *ngFor="let category of categories" class="category-item">
+    <div *ngFor="let category of categories()" class="category-item">
       <p-tag [value]="category.category_title" severity="secondary"></p-tag>
-      <p>{{ getCategoryItemCount(category.category_title) }}</p>
+      <p>{{ getCategoryItemCount(category.category_id) }}</p>
     </div>
   </div>
 </div>

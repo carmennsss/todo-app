@@ -17,18 +17,18 @@ export class CategoriesService {
 
   constructor(private http: HttpClient, private store: Store) {}
 
-  getCategoriesClient() : Observable<Category[]> {
+  getCategoriesClient(): Observable<Category[]> {
     return this.http.get<any[]>(this.CATEGORIES_URL + 'user').pipe(
       map((categories) =>
         categories.map((category) => ({
-            category_id: category.category_id,
-            category_title: category.category_name,
+          category_id: category.category_id,
+          category_title: category.category_name,
         }))
       )
     );
   }
 
-  getCategoryName(category_id: number) : Observable<Category> {
+  getCategoryName(category_id: number): Observable<Category> {
     return this.http.get<any>(this.CATEGORIES_URL + category_id).pipe(
       map((category) => ({
         category_id: category.category_id,
@@ -36,5 +36,13 @@ export class CategoriesService {
       }))
     );
   }
-  
+
+  addCategory(category: Category) {
+    return this.http.post<any>(this.CATEGORIES_URL, category).pipe(
+      map((category) => ({
+        category_id: category.category_id,
+        category_name: category.category_name,
+      }))
+    );
+  }
 }

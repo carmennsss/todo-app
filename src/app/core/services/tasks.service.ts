@@ -58,6 +58,23 @@ export class TasksService {
     });
   }
 
+  getTasksFromCategory(category_id: number): Observable<TaskDB[]> {
+    return this.http
+      .get<any[]>(this.TASKS_URL + 'user/category/' + category_id)
+      .pipe(
+        map((tasks) =>
+          tasks.map((task) => ({
+            id: task.task_id,
+            title: task.task_name,
+            desc: task.task_desc,
+            date: task.task_due_date,
+            status: task.state_name,
+            list_id: task.list_id,
+          }))
+        )
+      );
+  }
+
   getTasksDateClient(date: string): Observable<TaskDB[]> {
     debugger;
     return this.http
