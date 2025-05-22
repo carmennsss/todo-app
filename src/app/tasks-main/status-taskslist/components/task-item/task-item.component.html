@@ -16,7 +16,7 @@
   <div [hidden]="!selected" class="body">
     <div>
       <i class="pi pi-calendar"></i>
-      <p>{{ task().date.split("T")[0] }}</p>
+      <p *ngIf="task().date">{{ task().date.split("T")[0] }}</p>
     </div>
     <div>
       <i class="pi pi-list"></i>

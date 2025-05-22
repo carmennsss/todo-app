@@ -32,7 +32,7 @@ export class PopConfirmMessageComponent {
       this.messageService.add({
         key: 'confirm',
         sticky: true,
-        severity: 'error',
+        severity: 'success',
         summary: message,
       });
       this.visible = true;

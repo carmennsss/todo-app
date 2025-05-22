@@ -14,7 +14,6 @@ import { ClientDB } from '../interfaces/clients/ClientDB';
 export class AuthService {
   private LOGIN_URL = environment.apiClientUrl + '/auth/';
   private tokenKey = 'token';
-  currentClient : ClientDB = { username: '' };
 
   constructor(private http: HttpClient, private router: Router, private store: Store) {}
 
@@ -28,8 +27,6 @@ export class AuthService {
       .pipe(
         tap((res) => {
           localStorage.setItem(this.tokenKey, JSON.stringify(res.token));
-          this.currentClient.username = user;
-          this.store.dispatch(new changeCurrentClient({ currentUser: this.currentClient }));
         })
       )
   }

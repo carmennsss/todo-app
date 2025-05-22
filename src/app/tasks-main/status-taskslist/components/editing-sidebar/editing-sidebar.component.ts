@@ -4,7 +4,10 @@ import {
   inject,
   Input,
   input,
+  OnChanges,
+  OnInit,
   signal,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
@@ -29,6 +32,7 @@ import { Category } from '../../../../core/interfaces/tasks/Category';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { SubtasksService } from '../../../../core/services/subtasks.service';
 import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 @Component({
   selector: 'editing-sidebar',
@@ -42,38 +46,56 @@ import { PopConfirmMessageComponent } from '../../../../shared/components/pop-co
     PopMessageComponent,
     DialogModule,
     DatePickerModule,
+    PopConfirmMessageComponent,
   ],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class EditingSidebarComponent {
+export class EditingSidebarComponent implements OnInit, OnChanges {
   localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   tagsService = inject(TagsService);
   subtasksService = inject(SubtasksService);
   categoriesService = inject(CategoriesService);
+  tasksService = inject(TasksService);
 
-  selectedTask = input.required<TaskDB>();
+  @Input() selectedTask: TaskDB = {} as TaskDB;
   @Input() isDrawerVisible: boolean = false;
   visibleDialogTag: boolean = false;
   visibleDialogSub: boolean = false;
 
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
-  @ViewChild(PopConfirmMessageComponent) childConfirm: PopConfirmMessageComponent | undefined;
+  @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
 
+  category_name = signal<string>('None');
   newSubtasks = signal<SubTask[]>([]);
   selectedSubtasks = signal<SubTask[]>([]);
-  excludedTags = signal<CustomTag[]>([]);
+  combineExcludedTags = signal<CustomTag[]>([]);
   selectedTags = signal<CustomTag[]>([]);
+  combinedNewTags = signal<CustomTag[]>([]);
   selectedTaskCategories = signal<Category[]>({} as Category[]);
 
   constructor(private router: Router, private route: ActivatedRoute) {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedTask']) {
+      if (changes['selectedTask'].currentValue != undefined) {
+        this.selectedTask = changes['selectedTask'].currentValue;
+        this.getTagsFromTask();
+        this.getSubtasksTask();
+        this.getListToString();
+      }
+    }
+  }
   ngOnInit(): void {
     this.getCategoriesClient();
-    this.getTagsClient();
-    this.getSubtasksTask();
+
+    this.selectedTags.set([]);
+    this.combineExcludedTags.set([]);
+    this.combinedNewTags.set([]);
   }
 
   //---------------------------------------
@@ -86,51 +108,59 @@ export class EditingSidebarComponent {
    * show a confirmation message saying that you cannot add more tags.
    */
   showDialogTag() {
-    var tags_client = this.getTagsClient();
-    this.tagsService.getTagsTask(this.selectedTask().id).subscribe((tags) => {
-      this.selectedTags.update((tags_task) => (tags_task = tags));
+    this.tagsService.getTagsClient().subscribe((data) => {
+      const tags_client: CustomTag[] = data.map((item: any) => ({
+        tag_id: item.tag_id,
+        tag_title: item.tag_name,
+      }));
+
+      if (tags_client.length > this.selectedTags().length) {
+        this.visibleDialogTag = true;
+      } else {
+        this.child?.showConfirm('You cannot add more tags');
+      }
     });
-
-    this.tagsService
-      .getTagsNotInTask(this.selectedTask().id)
-      .subscribe((tags) => {
-        this.excludedTags.update((tags_task) => (tags_task = tags));
-      });
-
-    if (
-      tags_client.length != this.selectedTags.length &&
-      tags_client.length != 0
-    ) {
-      this.visibleDialogTag = true;
-    } else {
-      this.child?.showConfirm('You cannot add more tags');
-    }
   }
 
   getCategoriesClient() {
+    console.log('getCategoriesClient');
+    console.log(this.selectedTask.list_id);
+    console.log(this.selectedTaskCategories());
     this.categoriesService.getCategoriesClient().subscribe((categories) => {
-      this.selectedTaskCategories.update(
-        (categories) => (categories = categories)
-      );
+      this.selectedTaskCategories.set(categories);
+      console.log(this.selectedTaskCategories());
     });
   }
 
+  getTagsFromTask() {
+    this.tagsService
+      .getTagsTask(this.selectedTask.id)
+      .subscribe((tagsFromTask) => {
+        this.combinedNewTags.set(tagsFromTask);
+      });
+
+    this.tagsService
+      .getTagsNotInTask(this.selectedTask.id)
+      .subscribe((tagsExcluded) => {
+        this.combineExcludedTags.set(tagsExcluded);
+      });
+  }
+
   getListToString() {
-    if (this.selectedTask().list_id) {
+    if (this.selectedTask.list_id) {
       this.categoriesService
-        .getCategoryName(this.selectedTask().list_id)
+        .getCategoryName(this.selectedTask.list_id)
         .subscribe({
           next: (res) => {
-            return res.category_title;
+            this.category_name.set(res.category_title);
           },
         });
     }
-    return 'None';
   }
 
   getSubtasksTask() {
     this.subtasksService
-      .getSubtasksFromTask(this.selectedTask().id)
+      .getSubtasksFromTask(this.selectedTask.id)
       .subscribe((subtasks) => {
         this.selectedSubtasks.update(
           (subtasks_task) => (subtasks_task = subtasks)
@@ -139,36 +169,47 @@ export class EditingSidebarComponent {
   }
 
   getTagsClient() {
-    var tags_client = signal<CustomTag[]>([]);
-    this.tagsService.getTagsClient().subscribe((tags) => {
-      tags_client.update((tags) => (tags = tags));
+    var tagsSignal: CustomTag[] = [];
+
+    this.tagsService.getTagsClient().subscribe((data) => {
+      tagsSignal = data.map((item: any) => ({
+        tag_id: item.tag_id,
+        tag_title: item.tag_name,
+      }));
     });
-    return tags_client;
+    return tagsSignal;
   }
 
   selectTag(tag: CustomTag) {
-    var tags_client = this.getTagsClient();
     this.selectedTags.update((tags) => [...tags, tag]);
+    this.combineExcludedTags.update((tags) =>
+      tags.filter((t) => t.tag_id !== tag.tag_id)
+    );
+    this.combinedNewTags.update((tags) => [...tags, tag]);
 
-    this.tagsService
-      .getTagsNotInTask(this.selectedTask().id)
-      .subscribe((tags) => {
-        this.excludedTags.update((tags_task) => (tags_task = tags));
-      });
+    this.tagsService.getTagsClient().subscribe((data) => {
+      const tags_client: CustomTag[] = data.map((item: any) => ({
+        tag_id: item.tag_id,
+        tag_title: item.tag_name,
+      }));
 
-    if (tags_client.length <= this.selectedTags.length) {
-      this.visibleDialogTag = false;
-    }
+      if (tags_client.length <= this.selectedTags().length) {
+        this.visibleDialogTag = false;
+      }
+    });
   }
 
   changeCategory(category_id: string) {
-    this.selectedTask().list_id = parseInt(category_id, 10);
+    this.selectedTask.list_id = parseInt(category_id, 10);
   }
 
   /**
    * Close the editing sidebar.
    */
   closeDrawer() {
+    this.selectedTags.set([]);
+    this.combineExcludedTags.set([]);
+    this.combinedNewTags.set([]);
     this.isDrawerVisible = false;
   }
 
@@ -189,26 +230,45 @@ export class EditingSidebarComponent {
    * Refreshes the current page to reflect the changes.
    */
   saveChanges() {
+    const selectedTagsList = this.selectedTags();
+
+    if (selectedTagsList.length != 0) {
+      console.log(this.selectedTags());
+      for (let i = 0; i < selectedTagsList.length; i++) {
+        console.log('Selected task ID:', this.selectedTask.id);
+        console.log(this.selectedTags()[i].tag_id);
+        this.tagsService
+          .addTagToTask(this.selectedTask.id, this.selectedTags()[i].tag_id)
+          .subscribe(
+            (res) => {
+              console.log(res);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+
+      this.getTagsFromTask();
+    }
+
     /*
-    if (!this.selectedTags || this.selectedTags.length === 0) {
-      this.selectedTags = this.selectedTask().taglist;
-    }
-    if (this.selectedTask().taglist) {
-      this.selectedTask().taglist = this.selectedTags;
-    }
     if (this.selectedTask().subtasks) {
       this.selectedTask().subtasks = this.selectedTask().subtasks.concat(
         this.newSubtasks
       );
     }
+    */
 
-    this.saveItemsLocalStorage();
-    this.child?.showConfirm('Changes saved');
+    this.tasksService.editTask(this.selectedTask).subscribe(
+      (res) => {
+        console.log(res);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
 
-    setTimeout(() => {
-      this.methodsService.reloadPage();
-    }, 1000);
-  }*/
-    console.log(this.selectedTask());
+    this.childConfirm?.showConfirm('Changes saved');
   }
 }

@@ -11,9 +11,9 @@
     <input
       type="text"
       id="title"
-      (change)="this.selectedTask().title = txtTitle.value"
+      (change)="this.selectedTask.title = txtTitle.value"
       formControlName="title"
-      [value]="selectedTask().title"
+      [value]="selectedTask.title"
       #txtTitle
     />
     <label for="desc">Description: </label>
@@ -21,8 +21,8 @@
       id="desc"
       cols="30"
       rows="10"
-      (change)="this.selectedTask().desc = txtDesc.value"
-      [value]="selectedTask().desc"
+      (change)="this.selectedTask.desc = txtDesc.value"
+      [value]="selectedTask.desc"
       formControlName="desc"
       #txtDesc
     ></textarea>
@@ -30,16 +30,16 @@
     <input
       type="text"
       id="title"
-      (change)="this.selectedTask().date = txtDate.value"
+      (change)="this.selectedTask.date = txtDate.value"
       formControlName="title"
-      [value]="selectedTask().date"
+      [value]="selectedTask.date"
       #txtDate
     />
     <div class="card flex justify-center" id="categories-list">
       <p>List:</p>
       <p-tag
-        *ngIf="selectedTask().list_id"
-        [value]="getListToString()"
+        *ngIf="selectedTask.list_id"
+        [value]="category_name()"
         severity="danger"
         [rounded]="false"
       />
@@ -48,10 +48,9 @@
         (click)="changeCategory(txtCategory.value)"
         formControlName="categories-dropdown"
       >
-        <ng-container *ngIf="selectedTask().list_id">
+        <ng-container>
           <option
             *ngFor="let category of selectedTaskCategories()"
-            [hidden]="getListToString() === category.category_title"
             [value]="category.category_id"
           >
             {{ category.category_title }}
@@ -74,7 +73,7 @@
         [style]="{ width: '25rem' }"
       >
         <p-tag
-          *ngFor="let tag of excludedTags()"
+          *ngFor="let tag of combineExcludedTags()"
           (click)="selectTag(tag)"
           [value]="tag.tag_title"
           [rounded]="true"
@@ -89,7 +88,7 @@
       </p-dialog>
       <div class="newTags">
         <p-tag
-          *ngFor="let tag of selectedTags()"
+          *ngFor="let tag of combinedNewTags()"
           [value]="tag.tag_title"
           [rounded]="true"
         ></p-tag>
@@ -140,3 +139,4 @@
   </ng-template>
 </p-drawer>
 <pop-message></pop-message>
+<pop-confirm-message></pop-confirm-message>

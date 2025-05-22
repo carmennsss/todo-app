@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment.development';
 import { Client } from '../interfaces/clients/Client';
 import { ClientDB } from '../interfaces/clients/ClientDB';
 import { ClientState } from '../../auth/client-state/client.state';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { TaskDB } from '../interfaces/tasks/TaskDB';
 
 @Injectable({
@@ -44,24 +44,33 @@ export class TasksService {
       );
   }
 
+  editTask(edited_task: TaskDB): Observable<TaskDB> {
+    console.log(edited_task.list_id);
+    return this.http.put<TaskDB>(this.TASKS_URL + '/edit/' + edited_task.id, {
+      task_id: edited_task.id,
+      task_name: edited_task.title,
+      task_desc: edited_task.desc,
+      task_due_date: edited_task.date,
+      state_name: edited_task.status,
+      list_id: edited_task.list_id,
+    });
+  }
+
   deleteTask(task_id: number): Observable<TaskDB> {
     return this.http.delete<TaskDB>(this.TASKS_URL, {
       params: {
-        task_id: task_id,
+        id: task_id,
       },
     });
   }
-  
 
   createNewTask(task: TaskDB): Observable<TaskDB> {
     return this.http.post<TaskDB>(this.TASKS_URL, {
-      params: {
-        task_name: task.title,
-        task_desc: task.desc,
-        task_due_date: task.date,
-        state_name: task.status,
-        list_id: task.list_id,
-      },
+      task_name: task.title,
+      task_desc: task.desc,
+      task_due_date: null,
+      state_name: task.status,
+      list_id: null,
     });
   }
 
@@ -71,7 +80,8 @@ export class TasksService {
       .get<any[]>(this.TASKS_URL + '/user/category/' + category_id, {
         params: {
           category_id: category_id,
-      }})
+        },
+      })
       .pipe(
         map((tasks) =>
           tasks.map((task) => ({

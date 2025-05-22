@@ -87,12 +87,13 @@ export default class PageTemplateComponent implements OnInit {
    * @param task The task to select or delete.
    */
 
-  selectTask(task: TaskDB) {
-    this.selectedTask.update((task) => (task = task));
+  selectTask(task_selected: TaskDB) {
+    this.selectedTask.set(task_selected);
     this.isDrawerVisible = !this.isDrawerVisible;
   }
   
   createTask() {
+    this.isVisible = false;
     this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '')
     this.tasksService.createNewTask(this.newTask).subscribe(() => {
       this.tasksService
