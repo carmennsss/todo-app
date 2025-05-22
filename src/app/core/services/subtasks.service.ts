@@ -10,7 +10,7 @@ import { SubTask } from '../interfaces/tasks/SubTask';
   providedIn: 'root',
 })
 export class SubtasksService {
-  private SUBTASKS_URL = environment.apiClientUrl + '/tasks-subtasks/';
+  private SUBTASKS_URL = environment.apiClientUrl + '/tasks-subtasks';
 
   constructor(
     private http: HttpClient,
@@ -19,7 +19,14 @@ export class SubtasksService {
   ) {}
 
   getSubtasksFromTask(id_task: number): Observable<SubTask[]> {
-    return this.http.get<any[]>(this.SUBTASKS_URL).pipe(
+    if (id_task === undefined) {
+      return new Observable<SubTask[]>
+    }
+    return this.http.get<any[]>(this.SUBTASKS_URL, {
+      params: {
+        id_task: id_task,
+      },
+    }).pipe(
       map((subtasks) =>
         subtasks.map((subtask) => ({
           subtask_id: subtask.subtask_id,
@@ -27,5 +34,19 @@ export class SubtasksService {
         }))
       )
     );
+  }
+
+  createSubtask(subtask: SubTask): Observable<SubTask> {
+    return this.http.post<SubTask>(this.SUBTASKS_URL + '/subtask', {
+      subtask_id: subtask.subtask_id,
+      subtask_name: subtask.subtask_title,
+    });
+  }
+
+  addSubtaskToTask(id_task: number, subtask: SubTask): Observable<SubTask> {
+    return this.http.post<SubTask>(this.SUBTASKS_URL, {
+      subtask_id: subtask.subtask_id,
+      task_id: id_task,
+    });
   }
 }

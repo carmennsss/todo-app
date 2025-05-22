@@ -3,7 +3,9 @@ import {
   Component,
   inject,
   input,
+  OnChanges,
   signal,
+  SimpleChanges,
 } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
@@ -22,7 +24,7 @@ import { TasksService } from '../../../../core/services/tasks.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskItemComponent {
+export class TaskItemComponent implements OnChanges {
   subtasksService = inject(SubtasksService);
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
@@ -33,11 +35,23 @@ export class TaskItemComponent {
   list_title = signal('');
   visible: boolean = false;
 
+  constructor() {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['task']) {
+      this.getSubtasksCount();
+      this.getListToString();
+    }
+  }
+
   getListToString() {
     if (this.task().list_id) {
       this.categoriesService.getCategoryName(this.task().list_id).subscribe({
         next: (res) => {
+          console.log(res);
           this.list_title.set(res.category_title);
+        },
+        error: (err) => {
+          console.log(err);
         },
       });
     } else {

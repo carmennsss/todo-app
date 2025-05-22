@@ -1,15 +1,34 @@
 <div class="task-item">
   <div class="header">
     <p id="task-title">{{ task().title }}</p>
-    <div>
-      <p-dialog header="Delete task" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <p>Are you sure you want to delete this task?</p>
+    <div class="dialog-container">
+      <p-dialog
+        class="delete-dialog"
+        header="Delete task"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '20rem', height: '15rem' }"
+      >
+        <div class="dialog-message">
+          <i class="pi pi-exclamation-triangle" style="font-size: 1.5rem"></i>
+          <p class="dialog-text">Are you sure you want to delete this task?</p>
+        </div>
         <div class="flex justify-end gap-2">
-            <button label="Cancel" severity="secondary" (click)="deleteTask()">Delete</button>
-            <button label="Save" (click)="visible = false">Cancel</button>
+          <button
+            label="Cancel"
+            class="dialog-btn"
+            severity="secondary"
+            (click)="deleteTask()"
+            class="confirm-delete"
+          >
+            Delete
+          </button>
+          <button label="Save" class="dialog-btn" (click)="visible = false">
+            Cancel
+          </button>
         </div>
       </p-dialog>
-      <button (click)="visible = true">Delete</button>
+      <button (click)="visible = true" class="delete">Delete</button>
     </div>
     <button (click)="selected = !selected">. . .</button>
   </div>
@@ -17,10 +36,11 @@
     <div>
       <i class="pi pi-calendar"></i>
       <p *ngIf="task().date">{{ task().date.split("T")[0] }}</p>
+      <p *ngIf="!task().date">No date</p>
     </div>
     <div>
       <i class="pi pi-list"></i>
-      <p *ngIf="task().list_id">{{ list_title() }}</p>
+      <p>{{ list_title() }}</p>
     </div>
     <div *ngIf="subtaskCount()">
       <span class="subtasks-length">{{ subtaskCount() }}</span>

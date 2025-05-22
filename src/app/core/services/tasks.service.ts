@@ -45,7 +45,6 @@ export class TasksService {
   }
 
   editTask(edited_task: TaskDB): Observable<TaskDB> {
-    console.log(edited_task.list_id);
     return this.http.put<TaskDB>(this.TASKS_URL + '/edit/' + edited_task.id, {
       task_id: edited_task.id,
       task_name: edited_task.title,
@@ -75,7 +74,6 @@ export class TasksService {
   }
 
   getTasksFromCategory(category_id: number): Observable<TaskDB[]> {
-    debugger;
     return this.http
       .get<any[]>(this.TASKS_URL + '/user/category/' + category_id, {
         params: {
@@ -97,7 +95,6 @@ export class TasksService {
   }
 
   getTasksDateClient(date: string): Observable<TaskDB[]> {
-    debugger;
     return this.http
       .get<any[]>(this.TASKS_URL + '/user/date/' + date, {
         params: {

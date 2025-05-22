@@ -5,6 +5,16 @@
   width: 85%;
 }
 
+input {
+  border: none;
+  background-color: #363636;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 button {
   border: none;
   background-color: #1d1d1d;

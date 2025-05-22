@@ -72,10 +72,10 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     | undefined;
 
   category_name = signal<string>('None');
-  newSubtasks = signal<SubTask[]>([]);
   selectedSubtasks = signal<SubTask[]>([]);
   combineExcludedTags = signal<CustomTag[]>([]);
   selectedTags = signal<CustomTag[]>([]);
+  combinedSubtasks = signal<SubTask[]>([]);
   combinedNewTags = signal<CustomTag[]>([]);
   selectedTaskCategories = signal<Category[]>({} as Category[]);
 
@@ -96,6 +96,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.selectedTags.set([]);
     this.combineExcludedTags.set([]);
     this.combinedNewTags.set([]);
+    this.combinedSubtasks.set([]);
   }
 
   //---------------------------------------
@@ -123,12 +124,8 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   getCategoriesClient() {
-    console.log('getCategoriesClient');
-    console.log(this.selectedTask.list_id);
-    console.log(this.selectedTaskCategories());
     this.categoriesService.getCategoriesClient().subscribe((categories) => {
       this.selectedTaskCategories.set(categories);
-      console.log(this.selectedTaskCategories());
     });
   }
 
@@ -162,9 +159,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.subtasksService
       .getSubtasksFromTask(this.selectedTask.id)
       .subscribe((subtasks) => {
-        this.selectedSubtasks.update(
-          (subtasks_task) => (subtasks_task = subtasks)
-        );
+        this.combinedSubtasks.set(subtasks);
       });
   }
 
@@ -210,6 +205,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.selectedTags.set([]);
     this.combineExcludedTags.set([]);
     this.combinedNewTags.set([]);
+    this.combinedSubtasks.set([]);
     this.isDrawerVisible = false;
   }
 
@@ -218,25 +214,20 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    * @param title The title of the new subtask.
    */
   saveNewSubTask(title: string) {
+    let newSubtask: SubTask = {
+      subtask_id: 0,
+      subtask_title: title,
+    };
+    this.combinedSubtasks.update((subtasks) => [...subtasks, newSubtask]);
+    this.selectedSubtasks.update((subtasks) => [...subtasks, newSubtask]);
     this.visibleDialogSub = false;
   }
 
-  /**
-   * Save changes made to the selected task in the current client.
-   * Ensures the selected tags and subtasks are updated for the selected task.
-   * If no tags are selected, uses the existing tag list from the task.
-   * Concatenates any new subtasks to the existing subtasks of the task.
-   * Updates the task in local storage and shows a confirmation message.
-   * Refreshes the current page to reflect the changes.
-   */
   saveChanges() {
     const selectedTagsList = this.selectedTags();
 
     if (selectedTagsList.length != 0) {
-      console.log(this.selectedTags());
       for (let i = 0; i < selectedTagsList.length; i++) {
-        console.log('Selected task ID:', this.selectedTask.id);
-        console.log(this.selectedTags()[i].tag_id);
         this.tagsService
           .addTagToTask(this.selectedTask.id, this.selectedTags()[i].tag_id)
           .subscribe(
@@ -252,23 +243,38 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
       this.getTagsFromTask();
     }
 
-    /*
-    if (this.selectedTask().subtasks) {
-      this.selectedTask().subtasks = this.selectedTask().subtasks.concat(
-        this.newSubtasks
-      );
-    }
-    */
+    const selectedSubtasksList = this.selectedSubtasks();
+    if (selectedSubtasksList.length != 0) {
+      for (let i = 0; i < selectedSubtasksList.length; i++) {
+        this.subtasksService.createSubtask(selectedSubtasksList[i]).subscribe(
+          (res) => {
+            this.subtasksService
+              .addSubtaskToTask(this.selectedTask.id, res)
+              .subscribe(
+                (res) => {
+                  console.log(res);
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
 
-    this.tasksService.editTask(this.selectedTask).subscribe(
-      (res) => {
-        console.log(res);
-      },
-      (error) => {
-        console.log(error);
+        this.tasksService.editTask(this.selectedTask).subscribe(
+          (res) => {
+            console.log(res);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+
+        this.childConfirm?.showConfirm('Changes saved');
       }
-    );
-
-    this.childConfirm?.showConfirm('Changes saved');
+    }
   }
 }

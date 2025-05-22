@@ -97,7 +97,7 @@
     <div id="subtasks-list">
       <h2>SUBTASKS:</h2>
       <task-add-new (click)="visibleDialogSub = true"></task-add-new>
-      <p *ngFor="let subtask of selectedSubtasks()">
+      <p *ngFor="let subtask of combinedSubtasks()">
         {{ subtask.subtask_title }}
       </p>
       <p-dialog
