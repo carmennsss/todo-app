@@ -1,11 +1,11 @@
 import { Category } from "../tasks/Category";
-import { Task } from "../tasks/Task";
 import { CustomTag } from "../tasks/CustomTag";
+import { TaskDB } from "../tasks/TaskDB";
 
 export interface Client {
     username: string;
     password: string;
-    tasks: Task[];
+    tasks: TaskDB[];
     tags: CustomTag[];
     categories: Category[];
 }

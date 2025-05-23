@@ -18,10 +18,14 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { AddNewComponent } from '../../../status-taskslist/components/add-new/add-new.component';
 import { DialogComponent } from '../dialog/dialog.component';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { TasksService } from '../../../../core/services/tasks.service';
+import {
+  AddCategory,
+  GetCategories,
+} from '../../../../core/state/categories/categories.actions';
+import { CategoriesState } from '../../../../core/state/categories/categories.state';
 
 @Component({
   selector: 'sidebar-categories',
@@ -53,28 +57,21 @@ export class SidebarCategoriesComponent implements OnInit {
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit() {
-    this.getCategoriesClient();
+    this.store.dispatch(new GetCategories());
+    this.store.select(CategoriesState.categories).subscribe((categories) => {
+      this.categories.set(categories);
+    });
   }
 
   //---------------------------------------
   // METHODS
   //---------------------------------------
 
-  getCategoriesClient() {
-    this.categoriesService.getCategoriesClient().subscribe((categories) => {
-      this.categories.set(categories);
-    });
-  }
-
   getCategoryItemCount(category_id: number) {
-    var tasks_length = 0
-    this.tasksService
-      .getTasksFromCategory(category_id)
-      .subscribe((tasks) => {
-        return tasks.length;
-      }
-    );
-    return 0
+    this.tasksService.getTasksFromCategory(category_id).subscribe((tasks) => {
+      return tasks.length;
+    });
+    return 0;
   }
 
   addCategory() {
@@ -90,9 +87,7 @@ export class SidebarCategoriesComponent implements OnInit {
             category_title: this.title(),
             category_id: 0,
           };
-          this.categoriesService.addCategory(newCategory).subscribe(() => {
-            this.getCategoriesClient();
-          });
+          this.store.dispatch(new AddCategory(newCategory));
         }
       }
     });

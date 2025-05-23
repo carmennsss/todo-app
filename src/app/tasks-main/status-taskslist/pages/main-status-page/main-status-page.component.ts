@@ -1,3 +1,4 @@
+import { TasksStateHttp } from './../../../../core/state/tasks/tasks.state';
 
 import {
   Component,
@@ -9,12 +10,11 @@ import {
 import { Select, Store } from '@ngxs/store';
 import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
-import { TasksState } from '../../../states/tasks.state';
+import { StatusNameAction, StatusTasksAction } from '../../../states/status.actions';
 import PageTemplateComponent from '../../components/page-template/page-template.component';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { StatusState } from '../../../states/status.state';
 
 
 @Component({
@@ -34,7 +34,7 @@ export default class MainSatusPageComponent implements OnInit {
 
   constructor(private store: Store) {}
   ngOnInit() {
-    this.store.select(TasksState.getStatus).subscribe((status) => {
+    this.store.select(StatusState.getStatus).subscribe((status) => {
       if (status === '') {
         this.store.dispatch(
           new StatusNameAction({ status_name: this.pageTitle })
@@ -52,11 +52,10 @@ export default class MainSatusPageComponent implements OnInit {
 
 
   getItemStatus() {
-    this.tasksService
-      .getTasksStatusClient(this.pageTitle)
-      .subscribe((tasks) => {
-        this.status_tasks.set(tasks.length);
-      });
+    this.store.select(TasksStateHttp.tasks).subscribe((status) => {
+      this.status_tasks.set(status.length);
+    }
+    );
     return this.status_tasks;
   }
 }

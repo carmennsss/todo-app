@@ -1,9 +1,9 @@
 /* IMPLEMENTANDO PARA OPTIMIZAR */
 import { Injectable, model } from '@angular/core';
-import { Task } from '../../core/interfaces/tasks/Task';
 import { Observable } from 'rxjs';
 import { Client } from '../../core/interfaces/clients/Client';
 import { Model } from '../../core/interfaces/Model';
+import { TaskDB } from '../../core/interfaces/tasks/TaskDB';
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +38,7 @@ export class LocalStorageService {
   }
 
   // SAVE
-  saveTaskToCurrentClient(selectedTask: Task) {
+  saveTaskToCurrentClient(selectedTask: TaskDB) {
     let currentClient = this.getCurrentClient();
     for (let i = 0; i < currentClient.tasks.length; i++) {
       if (currentClient.tasks[i].id === selectedTask.id) {

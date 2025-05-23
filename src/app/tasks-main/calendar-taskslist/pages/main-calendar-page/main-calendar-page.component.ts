@@ -10,14 +10,13 @@ import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { TaskItemComponent } from '../../../status-taskslist/components/task-item/task-item.component';
 import { Router } from '@angular/router';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
-import { TasksState } from '../../../states/tasks.state';
-import { CalendarTasksAction } from '../../../states/tasks.actions';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
+import { GetTasksCalendar } from '../../../../core/state/tasks/tasks.actions';
+import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
 @Component({
   selector: 'main-calendar-page',
@@ -40,7 +39,6 @@ export default class MainCalendarPageComponent {
 
   task_date: Date = new Date();
   dateTasks = signal<TaskDB[]>([]);
-  // dateTasks = signal<Task[]>([]);
 
   constructor(private router: Router, private store: Store) {}
 
@@ -57,14 +55,16 @@ export default class MainCalendarPageComponent {
       console.error('onDateSelect: task_date is null');
       return;
     }
-    this.tasksService
-      .getTasksDateClient(this.task_date.toLocaleDateString('en-CA').split('T')[0])
-      .subscribe((tasks: any[]) => {
-        if (tasks === null) {
-          console.error('onDateSelect: tasks is null');
-          return;
-        }
-        this.dateTasks.update((dateTasks) => dateTasks = tasks);
-      });
+
+    this.store.dispatch(
+      new GetTasksCalendar(this.task_date.toLocaleDateString('en-CA'))
+    );
+
+    this.store.select(TasksStateHttp.tasks).subscribe((tasks: TaskDB[]) => {
+      if (tasks === null) {
+        return;
+      }
+      this.dateTasks.set(tasks);
+    });
   }
 }

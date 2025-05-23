@@ -10,14 +10,12 @@ import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
-import { Client } from '../../../../core/interfaces/clients/Client';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { Store } from '@ngxs/store';
-import { ClientState } from '../../../../auth/client-state/client.state';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { StatusNameAction, StatusTasksAction } from '../../../states/tasks.actions';
+import { StatusNameAction, StatusTasksAction } from '../../../states/status.actions';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 
 
 @Component({
@@ -34,7 +32,7 @@ export class TaskStatusListComponent implements OnInit {
   tasksService = inject(TasksService);
 
   items: MenuItem[] = [];
-  currentItems: Task[] = [];
+  currentItems: TaskDB[] = [];
   // currentClient = signal<Client>();
 
   constructor(private router: Router, private store: Store) {}

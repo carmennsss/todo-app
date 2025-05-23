@@ -20,7 +20,6 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CustomTag } from '../../../../core/interfaces/tasks/CustomTag';
 import { SubTask } from '../../../../core/interfaces/tasks/SubTask';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
@@ -33,6 +32,20 @@ import { CategoriesService } from '../../../../core/services/categories.service'
 import { SubtasksService } from '../../../../core/services/subtasks.service';
 import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { Store } from '@ngxs/store';
+import {
+  AddTagToTask,
+  GetExcludedTags,
+  GetTaskTags,
+} from '../../../../core/state/tags/tags.actions';
+import { TagsState } from '../../../../core/state/tags/tags.state';
+import { CategoriesState } from '../../../../core/state/categories/categories.state';
+import { EditTask } from '../../../../core/state/tasks/tasks.actions';
+import {
+  AddSubtasks,
+  GetSubtasks,
+} from '../../../../core/state/subtasks/subtask.actions';
+import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
 
 @Component({
   selector: 'editing-sidebar',
@@ -79,7 +92,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   combinedNewTags = signal<CustomTag[]>([]);
   selectedTaskCategories = signal<Category[]>({} as Category[]);
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private store: Store
+  ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedTask']) {
       if (changes['selectedTask'].currentValue != undefined) {
@@ -87,6 +104,8 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
         this.getTagsFromTask();
         this.getSubtasksTask();
         this.getListToString();
+        this.visibleDialogTag = false;
+        this.visibleDialogSub = false;
       }
     }
   }
@@ -109,13 +128,8 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    * show a confirmation message saying that you cannot add more tags.
    */
   showDialogTag() {
-    this.tagsService.getTagsClient().subscribe((data) => {
-      const tags_client: CustomTag[] = data.map((item: any) => ({
-        tag_id: item.tag_id,
-        tag_title: item.tag_name,
-      }));
-
-      if (tags_client.length > this.selectedTags().length) {
+    this.store.select(TagsState.tags).subscribe((tags) => {
+      if (tags.length > this.selectedTags().length) {
         this.visibleDialogTag = true;
       } else {
         this.child?.showConfirm('You cannot add more tags');
@@ -124,23 +138,23 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   getCategoriesClient() {
-    this.categoriesService.getCategoriesClient().subscribe((categories) => {
+    this.store.select(CategoriesState.categories).subscribe((categories) => {
       this.selectedTaskCategories.set(categories);
     });
   }
 
   getTagsFromTask() {
-    this.tagsService
-      .getTagsTask(this.selectedTask.id)
-      .subscribe((tagsFromTask) => {
-        this.combinedNewTags.set(tagsFromTask);
-      });
+    this.store.dispatch(new GetTaskTags(this.selectedTask.id));
 
-    this.tagsService
-      .getTagsNotInTask(this.selectedTask.id)
-      .subscribe((tagsExcluded) => {
-        this.combineExcludedTags.set(tagsExcluded);
-      });
+    this.store.select(TagsState.taskTags).subscribe((tags) => {
+      this.combinedNewTags.set(tags);
+    });
+
+    this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
+
+    this.store
+      .select(TagsState.excludedTags)
+      .subscribe((tags) => this.combineExcludedTags.set(tags));
   }
 
   getListToString() {
@@ -156,21 +170,16 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   getSubtasksTask() {
-    this.subtasksService
-      .getSubtasksFromTask(this.selectedTask.id)
-      .subscribe((subtasks) => {
-        this.combinedSubtasks.set(subtasks);
-      });
+    this.store.dispatch(new GetSubtasks(this.selectedTask.id));
+    this.store.select(SubtasksState.subtasks).subscribe((subtasks) => {
+      this.combinedSubtasks.set(subtasks);
+    });
   }
 
   getTagsClient() {
     var tagsSignal: CustomTag[] = [];
-
-    this.tagsService.getTagsClient().subscribe((data) => {
-      tagsSignal = data.map((item: any) => ({
-        tag_id: item.tag_id,
-        tag_title: item.tag_name,
-      }));
+    this.store.select(TagsState.tags).subscribe((tags) => {
+      tagsSignal = tags;
     });
     return tagsSignal;
   }
@@ -182,13 +191,8 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     );
     this.combinedNewTags.update((tags) => [...tags, tag]);
 
-    this.tagsService.getTagsClient().subscribe((data) => {
-      const tags_client: CustomTag[] = data.map((item: any) => ({
-        tag_id: item.tag_id,
-        tag_title: item.tag_name,
-      }));
-
-      if (tags_client.length <= this.selectedTags().length) {
+    this.store.select(TagsState.tags).subscribe((tags) => {
+      if (tags.length <= this.selectedTags().length) {
         this.visibleDialogTag = false;
       }
     });
@@ -224,57 +228,22 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   saveChanges() {
+    debugger;
     const selectedTagsList = this.selectedTags();
 
     if (selectedTagsList.length != 0) {
-      for (let i = 0; i < selectedTagsList.length; i++) {
-        this.tagsService
-          .addTagToTask(this.selectedTask.id, this.selectedTags()[i].tag_id)
-          .subscribe(
-            (res) => {
-              console.log(res);
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
+      for (const tag of selectedTagsList) {
+        this.store.dispatch(new AddTagToTask(this.selectedTask.id, tag.tag_id));
       }
-
-      this.getTagsFromTask();
     }
 
     const selectedSubtasksList = this.selectedSubtasks();
     if (selectedSubtasksList.length != 0) {
-      for (let i = 0; i < selectedSubtasksList.length; i++) {
-        this.subtasksService.createSubtask(selectedSubtasksList[i]).subscribe(
-          (res) => {
-            this.subtasksService
-              .addSubtaskToTask(this.selectedTask.id, res)
-              .subscribe(
-                (res) => {
-                  console.log(res);
-                },
-                (error) => {
-                  console.log(error);
-                }
-              );
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-
-        this.tasksService.editTask(this.selectedTask).subscribe(
-          (res) => {
-            console.log(res);
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-
-        this.childConfirm?.showConfirm('Changes saved');
-      }
+      this.store.dispatch(
+        new AddSubtasks(selectedSubtasksList, this.selectedTask.id)
+      );
     }
+    this.store.dispatch(new EditTask(this.selectedTask));
+    this.childConfirm?.showConfirm('Changes saved');
   }
 }

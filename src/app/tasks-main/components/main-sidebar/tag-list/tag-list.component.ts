@@ -14,6 +14,11 @@ import { TagsService } from '../../../../core/services/tags.service';
 import { Client } from '../../../../core/interfaces/clients/Client';
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import {
+  AddTag,
+  GetTagsClient,
+} from '../../../../core/state/tags/tags.actions';
+import { TagsState } from '../../../../core/state/tags/tags.state';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -45,12 +50,10 @@ export class TagListComponent {
   ) {}
 
   ngOnInit() {
-    this.tagsService.getTagsClient().subscribe((data) => {
-      this.tags.update((tags) => tags = data.map((item: any) => ({
-        tag_id: item.tag_id,
-        tag_title: item.tag_title
-      })));
-    })
+    this.store.dispatch(new GetTagsClient());
+    this.store.select(TagsState.tags).subscribe((tags) => {
+      this.tags.set(tags);
+    });
   }
 
   //---------------------------------------
@@ -70,20 +73,10 @@ export class TagListComponent {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      debugger;
-      console.log('The dialog was closed');
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          this.tagsService.addTag(this.title()).subscribe((response) => {
-            console.log('Tag added successfully:', response);
-            this.tagsService.getTagsClient().subscribe((data) => {
-              this.tags.update((tags) => tags = data.map((item: any) => ({
-                tag_id: item.tag_id,
-                tag_title: item.tag_title
-              })));
-            });
-          });
+          this.store.dispatch(new AddTag(this.title()));
         }
       }
     });

@@ -1,5 +1,4 @@
-import { Task } from "../../core/interfaces/tasks/Task";
-
+import { TaskDB } from "../../core/interfaces/tasks/TaskDB";
 
 export class StatusNameAction {
   static readonly type = '[StatusName] Set status';
@@ -8,10 +7,10 @@ export class StatusNameAction {
 
 export class StatusTasksAction {
   static readonly type = '[StatusTasks] Set status tasks';
-  constructor(public payload: { statusTasks: Task[] }) {}
+  constructor(public payload: { statusTasks: TaskDB[] }) {}
 }
 
 export class CalendarTasksAction {
   static readonly type = '[CalendarTasks] Set calendar tasks';
-  constructor(public payload: { calendarTasks: Task[]; task_date: Date }) {}
+  constructor(public payload: { calendarTasks: TaskDB[]; task_date: Date }) {}
 }

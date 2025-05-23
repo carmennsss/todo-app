@@ -24,6 +24,8 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];
   localService = inject(LocalStorageService);
+
+  
   constructor(
     private messageService: MessageService,
     private router: Router,
@@ -48,6 +50,7 @@ export class SidebarFooterComponent implements OnInit {
       },
     ];
   }
+  
 
   //---------------------------------------
   // METHODS
@@ -67,14 +70,7 @@ export class SidebarFooterComponent implements OnInit {
       detail: 'User logged out',
       life: 3000,
     });
-    const emptyClient: Client = {
-      username: '',
-      password: '',
-      tags: [],
-      tasks: [],
-      categories: [],
-    };
-    this.localService.setCurrentClient(emptyClient);
+    localStorage.setItem('token', '');
     this.router.navigate(['']);
   }
 }

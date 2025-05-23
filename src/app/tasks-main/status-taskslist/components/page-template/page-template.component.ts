@@ -1,14 +1,13 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  input,
   OnInit,
   signal,
 } from '@angular/core';
 import { AddNewComponent } from '../add-new/add-new.component';
 import { DividerModule } from 'primeng/divider';
-import { Task } from '../../../../core/interfaces/tasks/Task';
 import { EditingSidebarComponent } from '../editing-sidebar/editing-sidebar.component';
 import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';
@@ -16,11 +15,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { StatusTasksAction } from '../../../states/tasks.actions';
-import { TasksState } from '../../../states/tasks.state';
+import { StatusState } from '../../../states/status.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Dialog } from 'primeng/dialog';
+import { GetTasksByStatus, DeleteTask, CreateTask } from '../../../../core/state/tasks/tasks.actions';
+import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
 @Component({
   selector: 'tasks-page-template',
@@ -30,7 +30,7 @@ import { Dialog } from 'primeng/dialog';
     EditingSidebarComponent,
     CommonModule,
     TaskItemComponent,
-    Dialog
+    Dialog,
   ],
   templateUrl: './page-template.component.html',
   styleUrl: './page-template.component.css',
@@ -45,6 +45,7 @@ export default class PageTemplateComponent implements OnInit {
   statusTasks = signal<TaskDB[]>([]);
   isVisible = false;
   pageTitle = 'Finished';
+
   newTask: TaskDB = {
     id: 0,
     title: '',
@@ -63,20 +64,23 @@ export default class PageTemplateComponent implements OnInit {
     private store: Store
   ) {}
   ngOnInit(): void {
-    this.store.select(TasksState.getStatus).subscribe((status) => {
-      this.pageTitle = status;
+    debugger;
+
+    this.store.select(StatusState.getStatus).subscribe((status) => {
+      this.pageTitle = status.toLowerCase().replaceAll(' ', '');
     });
 
-    this.tasksService
-      .getTasksStatusClient(this.pageTitle)
-      .subscribe((tasks) => {
-        this.statusTasks.set(tasks);
-      });
+    this.store.dispatch(new GetTasksByStatus(this.pageTitle));
+
+    this.store
+      .select(TasksStateHttp.tasks)
+      .subscribe((tasks) => this.statusTasks.set(tasks));
   }
 
   //---------------------------------------
   // METHODS
   //---------------------------------------
+
 
   /**
    * Selects a task for editing or deletion.
@@ -91,16 +95,12 @@ export default class PageTemplateComponent implements OnInit {
     this.selectedTask.set(task_selected);
     this.isDrawerVisible = !this.isDrawerVisible;
   }
-  
+
   createTask() {
+    debugger;
     this.isVisible = false;
-    this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '')
-    this.tasksService.createNewTask(this.newTask).subscribe(() => {
-      this.tasksService
-        .getTasksStatusClient(this.pageTitle)
-        .subscribe((tasks) => {
-          this.statusTasks.update((tasks_status) => (tasks_status = tasks));
-        });
-    });
+    this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '');
+
+    this.store.dispatch(new CreateTask(this.newTask))
   }
 }
