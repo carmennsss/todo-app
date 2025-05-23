@@ -44,25 +44,11 @@ import { AuthService } from '../../../core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserFormComponent implements OnInit {
-  localService = inject(LocalStorageService);
   authService = inject(AuthService);
   title = 'Login';
   text = "Don't have an account?";
   authForm: FormGroup = new FormGroup({});
 
-  model: Model = {
-    clients: [],
-  };
-
-  newClient: Client = {
-    username: '',
-    password: '',
-    tasks: [],
-    tags: [],
-    categories: [],
-  };
-
-  // @Select(ClientState.getClient) client$!: Observable<ClientDB>;
   @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
   constructor(
     private router: Router,
@@ -81,38 +67,13 @@ export class UserFormComponent implements OnInit {
   // METHODS
   //---------------------------------------
 
-  /**
-   * Submits the form and attempts to log in or register the user based on the form title.
-   *
-   * It checks if the model is empty and sets it to the current model if not.
-   * Then it checks if the title is 'login' or 'sign up' and calls the respective method.
-   * @param form The FormGroup containing the form values.
-   */
   submitClient(form: FormGroup) {
-    if (!(Object.keys(this.localService.getModel()).length === 0)) {
-      this.model = this.localService.getModel();
-    }
-
     if (this.title === 'Login') {
       this.logClient(form);
     } else {
       this.registerClient(form);
     }
   }
-
-  /**
-   * Attempts to log in the user using the provided form data.
-   *
-   * Checks if there are existing clients in the model and compares
-   * the form's username and password with each client's credentials.
-   *
-   * If a match is found, sets the current client in local storage
-   * and navigates to the main status page. If no match is found,
-   * displays a "User not found" message. If no clients exist,
-   * displays a "No users found" message.
-   *
-   * @param form The FormGroup containing the login form values.
-   */
 
   logClient(form: FormGroup) {
     if (!this.authService) {
@@ -125,33 +86,11 @@ export class UserFormComponent implements OnInit {
 
     this.authService.login(form.value.username, form.value.password).subscribe({
       error: (error: any) => {
-        if (!error) {
-          throw new Error('Error is null');
-        }
-
-        console.error('Error logging client:', error);
-        if (this.child) {
-          this.child.showConfirm('User not found');
-        } else {
-          throw new Error('PopMessageComponent is null');
-        }
+        this.child?.showConfirm('User not found');
       },
       complete: () => {
-        if (!this.router) {
-          throw new Error('Router is null');
-        }
-
-        this.router.navigate(['/main/status']).then(
-          (success) => {
-            if (!success) {
-              throw new Error('Navigation failed');
-            }
-          },
-          (error) => {
-            console.error('Navigation error:', error);
-          }
-        );
-      }
+        this.router.navigate(['/main/status']);
+      },
     });
   }
 
@@ -180,7 +119,6 @@ export class UserFormComponent implements OnInit {
    * @param form The FormGroup containing the registration form values.
    */
   registerClient(form: FormGroup) {
-    debugger;
     if (
       form.value.username.trim() === '' ||
       form.value.password.trim() === ''
@@ -189,21 +127,6 @@ export class UserFormComponent implements OnInit {
       return;
     }
 
-    if (this.model.clients.length != 0) {
-      for (let i = 0; i < this.model.clients.length; i++) {
-        if (this.model.clients[i].username === form.value.username) {
-          this.child?.showConfirm('User already exists');
-          return;
-        }
-      }
-    }
-    this.newClient = {
-      username: form.value.username,
-      password: form.value.password,
-      tasks: [],
-      tags: [],
-      categories: [],
-    };
     this.authService
       .signup(form.value.username, form.value.password)
       .subscribe({
@@ -211,11 +134,9 @@ export class UserFormComponent implements OnInit {
           this.router.navigate(['']);
         },
         error: (error: any) => {
-          console.error('Error registering client:', error);
+          this.child?.showConfirm('Username already exists');
         },
       });
-    this.model.clients.push(this.newClient);
-    this.localService.setModel(this.model);
     alert('User registered successfully, you can now log in');
 
     this.authForm.reset();

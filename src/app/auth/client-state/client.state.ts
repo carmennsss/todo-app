@@ -1,5 +1,3 @@
-/* IN PROGRESS */
-
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { changeCurrentClient } from './client.actions';

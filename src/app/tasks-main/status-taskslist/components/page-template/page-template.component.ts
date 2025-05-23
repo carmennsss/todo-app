@@ -97,7 +97,6 @@ export default class PageTemplateComponent implements OnInit {
   }
 
   createTask() {
-    debugger;
     this.isVisible = false;
     this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '');
 

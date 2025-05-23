@@ -42,7 +42,6 @@ import { TagsState } from '../../../../core/state/tags/tags.state';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { EditTask } from '../../../../core/state/tasks/tasks.actions';
 import {
-  AddSubtasks,
   GetSubtasks,
 } from '../../../../core/state/subtasks/subtask.actions';
 import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
@@ -206,10 +205,6 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    * Close the editing sidebar.
    */
   closeDrawer() {
-    this.selectedTags.set([]);
-    this.combineExcludedTags.set([]);
-    this.combinedNewTags.set([]);
-    this.combinedSubtasks.set([]);
     this.isDrawerVisible = false;
   }
 
@@ -233,16 +228,22 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
 
     if (selectedTagsList.length != 0) {
       for (const tag of selectedTagsList) {
-        this.store.dispatch(new AddTagToTask(this.selectedTask.id, tag.tag_id));
+        this.tagsService
+          .addTagToTask(this.selectedTask.id, tag.tag_id)
+          .subscribe();
       }
     }
 
     const selectedSubtasksList = this.selectedSubtasks();
     if (selectedSubtasksList.length != 0) {
-      this.store.dispatch(
-        new AddSubtasks(selectedSubtasksList, this.selectedTask.id)
-      );
+      for (const subtask of selectedSubtasksList) {
+        console.log(subtask);
+        this.subtasksService.createSubtask(subtask, this.selectedTask.id).subscribe()
+      }
     }
+    this.store.dispatch(new GetSubtasks(this.selectedTask.id));
+    this.store.dispatch(new GetTaskTags(this.selectedTask.id));
+    this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
     this.store.dispatch(new EditTask(this.selectedTask));
     this.childConfirm?.showConfirm('Changes saved');
   }

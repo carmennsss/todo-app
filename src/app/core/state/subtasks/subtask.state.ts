@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { SubTask } from '../../interfaces/tasks/SubTask';
 import { SubtasksService } from '../../services/subtasks.service';
-import { AddSubtasks, AddSubtaskToTask, GetSubtasks } from './subtask.actions';
+import { AddSubtask, GetSubtasks } from './subtask.actions';
 
 export interface SubtasksStateModel {
   subtasks: SubTask[];
@@ -15,7 +15,6 @@ export interface SubtasksStateModel {
     subtasks: [],
   },
 })
-
 @Injectable()
 export class SubtasksState {
   constructor(private subtasksService: SubtasksService) {}
@@ -34,28 +33,12 @@ export class SubtasksState {
     );
   }
 
-  @Action(AddSubtasks)
-  addSubtask(ctx: StateContext<SubtasksStateModel>, action: AddSubtasks) {
-    for (const subtask of action.subtasks) {
-      this.subtasksService.createSubtask(subtask).pipe(
-        tap(() => {
-          ctx.dispatch(new AddSubtaskToTask(subtask, action.taskId));
-        })
-      );
-    }
-  }
-
-  @Action(AddSubtaskToTask)
-  addSubtaskToTask(
-    ctx: StateContext<SubtasksStateModel>,
-    action: AddSubtaskToTask
-  ) {
-    return this.subtasksService
-      .addSubtaskToTask(action.taskId, action.subtask)
-      .pipe(
-        tap(() => {
-          ctx.dispatch(new GetSubtasks(action.taskId));
-        })
-      );
+  @Action(AddSubtask)
+  addSubtask(ctx: StateContext<SubtasksStateModel>, action: AddSubtask) {
+    return this.subtasksService.createSubtask(action.subtask, action.taskId).pipe(
+      tap(() => {
+        ctx.dispatch(new GetSubtasks(action.taskId));
+      })
+    );
   }
 }
