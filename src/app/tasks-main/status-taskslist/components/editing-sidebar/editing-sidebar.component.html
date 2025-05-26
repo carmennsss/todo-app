@@ -27,12 +27,12 @@
       #txtDesc
     ></textarea>
     <p>Date:</p>
-    <input
-      type="text"
-      id="title"
-      (change)="this.selectedTask.date = txtDate.value"
-      formControlName="title"
-      [value]="selectedTask.date"
+    <p-inputmask
+      (change)="this.selectedTask.date = txtDate.value ?? ''"
+      mask="9999-99-99"
+      placeholder="yyyy-mm-dd"
+      slotChar="yyyy-mm-dd"
+      id="txtDate"
       #txtDate
     />
     <div class="card flex justify-center" id="categories-list">

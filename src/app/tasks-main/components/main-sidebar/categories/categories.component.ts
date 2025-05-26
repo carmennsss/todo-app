@@ -21,10 +21,6 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Store } from '@ngxs/store';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { TasksService } from '../../../../core/services/tasks.service';
-import {
-  AddCategory,
-  GetCategories,
-} from '../../../../core/state/categories/categories.actions';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
@@ -69,7 +65,7 @@ export class SidebarCategoriesComponent implements OnInit {
   //---------------------------------------
 
   getCategoryItemCount(category_id: number) {
-    var tasks : TaskDB[] = []
+    var tasks: TaskDB[] = [];
     this.store.select(TasksStateHttp.allTasks).subscribe((tasksList) => {
       tasks = tasksList;
     });
@@ -95,12 +91,12 @@ export class SidebarCategoriesComponent implements OnInit {
             category_title: this.title(),
             category_id: 0,
           };
-          this.categoriesService.addCategory(newCategory)
+          this.categoriesService
+            .addCategory(newCategory)
             .subscribe((category) => {
               console.log('Category created:', category);
               this.title.set('');
-            }
-            );
+            });
         }
       }
     });

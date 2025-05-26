@@ -44,6 +44,7 @@ export class TasksService {
   }
 
   editTask(edited_task: TaskDB): Observable<TaskDB> {
+    console.log('Editing task:', edited_task);
     return this.http.put<TaskDB>(this.TASKS_URL + '/edit/' + edited_task.id, {
       task_id: edited_task.id,
       task_name: edited_task.title,

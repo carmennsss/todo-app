@@ -1,3 +1,4 @@
+import { MethodsService } from './../../../../shared/services/methods.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,6 +34,7 @@ import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskItemComponent implements OnChanges {
+  methodsService = inject(MethodsService);
   subtasksService = inject(SubtasksService);
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
@@ -53,6 +55,16 @@ export class TaskItemComponent implements OnChanges {
     }
   }
 
+  //---------------------------------------
+  // METHODS
+  //---------------------------------------
+
+  /**
+   * Searches the task's list title based on its list_id.
+   * Fetches the category name from the categoriesService and updates
+   * the list_title signal. If the task has no list_id, sets the list title to 'None'.
+   */
+
   getListToString() {
     if (this.task().list_id) {
       this.categoriesService.getCategoryName(this.task().list_id).subscribe({
@@ -68,14 +80,24 @@ export class TaskItemComponent implements OnChanges {
     }
   }
 
+  /**
+   * Deletes the task and then fetches the updated list of tasks
+   * from the server using the GetTasksByStatus action.
+   */
   deleteTask() {
     this.visible = false;
     this.tasksService.deleteTask(this.task().id).subscribe({
       next: (res) => {
         this.store.dispatch(new GetTasksByStatus(this.task().status));
+        // this.methodsService.reloadPage();
       },
     });
   }
+
+  /**
+   * Gets the subtasks associated with the current task
+   * and updates the subtaskCount signal with the number of subtasks.
+   */
 
   getSubtasksCount() {
     this.subtasksService

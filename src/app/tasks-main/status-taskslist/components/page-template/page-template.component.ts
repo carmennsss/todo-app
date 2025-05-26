@@ -101,6 +101,8 @@ export default class PageTemplateComponent implements OnInit {
       console.log('Task created:', task);
     });
 
+    this.methodsService.reloadPage();
+
     // this.store.dispatch(new GetTasksByStatus(this.pageTitle));
   }
 }

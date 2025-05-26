@@ -41,6 +41,8 @@ import {
 import { TagsState } from '../../../../core/state/tags/tags.state';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { EditTask } from '../../../../core/state/tasks/tasks.actions';
+import { InputMask } from 'primeng/inputmask';
+import { FormsModule } from '@angular/forms';
 import { GetSubtasks } from '../../../../core/state/subtasks/subtask.actions';
 import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
 
@@ -57,6 +59,7 @@ import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
     DialogModule,
     DatePickerModule,
     PopConfirmMessageComponent,
+    InputMask,
   ],
   templateUrl: './editing-sidebar.component.html',
   styleUrl: './editing-sidebar.component.css',
@@ -206,7 +209,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.tagsService.getTagsClient().subscribe((tags) => {
       tagsSignal = tags;
     });
-    
+
     /*
     this.store.select(TagsState.tags).subscribe((tags) => {
       tagsSignal = tags;
@@ -256,7 +259,6 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   saveChanges() {
-    debugger;
     const selectedTagsList = this.selectedTags();
 
     if (selectedTagsList.length != 0) {
@@ -279,8 +281,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.store.dispatch(new GetSubtasks(this.selectedTask.id));
     this.store.dispatch(new GetTaskTags(this.selectedTask.id));
     this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
-    this.store.dispatch(new EditTask(this.selectedTask));
     */
+
+    this.tasksService.editTask(this.selectedTask).subscribe((task) => {
+      console.log('Task updated:', task);
+    });
     this.childConfirm?.showConfirm('Changes saved');
   }
 }

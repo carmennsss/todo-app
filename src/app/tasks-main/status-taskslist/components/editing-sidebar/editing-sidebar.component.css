@@ -47,6 +47,13 @@ button {
   cursor: pointer;
 }
 
+#txtDate {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
 select {
   background-color: rgb(67, 66, 66);
   border-radius: 5px;

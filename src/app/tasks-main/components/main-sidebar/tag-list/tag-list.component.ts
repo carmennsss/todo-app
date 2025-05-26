@@ -73,7 +73,11 @@ export class TagListComponent {
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          this.store.dispatch(new AddTag(this.title()));
+          this.tagsService
+            .addTag(this.title())
+            .subscribe((response) => {
+              console.log('Tag added:', response);
+            })
           this.store.dispatch(new GetTagsClient());
         }
       }
