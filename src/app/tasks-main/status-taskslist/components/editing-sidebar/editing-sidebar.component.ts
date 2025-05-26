@@ -41,9 +41,7 @@ import {
 import { TagsState } from '../../../../core/state/tags/tags.state';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { EditTask } from '../../../../core/state/tasks/tasks.actions';
-import {
-  GetSubtasks,
-} from '../../../../core/state/subtasks/subtask.actions';
+import { GetSubtasks } from '../../../../core/state/subtasks/subtask.actions';
 import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
 
 @Component({
@@ -137,14 +135,33 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   getCategoriesClient() {
+    this.categoriesService.getCategoriesClient().subscribe((categories) => {
+      this.selectedTaskCategories.set(categories);
+    });
+    /*
     this.store.select(CategoriesState.categories).subscribe((categories) => {
       this.selectedTaskCategories.set(categories);
     });
+    */
   }
 
   getTagsFromTask() {
     this.store.dispatch(new GetTaskTags(this.selectedTask.id));
+    this.tagsService.getTagsTask(this.selectedTask.id).subscribe({
+      next: (tags) => {
+        this.selectedTags.set(tags);
+        this.combinedNewTags.set(tags);
+        this.combineExcludedTags.set([]);
+      },
+      error: (err) => {
+        console.error('Error fetching tags for task:', err);
+        this.selectedTags.set([]);
+        this.combinedNewTags.set([]);
+        this.combineExcludedTags.set([]);
+      },
+    });
 
+    /*
     this.store.select(TagsState.taskTags).subscribe((tags) => {
       this.combinedNewTags.set(tags);
     });
@@ -154,6 +171,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.store
       .select(TagsState.excludedTags)
       .subscribe((tags) => this.combineExcludedTags.set(tags));
+    */
   }
 
   getListToString() {
@@ -169,17 +187,31 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   }
 
   getSubtasksTask() {
+    this.subtasksService
+      .getSubtasksFromTask(this.selectedTask.id)
+      .subscribe((subtasks) => {
+        this.selectedSubtasks.set(subtasks);
+        this.combinedSubtasks.set(subtasks);
+      });
+    /*
     this.store.dispatch(new GetSubtasks(this.selectedTask.id));
     this.store.select(SubtasksState.subtasks).subscribe((subtasks) => {
       this.combinedSubtasks.set(subtasks);
     });
+    */
   }
 
   getTagsClient() {
     var tagsSignal: CustomTag[] = [];
+    this.tagsService.getTagsClient().subscribe((tags) => {
+      tagsSignal = tags;
+    });
+    
+    /*
     this.store.select(TagsState.tags).subscribe((tags) => {
       tagsSignal = tags;
     });
+    */
     return tagsSignal;
   }
 
@@ -189,12 +221,13 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
       tags.filter((t) => t.tag_id !== tag.tag_id)
     );
     this.combinedNewTags.update((tags) => [...tags, tag]);
-
+    /*
     this.store.select(TagsState.tags).subscribe((tags) => {
       if (tags.length <= this.selectedTags().length) {
         this.visibleDialogTag = false;
       }
     });
+    */
   }
 
   changeCategory(category_id: string) {
@@ -237,14 +270,17 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     const selectedSubtasksList = this.selectedSubtasks();
     if (selectedSubtasksList.length != 0) {
       for (const subtask of selectedSubtasksList) {
-        console.log(subtask);
-        this.subtasksService.createSubtask(subtask, this.selectedTask.id).subscribe()
+        this.subtasksService
+          .createSubtask(subtask, this.selectedTask.id)
+          .subscribe();
       }
     }
+    /*
     this.store.dispatch(new GetSubtasks(this.selectedTask.id));
     this.store.dispatch(new GetTaskTags(this.selectedTask.id));
     this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
     this.store.dispatch(new EditTask(this.selectedTask));
+    */
     this.childConfirm?.showConfirm('Changes saved');
   }
 }

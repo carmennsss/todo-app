@@ -49,8 +49,8 @@ export class TagsState {
   add(ctx: StateContext<TagsStateModel>, action: AddTag) {
     return this.service.addTag(action.tagTitle).pipe(
       tap(
-        () => ctx.dispatch(new GetTagsClient()),
-        () => ctx.dispatch(new GetTagsClient())
+        () => console.log('Tag added'),
+        (error) => console.error('Error adding tag:', error)
       )
     );
   }
@@ -71,13 +71,11 @@ export class TagsState {
 
   @Action(AddTagToTask)
   addTagToTask(ctx: StateContext<TagsStateModel>, action: AddTagToTask) {
-    return this.service
-      .addTagToTask(action.taskId, action.tagId)
-      .pipe(
-        tap(() => {
-          ctx.dispatch(new GetTaskTags(action.taskId));
-          ctx.dispatch(new GetExcludedTags(action.taskId));
-        })
-      );
+    return this.service.addTagToTask(action.taskId, action.tagId).pipe(
+      tap(() => {
+        ctx.dispatch(new GetTaskTags(action.taskId));
+        ctx.dispatch(new GetExcludedTags(action.taskId));
+      })
+    );
   }
 }

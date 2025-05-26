@@ -24,3 +24,6 @@ export class EditTask {
   static readonly type = '[Tasks] Edit';
   constructor(public task: TaskDB) {}
 }
+export class GetAllTasks {
+  static readonly type = '[Tasks] Get All';
+}

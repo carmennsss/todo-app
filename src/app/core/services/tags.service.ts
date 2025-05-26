@@ -27,7 +27,7 @@ export class TagsService {
         tags.map((tag) => ({
           tag_id: tag.tag_id,
           tag_title: tag.tag_name,
-      }))
+        }))
       )
     );
   }
@@ -39,7 +39,7 @@ export class TagsService {
       })
       .pipe(
         tap((res) => {
-          console.log(res);
+          console.log(res, 'res');
         })
       );
   }

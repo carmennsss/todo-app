@@ -32,7 +32,7 @@ import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskItemComponent implements OnChanges, OnInit {
+export class TaskItemComponent implements OnChanges {
   subtasksService = inject(SubtasksService);
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
@@ -46,13 +46,11 @@ export class TaskItemComponent implements OnChanges, OnInit {
   constructor(private store: Store) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task']) {
-      this.getSubtasksCount();
       this.getListToString();
     }
-  }
-
-  ngOnInit(): void {
-    this.getSubtasksCount();
+    if (changes['selected'] && this.selected == true) {
+      this.getSubtasksCount();
+    }
   }
 
   getListToString() {

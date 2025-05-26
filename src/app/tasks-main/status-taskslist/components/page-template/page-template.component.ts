@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,7 +18,11 @@ import { StatusState } from '../../../states/status.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Dialog } from 'primeng/dialog';
-import { GetTasksByStatus, DeleteTask, CreateTask } from '../../../../core/state/tasks/tasks.actions';
+import {
+  GetTasksByStatus,
+  DeleteTask,
+  CreateTask,
+} from '../../../../core/state/tasks/tasks.actions';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
 @Component({
@@ -64,13 +67,9 @@ export default class PageTemplateComponent implements OnInit {
     private store: Store
   ) {}
   ngOnInit(): void {
-    debugger;
-
     this.store.select(StatusState.getStatus).subscribe((status) => {
       this.pageTitle = status.toLowerCase().replaceAll(' ', '');
     });
-
-    this.store.dispatch(new GetTasksByStatus(this.pageTitle));
 
     this.store
       .select(TasksStateHttp.tasks)
@@ -80,7 +79,6 @@ export default class PageTemplateComponent implements OnInit {
   //---------------------------------------
   // METHODS
   //---------------------------------------
-
 
   /**
    * Selects a task for editing or deletion.
@@ -99,7 +97,10 @@ export default class PageTemplateComponent implements OnInit {
   createTask() {
     this.isVisible = false;
     this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '');
+    this.tasksService.createNewTask(this.newTask).subscribe((task) => {
+      console.log('Task created:', task);
+    });
 
-    this.store.dispatch(new CreateTask(this.newTask))
+    // this.store.dispatch(new GetTasksByStatus(this.pageTitle));
   }
 }

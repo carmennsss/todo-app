@@ -62,6 +62,23 @@ export class TasksService {
     });
   }
 
+  getAllTasksClient(): Observable<TaskDB[]> {
+    return this.http
+      .get<any[]>(this.TASKS_URL + '/user')
+      .pipe(
+        map((tasks) =>
+          tasks.map((task) => ({
+            id: task.task_id,
+            title: task.task_name,
+            desc: task.task_desc,
+            date: task.task_due_date,
+            status: task.state_name,
+            list_id: task.list_id,
+          }))
+        )
+      );
+  }
+
   createNewTask(task: TaskDB): Observable<TaskDB> {
     return this.http.post<TaskDB>(this.TASKS_URL, {
       task_name: task.title,

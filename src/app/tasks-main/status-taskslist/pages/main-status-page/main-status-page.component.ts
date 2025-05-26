@@ -15,6 +15,9 @@ import { StatusNameAction, StatusTasksAction } from '../../../states/status.acti
 import PageTemplateComponent from '../../components/page-template/page-template.component';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { StatusState } from '../../../states/status.state';
+import { GetTagsClient } from '../../../../core/state/tags/tags.actions';
+import { GetCategories } from '../../../../core/state/categories/categories.actions';
+import { GetAllTasks, GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 
 
 @Component({
@@ -43,6 +46,9 @@ export default class MainSatusPageComponent implements OnInit {
         this.pageTitle = status;
       }
     });
+    
+    this.store.dispatch(new GetTasksByStatus(this.pageTitle.toLowerCase().replaceAll(' ', '')));
+    this.store.dispatch(new GetAllTasks());
     this.getItemStatus();
   }
 

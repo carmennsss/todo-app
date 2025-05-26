@@ -26,6 +26,8 @@ import {
   GetCategories,
 } from '../../../../core/state/categories/categories.actions';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
+import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
+import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
 @Component({
   selector: 'sidebar-categories',
@@ -57,7 +59,6 @@ export class SidebarCategoriesComponent implements OnInit {
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit() {
-    this.store.dispatch(new GetCategories());
     this.store.select(CategoriesState.categories).subscribe((categories) => {
       this.categories.set(categories);
     });
@@ -68,10 +69,17 @@ export class SidebarCategoriesComponent implements OnInit {
   //---------------------------------------
 
   getCategoryItemCount(category_id: number) {
-    this.tasksService.getTasksFromCategory(category_id).subscribe((tasks) => {
-      return tasks.length;
+    var tasks : TaskDB[] = []
+    this.store.select(TasksStateHttp.allTasks).subscribe((tasksList) => {
+      tasks = tasksList;
     });
-    return 0;
+    var count = 0;
+    tasks.forEach((task) => {
+      if (task.list_id === category_id) {
+        count++;
+      }
+    });
+    return count;
   }
 
   addCategory() {
@@ -87,7 +95,12 @@ export class SidebarCategoriesComponent implements OnInit {
             category_title: this.title(),
             category_id: 0,
           };
-          this.store.dispatch(new AddCategory(newCategory));
+          this.categoriesService.addCategory(newCategory)
+            .subscribe((category) => {
+              console.log('Category created:', category);
+              this.title.set('');
+            }
+            );
         }
       }
     });

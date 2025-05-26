@@ -9,15 +9,17 @@ import {
   DeleteTask,
   GetTasksCalendar,
   EditTask,
+  GetAllTasks,
 } from './tasks.actions';
 
 export interface TasksStateModel {
   tasks: TaskDB[];
+  allTasks: TaskDB[];
 }
 
 @State<TasksStateModel>({
   name: 'tasks',
-  defaults: { tasks: [] },
+  defaults: { tasks: [], allTasks: [] },
 })
 @Injectable()
 export class TasksStateHttp {
@@ -27,6 +29,10 @@ export class TasksStateHttp {
   static tasks(state: TasksStateModel) {
     return state.tasks;
   }
+  @Selector()
+  static allTasks(state: TasksStateModel) {
+    return state.allTasks;
+  }
 
   @Action(GetTasksByStatus)
   getByStatus(ctx: StateContext<TasksStateModel>, action: GetTasksByStatus) {
@@ -35,19 +41,26 @@ export class TasksStateHttp {
       .pipe(tap((tasks) => ctx.patchState({ tasks })));
   }
 
+  @Action(GetAllTasks)
+  getAll(ctx: StateContext<TasksStateModel>) {
+    return this.service
+      .getAllTasksClient()
+      .pipe(tap((tasks) => ctx.patchState({ allTasks: tasks })));
+  }
+
   @Action(CreateTask)
   create(ctx: StateContext<TasksStateModel>, action: CreateTask) {
     console.log('create task', action.task);
     return this.service
       .createNewTask(action.task)
-      .pipe(tap(() => ctx.dispatch(new GetTasksByStatus(action.task.status))));
+      .pipe(tap(() => ctx.dispatch(new GetTasksByStatus(action.task.status)), () => ctx.dispatch(new GetAllTasks())));
   }
 
   @Action(DeleteTask)
   delete(ctx: StateContext<TasksStateModel>, action: DeleteTask) {
     return this.service
       .deleteTask(action.taskId)
-      .pipe(tap(() => ctx.dispatch(new GetTasksByStatus('TODO'))));
+      .pipe(tap(() => ctx.dispatch(new GetAllTasks())));
   }
 
   @Action(GetTasksCalendar)

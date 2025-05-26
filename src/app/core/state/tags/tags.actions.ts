@@ -1,5 +1,3 @@
-
-
 export class GetTagsClient {
   static readonly type = '[Tags] Get';
 }

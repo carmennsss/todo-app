@@ -33,9 +33,6 @@ export class TagListComponent {
   methodsService = inject(MethodsService);
   readonly dialog = inject(MatDialog);
 
-  currentClient = this.localService.getCurrentClient();
-  // currentClient = signal<Client>();
-
   title = signal<string>('');
   tags = signal<CustomTag[]>([]);
   newTag: CustomTag = {
@@ -50,7 +47,6 @@ export class TagListComponent {
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(new GetTagsClient());
     this.store.select(TagsState.tags).subscribe((tags) => {
       this.tags.set(tags);
     });
@@ -73,10 +69,12 @@ export class TagListComponent {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log('Dialog result:', result);
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
           this.store.dispatch(new AddTag(this.title()));
+          this.store.dispatch(new GetTagsClient());
         }
       }
     });

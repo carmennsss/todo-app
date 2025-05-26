@@ -56,11 +56,20 @@ export default class MainCalendarPageComponent {
       return;
     }
 
+    /*
     this.store.dispatch(
       new GetTasksCalendar(this.task_date.toLocaleDateString('en-CA'))
     );
 
     this.store.select(TasksStateHttp.tasks).subscribe((tasks: TaskDB[]) => {
+      if (tasks === null) {
+        return;
+      }
+      this.dateTasks.set(tasks);
+    });
+    */
+   
+   this.tasksService.getTasksDateClient(this.task_date.toLocaleDateString('en-CA')).subscribe((tasks: TaskDB[]) => {
       if (tasks === null) {
         return;
       }

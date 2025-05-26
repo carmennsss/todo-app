@@ -13,10 +13,14 @@ import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { StatusNameAction, StatusTasksAction } from '../../../states/status.actions';
+import {
+  StatusNameAction,
+  StatusTasksAction,
+} from '../../../states/status.actions';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
-
+import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
+import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -100,10 +104,12 @@ export class TaskStatusListComponent implements OnInit {
   }
 
   getItemsStatusCount(label: string) {
-    var tasks_length = 0;
-    this.tasksService.getTasksStatusClient(label).subscribe((tasks) => {
-      tasks_length = tasks.length;
-    })
+    let tasks_length = 0;
+    this.store.select(TasksStateHttp.allTasks).subscribe((tasks) => {
+      tasks_length = tasks.filter(
+        (task) => task.status === label.toLowerCase().replace(' ', '')
+      ).length;
+    });
     return tasks_length || 0;
   }
 }
