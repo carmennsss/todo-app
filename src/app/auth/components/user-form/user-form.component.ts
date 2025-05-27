@@ -18,12 +18,9 @@ import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { Client } from '../../../core/interfaces/clients/Client';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { PopMessageComponent } from '../../../shared/components/pop-message/pop-message.component';
-import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { AskAccountComponent } from '../ask-account/ask-account.component';
-import { Model } from '../../../core/interfaces/Model';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({

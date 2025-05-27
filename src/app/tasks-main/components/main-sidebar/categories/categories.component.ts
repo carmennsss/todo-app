@@ -11,11 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { TagModule } from 'primeng/tag';
 import { Category } from '../../../../core/interfaces/tasks/Category';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { AddNewComponent } from '../../../status-taskslist/components/add-new/add-new.component';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -43,8 +41,8 @@ import { GetCategories } from '../../../../core/state/categories/categories.acti
   standalone: true,
   styleUrl: './categories.component.css',
 })
+
 export class SidebarCategoriesComponent implements OnInit {
-  localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
@@ -68,6 +66,13 @@ export class SidebarCategoriesComponent implements OnInit {
   // METHODS
   //---------------------------------------
 
+  /**
+   * Gets the amount of tasks in a specific category.
+   * This method retrieves all tasks from the store and counts how many belong to the specified category.
+   * It is used to display the number of tasks associated with each category in the sidebar.
+   * @param category_id 
+   * @returns The number of tasks in the category.
+   */
   getCategoryItemCount(category_id: number) {
     var tasks: TaskDB[] = [];
     this.store.select(TasksStateHttp.allTasks).subscribe((tasksList) => {
@@ -82,6 +87,13 @@ export class SidebarCategoriesComponent implements OnInit {
     return count;
   }
 
+  /**
+   * Open a dialog to add a new category.
+   * This method opens a dialog where the user can input the title of the new category.
+   * After the dialog is closed, it checks if a title was provided.
+   * If a title is given, it creates a new category object and calls the service to add it to the backend.
+   * Finally, it dispatches an action to update the categories in the store.
+   */
   addCategory() {
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },

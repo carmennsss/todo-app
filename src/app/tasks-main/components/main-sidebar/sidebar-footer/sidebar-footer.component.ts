@@ -10,8 +10,6 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { Client } from '../../../../core/interfaces/clients/Client';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 
 @Component({
   selector: 'sidebar-footer',
@@ -23,9 +21,7 @@ import { LocalStorageService } from '../../../../shared/services/local-storage.s
 })
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];
-  localService = inject(LocalStorageService);
 
-  
   constructor(
     private messageService: MessageService,
     private router: Router,

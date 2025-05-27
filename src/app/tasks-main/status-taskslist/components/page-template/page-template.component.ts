@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { StatusState } from '../../../states/status.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
@@ -20,8 +19,6 @@ import { TasksService } from '../../../../core/services/tasks.service';
 import { Dialog } from 'primeng/dialog';
 import {
   GetTasksByStatus,
-  DeleteTask,
-  CreateTask,
 } from '../../../../core/state/tasks/tasks.actions';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
@@ -41,7 +38,6 @@ import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
   standalone: true,
 })
 export default class PageTemplateComponent implements OnInit {
-  localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   tasksService = inject(TasksService);
 
@@ -94,6 +90,11 @@ export default class PageTemplateComponent implements OnInit {
     this.isDrawerVisible = !this.isDrawerVisible;
   }
 
+  /**
+   * Toggles the visibility of the task creation dialog.
+   * It creates a new task object with the dialog's input values.
+   * It sets the status of the new task based on the current page title.
+   */
   createTask() {
     this.isVisible = false;
     this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '');

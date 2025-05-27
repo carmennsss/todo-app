@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,11 +11,8 @@ import { TaskItemComponent } from '../../../status-taskslist/components/task-ite
 import { Router } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
-import { GetTasksCalendar } from '../../../../core/state/tasks/tasks.actions';
-import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 
 @Component({
   selector: 'main-calendar-page',
@@ -34,7 +30,6 @@ import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
   standalone: true,
 })
 export default class MainCalendarPageComponent {
-  localService = inject(LocalStorageService);
   tasksService = inject(TasksService);
 
   task_date: Date = new Date();
@@ -68,12 +63,14 @@ export default class MainCalendarPageComponent {
       this.dateTasks.set(tasks);
     });
     */
-   
-   this.tasksService.getTasksDateClient(this.task_date.toLocaleDateString('en-CA')).subscribe((tasks: TaskDB[]) => {
-      if (tasks === null) {
-        return;
-      }
-      this.dateTasks.set(tasks);
-    });
+
+    this.tasksService
+      .getTasksDateClient(this.task_date.toLocaleDateString('en-CA'))
+      .subscribe((tasks: TaskDB[]) => {
+        if (tasks === null) {
+          return;
+        }
+        this.dateTasks.set(tasks);
+      });
   }
 }

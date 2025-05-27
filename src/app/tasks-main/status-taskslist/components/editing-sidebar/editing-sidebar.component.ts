@@ -22,7 +22,6 @@ import { CustomTag } from '../../../../core/interfaces/tasks/CustomTag';
 import { SubTask } from '../../../../core/interfaces/tasks/SubTask';
 import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { AddNewComponent } from '../add-new/add-new.component';
 import { Client } from '../../../../core/interfaces/clients/Client';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
@@ -67,7 +66,6 @@ import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
   standalone: true,
 })
 export class EditingSidebarComponent implements OnInit, OnChanges {
-  localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   tagsService = inject(TagsService);
   subtasksService = inject(SubtasksService);
@@ -101,9 +99,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     if (changes['selectedTask']) {
       if (changes['selectedTask'].currentValue != undefined) {
         this.selectedTask = changes['selectedTask'].currentValue;
+
         this.getTagsFromTask();
         this.getSubtasksTask();
         this.getListToString();
+
         this.visibleDialogTag = false;
         this.visibleDialogSub = false;
       }
@@ -137,6 +137,10 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Gets the categories from the backend and
+   * sets them to the selectedTaskCategories signal.
+   */
   getCategoriesClient() {
     this.categoriesService.getCategoriesClient().subscribe((categories) => {
       this.selectedTaskCategories.set(categories);
@@ -148,6 +152,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     */
   }
 
+  /**
+   * Gets the tags associated with the selectedTask.
+   * It dispatches actions to get task tags and excluded tags,
+   * and updates the combinedNewTags and combineExcludedTags signals accordingly.
+   */
   getTagsFromTask() {
     this.store.dispatch(new GetTaskTags(this.selectedTask.id));
     this.store.select(TagsState.taskTags).subscribe((tags) => {
@@ -160,6 +169,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
       .subscribe((tags) => this.combineExcludedTags.set(tags));
   }
 
+  /**
+   * Converts the selectedTask's list_id to a category name
+   * and sets it to the category_name signal.
+   * If the task has no list_id, it sets the category_name to 'None'.
+   */
   getListToString() {
     if (this.selectedTask.list_id) {
       this.categoriesService
@@ -172,6 +186,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Gets the subtasks associated with the selectedTask
+   * and updates the selectedSubtasks and combinedSubtasks signals.
+   * It uses the SubtasksService to fetch the subtasks from the backend.
+   */
   getSubtasksTask() {
     this.subtasksService
       .getSubtasksFromTask(this.selectedTask.id)
@@ -187,6 +206,11 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     */
   }
 
+  /**
+   * Retrieves the tags available for the client.
+   * It uses the TagsService to fetch the tags from the backend.
+   * @returns An array of CustomTag objects representing the tags available for the client.
+   */
   getTagsClient() {
     var tagsSignal: CustomTag[] = [];
     this.tagsService.getTagsClient().subscribe((tags) => {
@@ -201,6 +225,14 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     return tagsSignal;
   }
 
+  /**
+   * Gets a tag by its ID.
+   * Adds the tag to the selectedTags signal,
+   * removes it from the combineExcludedTags signal,
+   * and adds it to the combinedNewTags signal.
+   * This method is used to select a tag for the current task.
+   * @param tag The tag to be added.
+   */
   selectTag(tag: CustomTag) {
     this.selectedTags.update((tags) => [...tags, tag]);
     this.combineExcludedTags.update((tags) =>
@@ -216,6 +248,12 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     */
   }
 
+  /**
+   * Changes the category of the selected task.
+   * It updates the selectedTask's list_id to the new category ID.
+   * This method is called when the user selects a new category from the dropdown.
+   * @param category_id The ID of the category to change to.
+   */
   changeCategory(category_id: string) {
     this.selectedTask.list_id = parseInt(category_id, 10);
   }
@@ -241,6 +279,13 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.visibleDialogSub = false;
   }
 
+  /**
+   * Saves the changes made to the selected task.
+   * It adds the selected tags to the task and creates new subtasks.
+   * After saving, it dispatches actions to update the task in the store.
+   * It also shows a confirmation message indicating that the changes have been saved.
+   * If no tags or subtasks are selected, it simply updates the task in the store.
+   */
   saveChanges() {
     const selectedTagsList = this.selectedTags();
 

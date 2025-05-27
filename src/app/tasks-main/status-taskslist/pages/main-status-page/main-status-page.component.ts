@@ -10,7 +10,6 @@ import {
 import { Select, Store } from '@ngxs/store';
 import { DividerModule } from 'primeng/divider';
 import { Observable } from 'rxjs';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { StatusNameAction, StatusTasksAction } from '../../../states/status.actions';
 import PageTemplateComponent from '../../components/page-template/page-template.component';
 import { TasksService } from '../../../../core/services/tasks.service';
@@ -29,7 +28,6 @@ import { GetAllTasks, GetTasksByStatus } from '../../../../core/state/tasks/task
   standalone: true,
 })
 export default class MainSatusPageComponent implements OnInit {
-  localService = inject(LocalStorageService);
   tasksService = inject(TasksService);
 
   pageTitle = 'Finished';
@@ -57,6 +55,10 @@ export default class MainSatusPageComponent implements OnInit {
   //---------------------------------------
 
 
+  /**
+   * Fetches the number of tasks from the store and updates the status_tasks signal.
+   * This method is called to keep track of the number of tasks in the current status.
+   */
   getItemStatus() {
     this.store.select(TasksStateHttp.tasks).subscribe((status) => {
       this.status_tasks.set(status.length);

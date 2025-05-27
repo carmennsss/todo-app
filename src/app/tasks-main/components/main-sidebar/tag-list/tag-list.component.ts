@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Tag, TagModule } from 'primeng/tag';
+import { TagModule } from 'primeng/tag';
 import { ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,34 +9,34 @@ import { CustomTag } from '../../../../core/interfaces/tasks/CustomTag';
 import { Router } from '@angular/router';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { TagsService } from '../../../../core/services/tags.service';
-import { Client } from '../../../../core/interfaces/clients/Client';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import {
-  AddTag,
-  GetTagsClient,
-} from '../../../../core/state/tags/tags.actions';
+import { GetTagsClient } from '../../../../core/state/tags/tags.actions';
 import { DialogModule } from 'primeng/dialog';
 import { TagsState } from '../../../../core/state/tags/tags.state';
 
 @Component({
   selector: 'sidebar-tag-list',
-  imports: [TagModule, CommonModule, FormsModule, MatButtonModule, DialogModule],
+  imports: [
+    TagModule,
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    DialogModule,
+  ],
   templateUrl: './tag-list.component.html',
   styleUrl: './tag-list.component.css',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagListComponent {
-  localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   readonly dialog = inject(MatDialog);
 
   title = signal<string>('');
-  visibleDialogTag : boolean = false;
+  visibleDialogTag: boolean = false;
   tags = signal<CustomTag[]>([]);
+
   newTag: CustomTag = {
     tag_id: 0,
     tag_title: '',
@@ -58,6 +58,12 @@ export class TagListComponent {
   // METHODS
   //---------------------------------------
 
+  /**
+   * Opens a dialog to add a new tag.
+   * The dialog allows the user to input a title for the tag.
+   * After the dialog is closed, if a title is provided,
+   * the tag is added to the backend and the page is reloaded.
+   */
   addTag() {
     debugger;
     const dialogRef = this.dialog.open(DialogComponent, {
@@ -69,11 +75,9 @@ export class TagListComponent {
       if (result !== undefined) {
         this.title.set(result);
         if (this.title() !== '') {
-          this.tagsService
-            .addTag(this.title())
-            .subscribe((response) => {
-              console.log('Tag added:', response);
-            })
+          this.tagsService.addTag(this.title()).subscribe((response) => {
+            console.log('Tag added:', response);
+          });
           this.store.dispatch(new GetTagsClient());
           this.methodsService.reloadPage();
         }

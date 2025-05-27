@@ -60,6 +60,13 @@ export class TagsState {
   }
 
   @Action(AddTag)
+  /**
+   * Adds a new tag for the current user.
+   * It sends a POST request to the tags endpoint with the tag details and updates the state with the new tag.
+   * @param ctx StateContext of the TagsStateModel
+   * @param action AddTag with the new tag details
+   * @returns An Observable that emits the response from the server after adding a new tag.
+   */
   add(ctx: StateContext<TagsStateModel>, action: AddTag) {
     return this.service.addTag(action.tagTitle).pipe(
       tap(
@@ -70,6 +77,13 @@ export class TagsState {
   }
 
   @Action(GetTaskTags)
+  /**
+   * Retrieves the tags associated with a specific task.
+   * It sends a GET request to the tasks-tag endpoint with the 'task/included-tags' path and the task ID as a parameter
+   * @param ctx StateContext of the TagsStateModel
+   * @param action GetTaskTags with the task ID
+   * @returns An Observable that emits the tags from the server.
+   */
   getTaskTags(ctx: StateContext<TagsStateModel>, action: GetTaskTags) {
     return this.service
       .getTagsTask(action.taskId)
@@ -77,6 +91,13 @@ export class TagsState {
   }
 
   @Action(GetExcludedTags)
+  /**
+   * Retrieves the tags that are not associated with a specific task.
+   * It sends a GET request to the tasks-tag endpoint with the 'task/excluded-tags' path and the task ID as a parameter
+   * @param ctx StateContext of the TagsStateModel
+   * @param action GetExcludedTags with the task ID
+   * @returns An Observable that emits the tags from the server.
+   */
   getExcludedTags(ctx: StateContext<TagsStateModel>, action: GetExcludedTags) {
     return this.service
       .getTagsNotInTask(action.taskId)
@@ -85,6 +106,14 @@ export class TagsState {
 
   @Action(AddTagToTask)
   addTagToTask(ctx: StateContext<TagsStateModel>, action: AddTagToTask) {
+    /**
+     * Adds a tag to a specific task.
+     * It sends a POST request to the tasks-tag endpoint with the task ID and tag ID,
+     * and updates the state by fetching the updated task tags and excluded tags.
+     * @param ctx StateContext of the TagsStateModel
+     * @param action AddTagToTask with the task ID and tag ID
+     * @returns An Observable that emits the response from the server after adding the tag to the task.
+     */
     return this.service.addTagToTask(action.taskId, action.tagId).pipe(
       tap(() => {
         ctx.dispatch(new GetTaskTags(action.taskId));

@@ -3,24 +3,18 @@ import {
   Component,
   inject,
   OnInit,
-  signal,
 } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { LocalStorageService } from '../../../../shared/services/local-storage.service';
 import { MethodsService } from '../../../../shared/services/methods.service';
-import {
-  StatusNameAction,
-  StatusTasksAction,
-} from '../../../states/status.actions';
+import { StatusNameAction } from '../../../states/status.actions';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
-import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 
 @Component({
   selector: 'sidebar-task-status-list',
@@ -31,13 +25,11 @@ import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskStatusListComponent implements OnInit {
-  localService = inject(LocalStorageService);
   methodsService = inject(MethodsService);
   tasksService = inject(TasksService);
 
   items: MenuItem[] = [];
   currentItems: TaskDB[] = [];
-  // currentClient = signal<Client>();
 
   constructor(private router: Router, private store: Store) {}
   ngOnInit() {
@@ -89,6 +81,13 @@ export class TaskStatusListComponent implements OnInit {
   // METHODS
   //---------------------------------------
 
+  /**
+   * Goes to a specified page and updates the store with the current status and tasks.
+   * If the current URL already includes the specified page,
+   * it does nothing to avoid unnecessary navigation.
+   * @param page
+   * @returns void
+   */
   goToPage(page: string) {
     debugger;
     let currentUrl = this.router.url;
@@ -103,6 +102,14 @@ export class TaskStatusListComponent implements OnInit {
     }
   }
 
+  /**
+   * Retrieves the count of tasks with a specific status.
+   * This method subscribes to the tasks in the store and filters them based on the provided status label.
+   * It returns the count of tasks that match the status label.
+   * If no tasks are found, it returns 0.
+   * @param label
+   * @returns number of tasks with the specified status
+   */
   getItemsStatusCount(label: string) {
     let tasks_length = 0;
     this.store.select(TasksStateHttp.allTasks).subscribe((tasks) => {

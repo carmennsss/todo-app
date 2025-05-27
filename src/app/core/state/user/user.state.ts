@@ -24,7 +24,7 @@ export class AuthState {
   //---------------------------------------
   // SELECTORS
   //---------------------------------------
-  
+
   @Selector()
   static isLoggedIn(state: AuthStateModel): boolean {
     return state.loggedIn;
@@ -40,6 +40,13 @@ export class AuthState {
   //---------------------------------------
 
   @Action(Login)
+  /**
+   * Handles user login by calling the AuthService.
+   * On successful login, it stores the token in localStorage and updates the state.
+   * @param ctx - The state context to update the state.
+   * @param action - The Login action containing username and password.
+   * @return An observable that emits the login response.
+   */
   login(ctx: StateContext<AuthStateModel>, action: Login) {
     return this.authService.login(action.username, action.password).pipe(
       tap((res) => {
@@ -54,8 +61,13 @@ export class AuthState {
   }
 
   @Action(Logout)
+  /**
+   * Handles user logout by calling the AuthService.
+   * It clears the token from localStorage and updates the state to reflect the logged-out status.
+   * @param ctx - The state context to update the state.
+   */
   logout(ctx: StateContext<AuthStateModel>) {
-    this.authService.logout(); // maneja router internamente
+    this.authService.logout();
     ctx.setState({
       token: null,
       loggedIn: false,
@@ -63,6 +75,12 @@ export class AuthState {
   }
 
   @Action(Signup)
+  /**
+   * Handles user signup by calling the AuthService.
+   * @param ctx - The state context to update the state.
+   * @param action - The Signup action containing username and password.
+   * @return An observable that emits the signup response.
+   */
   signup(ctx: StateContext<AuthStateModel>, action: Signup) {
     return this.authService.signup(action.username, action.password);
   }

@@ -5,25 +5,18 @@ import {
   inject,
   input,
   OnChanges,
-  OnInit,
   signal,
   SimpleChanges,
 } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
 import { Dialog } from 'primeng/dialog';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { SubtasksService } from '../../../../core/services/subtasks.service';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Store } from '@ngxs/store';
-import {
-  DeleteTask,
-  GetTasksByStatus,
-} from '../../../../core/state/tasks/tasks.actions';
-import { GetSubtasks } from '../../../../core/state/subtasks/subtask.actions';
-import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
+import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 
 @Component({
   selector: 'task-item',
@@ -38,6 +31,7 @@ export class TaskItemComponent implements OnChanges {
   subtasksService = inject(SubtasksService);
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
+
   task = input.required<TaskDB>();
   visibleInput = false;
   selected = false;
@@ -48,8 +42,10 @@ export class TaskItemComponent implements OnChanges {
   constructor(private store: Store) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task']) {
-      this.getListToString();
-      this.getSubtasksCount();
+      if (changes['task'].currentValue != undefined) {
+        this.getListToString();
+        this.getSubtasksCount();
+      }
     }
   }
 
