@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   imports: [],
   templateUrl: './ask-account.component.html',
   styleUrl: './ask-account.component.css',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AskAccountComponent {

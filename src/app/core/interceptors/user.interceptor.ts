@@ -6,7 +6,7 @@ import type { HttpInterceptorFn } from '@angular/common/http';
  * If the token is present in local storage, it adds the token to the request headers.
  * @param req 
  * @param next 
- * @returns 
+ * @returns Observable of the HTTP response
  */
 export const userInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.includes('/api') && !req.url.includes('auth')) {

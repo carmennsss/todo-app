@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { AddNewComponent } from '../add-new/add-new.component';
 import { DividerModule } from 'primeng/divider';
@@ -17,10 +18,9 @@ import { StatusState } from '../../../states/status.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Dialog } from 'primeng/dialog';
-import {
-  GetTasksByStatus,
-} from '../../../../core/state/tasks/tasks.actions';
+import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'tasks-page-template',
@@ -31,6 +31,7 @@ import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
     CommonModule,
     TaskItemComponent,
     Dialog,
+    PopConfirmMessageComponent,
   ],
   templateUrl: './page-template.component.html',
   styleUrl: './page-template.component.css',
@@ -44,6 +45,10 @@ export default class PageTemplateComponent implements OnInit {
   statusTasks = signal<TaskDB[]>([]);
   isVisible = false;
   pageTitle = 'Finished';
+
+  @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
 
   newTask: TaskDB = {
     id: 0,
@@ -102,8 +107,8 @@ export default class PageTemplateComponent implements OnInit {
       console.log('Task created:', task);
     });
 
-    this.methodsService.reloadPage();
-
+    //this.methodsService.reloadPage();
+    this.childConfirm?.showConfirm('Task created successfully!');
     this.store.dispatch(new GetTasksByStatus(this.pageTitle));
   }
 }

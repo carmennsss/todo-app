@@ -38,6 +38,7 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './user-form.component.html',
   providers: [MessageService],
   styleUrl: './user-form.component.css',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserFormComponent implements OnInit {

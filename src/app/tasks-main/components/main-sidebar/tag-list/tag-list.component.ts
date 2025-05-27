@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { TagModule } from 'primeng/tag';
 import { ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import { Store } from '@ngxs/store';
 import { GetTagsClient } from '../../../../core/state/tags/tags.actions';
 import { DialogModule } from 'primeng/dialog';
 import { TagsState } from '../../../../core/state/tags/tags.state';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -23,6 +24,7 @@ import { TagsState } from '../../../../core/state/tags/tags.state';
     FormsModule,
     MatButtonModule,
     DialogModule,
+    PopConfirmMessageComponent,
   ],
   templateUrl: './tag-list.component.html',
   styleUrl: './tag-list.component.css',
@@ -36,6 +38,10 @@ export class TagListComponent {
   title = signal<string>('');
   visibleDialogTag: boolean = false;
   tags = signal<CustomTag[]>([]);
+
+  @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
 
   newTag: CustomTag = {
     tag_id: 0,
@@ -79,7 +85,7 @@ export class TagListComponent {
             console.log('Tag added:', response);
           });
           this.store.dispatch(new GetTagsClient());
-          this.methodsService.reloadPage();
+          this.childConfirm?.showConfirm("Tag added successfully!");
         }
       }
     });

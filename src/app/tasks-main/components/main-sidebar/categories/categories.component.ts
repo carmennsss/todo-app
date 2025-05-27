@@ -5,6 +5,7 @@ import {
   OnInit,
   inject,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,7 @@ import { CategoriesState } from '../../../../core/state/categories/categories.st
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 import { GetCategories } from '../../../../core/state/categories/categories.actions';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'sidebar-categories',
@@ -35,13 +37,13 @@ import { GetCategories } from '../../../../core/state/categories/categories.acti
     PanelMenuModule,
     AddNewComponent,
     DialogModule,
+    PopConfirmMessageComponent,
   ],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   styleUrl: './categories.component.css',
 })
-
 export class SidebarCategoriesComponent implements OnInit {
   methodsService = inject(MethodsService);
   categoriesService = inject(CategoriesService);
@@ -53,6 +55,10 @@ export class SidebarCategoriesComponent implements OnInit {
   visibleDialogCategory: boolean = false;
 
   categories = signal<Category[]>([]);
+
+  @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
 
   constructor(private router: Router, private store: Store) {}
 
@@ -70,7 +76,7 @@ export class SidebarCategoriesComponent implements OnInit {
    * Gets the amount of tasks in a specific category.
    * This method retrieves all tasks from the store and counts how many belong to the specified category.
    * It is used to display the number of tasks associated with each category in the sidebar.
-   * @param category_id 
+   * @param category_id
    * @returns The number of tasks in the category.
    */
   getCategoryItemCount(category_id: number) {
@@ -113,6 +119,7 @@ export class SidebarCategoriesComponent implements OnInit {
               console.log('Category created:', category);
               this.title.set('');
             });
+          this.childConfirm?.showConfirm("Category created successfully!");
           this.store.dispatch(new GetCategories());
         }
       }

@@ -66,6 +66,10 @@ select {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+#categories-dropdown {
+  overflow: scroll;
+}
+
 /* CATEGORIES */
 
 #categories-list {

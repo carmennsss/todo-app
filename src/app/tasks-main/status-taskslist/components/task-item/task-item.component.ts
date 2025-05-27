@@ -7,6 +7,7 @@ import {
   OnChanges,
   signal,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule } from '@angular/common';
@@ -17,10 +18,11 @@ import { SubtasksService } from '../../../../core/services/subtasks.service';
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Store } from '@ngxs/store';
 import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'task-item',
-  imports: [DividerModule, CommonModule, Dialog],
+  imports: [DividerModule, CommonModule, Dialog, PopConfirmMessageComponent],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
   standalone: true,
@@ -32,6 +34,10 @@ export class TaskItemComponent implements OnChanges {
   categoriesService = inject(CategoriesService);
   tasksService = inject(TasksService);
 
+  @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
+
   task = input.required<TaskDB>();
   visibleInput = false;
   selected = false;
@@ -41,7 +47,7 @@ export class TaskItemComponent implements OnChanges {
 
   constructor(private store: Store) {}
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['task']) {
+    if (changes['task'] !== undefined) {
       if (changes['task'].currentValue != undefined) {
         this.getListToString();
         this.getSubtasksCount();
@@ -80,12 +86,15 @@ export class TaskItemComponent implements OnChanges {
    */
   deleteTask() {
     this.visible = false;
+
     this.tasksService.deleteTask(this.task().id).subscribe({
       next: (res) => {
         this.store.dispatch(new GetTasksByStatus(this.task().status));
+
         // this.methodsService.reloadPage();
       },
     });
+    this.childConfirm?.showConfirm('Task deleted successfully!');
   }
 
   /**
