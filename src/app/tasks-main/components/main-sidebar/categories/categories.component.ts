@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { PanelMenuModule } from 'primeng/panelmenu';
@@ -24,6 +25,7 @@ import { TasksService } from '../../../../core/services/tasks.service';
 import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
+import { GetCategories } from '../../../../core/state/categories/categories.actions';
 
 @Component({
   selector: 'sidebar-categories',
@@ -34,6 +36,7 @@ import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
     MatButtonModule,
     PanelMenuModule,
     AddNewComponent,
+    DialogModule,
   ],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +52,7 @@ export class SidebarCategoriesComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   title = signal<string>('');
+  visibleDialogCategory: boolean = false;
 
   categories = signal<Category[]>([]);
 
@@ -97,6 +101,7 @@ export class SidebarCategoriesComponent implements OnInit {
               console.log('Category created:', category);
               this.title.set('');
             });
+          this.store.dispatch(new GetCategories());
         }
       }
     });

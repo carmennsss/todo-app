@@ -14,7 +14,7 @@ h3 {
 
 /* NEW CATEGORIES */
 
-.newCategories {
+#category-list {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -50,4 +50,61 @@ h3 {
 
 p-tag {
   width: 85%;
+}
+
+#seeMoreCategories {
+  display: none;
+}
+
+@media screen and (max-height: 825px) {
+  h3 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+
+  .category-item {
+    display: none;
+  }
+
+  .categories-dialog {
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  #category-buttons {
+    display: flex;
+    flex-direction: row;
+    height: 23px;
+    align-items: center;
+    margin-top: 22px;
+    gap: 8px;
+    margin-bottom: 25px;
+  }
+
+  #seeMoreCategories {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: #d5d5d5;
+    background-color: #ffc9c9;
+    padding: 4px;
+    border-radius: 4px;
+    width: 40px;
+    cursor: pointer;
+    height: 30px;
+    margin-top: -30px;
+    margin-left: 10px;
+  }
+
+  .newCategories {
+    margin-top: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

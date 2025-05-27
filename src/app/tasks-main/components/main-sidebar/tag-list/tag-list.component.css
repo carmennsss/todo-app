@@ -16,13 +16,13 @@ h3 {
 
 /* NEW TAGS */
 
-.newTags {
+.sidebar-tags-list {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   height: 70px;
-  overflow: auto;
+  overflow: scroll;
   flex-direction: row;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -30,4 +30,84 @@ h3 {
 
 .newTags:hover {
   scrollbar-width: thin;
+}
+
+#seeMoreTags {
+  display: none;
+}
+
+.tags-dialog {
+  width: 100%;
+  height: auto;
+}
+
+
+#sidebar-tags {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 0;
+  height: 20px;
+}
+
+@media screen and (max-height: 825px) {
+  h3 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+  #sidebar-tags {
+    display: none;
+  }
+
+  .tags-dialog {
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  #seeMoreTags {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: #d5d5d5;
+    background-color: #2e2e2e;
+    padding: 6px;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+    overflow: hidden;
+    height: 32px;
+    margin-top: -30px;
+  }
+
+  #tag-list {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    gap: 8px;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .cursor-pointer {
+    height: 30px;
+  }
+
+  .newTags {
+    margin-top: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-tags-list {
+    margin-top: 0;
+    height: 0px;
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
 }

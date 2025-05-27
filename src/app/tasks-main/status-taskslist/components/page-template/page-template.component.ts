@@ -103,6 +103,6 @@ export default class PageTemplateComponent implements OnInit {
 
     this.methodsService.reloadPage();
 
-    // this.store.dispatch(new GetTasksByStatus(this.pageTitle));
+    this.store.dispatch(new GetTasksByStatus(this.pageTitle));
   }
 }

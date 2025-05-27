@@ -150,31 +150,15 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
 
   getTagsFromTask() {
     this.store.dispatch(new GetTaskTags(this.selectedTask.id));
-    this.tagsService.getTagsTask(this.selectedTask.id).subscribe({
-      next: (tags) => {
-        this.selectedTags.set(tags);
-        this.combinedNewTags.set(tags);
-        this.combineExcludedTags.set([]);
-      },
-      error: (err) => {
-        console.error('Error fetching tags for task:', err);
-        this.selectedTags.set([]);
-        this.combinedNewTags.set([]);
-        this.combineExcludedTags.set([]);
-      },
-    });
-
-    /*
     this.store.select(TagsState.taskTags).subscribe((tags) => {
       this.combinedNewTags.set(tags);
     });
 
     this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
-
     this.store
       .select(TagsState.excludedTags)
       .subscribe((tags) => this.combineExcludedTags.set(tags));
-    */
+    
   }
 
   getListToString() {
@@ -283,9 +267,7 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.store.dispatch(new GetExcludedTags(this.selectedTask.id));
     */
 
-    this.tasksService.editTask(this.selectedTask).subscribe((task) => {
-      console.log('Task updated:', task);
-    });
+    this.store.dispatch(new EditTask(this.selectedTask));
     this.childConfirm?.showConfirm('Changes saved');
   }
 }

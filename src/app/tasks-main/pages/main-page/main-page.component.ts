@@ -18,4 +18,11 @@ export default class MainPageComponent implements OnInit {
     this.store.dispatch(new GetTagsClient());
     this.store.dispatch(new GetCategories());
   }
+
+  openSidebar() {
+    const sidebar = document.querySelector('#sidebar') as HTMLElement;
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
 }

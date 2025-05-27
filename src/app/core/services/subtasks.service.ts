@@ -18,6 +18,11 @@ export class SubtasksService {
     private store: Store
   ) {}
 
+  /**
+   * Retrieves subtasks associated with a specific task ID.
+   * @param id_task - The ID of the task for which subtasks are to be retrieved.
+   * @returns An Observable that emits an array of SubTask objects.
+   */
   getSubtasksFromTask(id_task: number): Observable<SubTask[]> {
     if (id_task === undefined) {
       return new Observable<SubTask[]>();
@@ -38,6 +43,12 @@ export class SubtasksService {
       );
   }
 
+  /**
+   * Creates a new subtask associated with a specific task ID.
+   * @param subtask 
+   * @param id_task 
+   * @returns An Observable that emits the created SubTask object.
+   */
   createSubtask(subtask: SubTask, id_task: number): Observable<SubTask> {
     console.log('Creating subtask:', subtask);
     return this.http.post<SubTask>(this.SUBTASKS_URL, {

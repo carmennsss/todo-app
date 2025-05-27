@@ -21,6 +21,10 @@ export interface AuthStateModel {
 export class AuthState {
   constructor(private authService: AuthService) {}
 
+  //---------------------------------------
+  // SELECTORS
+  //---------------------------------------
+  
   @Selector()
   static isLoggedIn(state: AuthStateModel): boolean {
     return state.loggedIn;
@@ -30,6 +34,10 @@ export class AuthState {
   static getToken(state: AuthStateModel): string | null {
     return state.token;
   }
+
+  //---------------------------------------
+  // ACTIONS
+  //---------------------------------------
 
   @Action(Login)
   login(ctx: StateContext<AuthStateModel>, action: Login) {

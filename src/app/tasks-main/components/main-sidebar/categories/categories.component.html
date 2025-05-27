@@ -1,10 +1,32 @@
 <div class="sidebar">
   <h3>Category</h3>
-  <task-add-new (click)="addCategory()"></task-add-new>
-  <div class="newCategories">
-    <div *ngFor="let category of categories()" class="category-item">
-      <p-tag [value]="category.category_title" severity="secondary"></p-tag>
-      <p>{{ getCategoryItemCount(category.category_id) }}</p>
+  <div id="category-buttons">
+    <task-add-new (click)="addCategory()"></task-add-new>
+    <div class="newCategories">
+      <button (click)="visibleDialogCategory = true" id="seeMoreCategories">
+        ㅤ<i class="pi pi-eye" style="font-size: 1.3rem; color: #ff8d8d"></i>ㅤ
+      </button>
+    </div>
+    <p-dialog
+      header="Categories"
+      [(visible)]="visibleDialogCategory"
+      [style]="{ width: '25rem', height: '25rem' }"
+    >
+      <div class="categories-dialog">
+        <p-tag
+          *ngFor="let category of categories()"
+          class="category-dialog"
+          severity="secondary"
+          value="{{ category.category_title }}"
+          [rounded]="true"
+        ></p-tag>
+      </div>
+    </p-dialog>
+    <div id="category-list">
+      <div *ngFor="let category of categories()" class="category-item">
+        <p-tag [value]="category.category_title" severity="secondary"></p-tag>
+        <p>{{ getCategoryItemCount(category.category_id) }}</p>
+      </div>
     </div>
   </div>
 </div>

@@ -25,6 +25,10 @@ export interface TasksStateModel {
 export class TasksStateHttp {
   constructor(private service: TasksService) {}
 
+  //---------------------------------------
+  // SELECTORS
+  //---------------------------------------
+  
   @Selector()
   static tasks(state: TasksStateModel) {
     return state.tasks;
@@ -33,6 +37,10 @@ export class TasksStateHttp {
   static allTasks(state: TasksStateModel) {
     return state.allTasks;
   }
+
+  //---------------------------------------
+  // ACTIONS
+  //---------------------------------------
 
   @Action(GetTasksByStatus)
   getByStatus(ctx: StateContext<TasksStateModel>, action: GetTasksByStatus) {
@@ -51,9 +59,12 @@ export class TasksStateHttp {
   @Action(CreateTask)
   create(ctx: StateContext<TasksStateModel>, action: CreateTask) {
     console.log('create task', action.task);
-    return this.service
-      .createNewTask(action.task)
-      .pipe(tap(() => ctx.dispatch(new GetTasksByStatus(action.task.status)), () => ctx.dispatch(new GetAllTasks())));
+    return this.service.createNewTask(action.task).pipe(
+      tap(
+        () => ctx.dispatch(new GetTasksByStatus(action.task.status)),
+        () => ctx.dispatch(new GetAllTasks())
+      )
+    );
   }
 
   @Action(DeleteTask)

@@ -18,11 +18,12 @@ import {
   AddTag,
   GetTagsClient,
 } from '../../../../core/state/tags/tags.actions';
+import { DialogModule } from 'primeng/dialog';
 import { TagsState } from '../../../../core/state/tags/tags.state';
 
 @Component({
   selector: 'sidebar-tag-list',
-  imports: [TagModule, CommonModule, FormsModule, MatButtonModule],
+  imports: [TagModule, CommonModule, FormsModule, MatButtonModule, DialogModule],
   templateUrl: './tag-list.component.html',
   styleUrl: './tag-list.component.css',
   standalone: true,
@@ -34,6 +35,7 @@ export class TagListComponent {
   readonly dialog = inject(MatDialog);
 
   title = signal<string>('');
+  visibleDialogTag : boolean = false;
   tags = signal<CustomTag[]>([]);
   newTag: CustomTag = {
     tag_id: 0,
@@ -56,12 +58,6 @@ export class TagListComponent {
   // METHODS
   //---------------------------------------
 
-  /**
-   * Opens a dialog to add a new tag. If the dialog is confirmed and the
-   * result is not empty, creates a new CustomTag with the given title,
-   * adds it to the currentClient's tags, and saves the currentClient
-   * to local storage. Then reloads the page to reflect the change.
-   */
   addTag() {
     debugger;
     const dialogRef = this.dialog.open(DialogComponent, {
@@ -79,6 +75,7 @@ export class TagListComponent {
               console.log('Tag added:', response);
             })
           this.store.dispatch(new GetTagsClient());
+          this.methodsService.reloadPage();
         }
       }
     });

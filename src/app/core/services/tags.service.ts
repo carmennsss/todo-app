@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { ClientDB } from '../interfaces/clients/ClientDB';
-import { ClientState } from '../../auth/client-state/client.state';
 import { Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CustomTag } from '../interfaces/tasks/CustomTag';
@@ -21,6 +19,11 @@ export class TagsService {
     private store: Store
   ) {}
 
+  /**
+   * Retrieves the tags associated with the current user.
+   * It sends a GET request to the tags endpoint with the 'user' parameter.
+   * @returns An Observable that emits an array of CustomTag objects.
+   */
   public getTagsClient(): Observable<CustomTag[]> {
     return this.http.get<any[]>(this.TAGS_URL + 'user').pipe(
       map((tags) =>
@@ -32,6 +35,12 @@ export class TagsService {
     );
   }
 
+  /**
+   * Adds a new tag for the current user.
+   * It sends a POST request to the tags endpoint with the tag details.
+   * @param tag
+   * @returns An Observable that emits the response from the server after adding a new tag.
+   */
   public addTag(tag: string) {
     return this.http
       .post<any>(this.TAGS_URL, {
@@ -44,10 +53,17 @@ export class TagsService {
       );
   }
 
+  /**
+   * Gets the tags associated with a specific task.
+   * It sends a GET request to the tasks-tag endpoint with the 'task/included-tags' path and the task ID as a parameter
+   * @param id_task
+   * @returns An Observable that emits an array of CustomTag objects that are associated with the specified task.
+   */
   public getTagsTask(id_task: number) {
     if (id_task == undefined) {
       return new Observable<CustomTag[]>();
     }
+    console.log('getTagsTask', id_task);
     return this.http
       .get<any[]>(this.TASKS_TAGS_URL + 'task/included-tags', {
         params: {
@@ -64,6 +80,12 @@ export class TagsService {
       );
   }
 
+  /**
+   * Gets the tags that are not associated with a specific task.
+   * It sends a GET request to the tasks-tag endpoint with the 'task/excluded-tags' path and the task ID as a parameter.
+   * @param id_task 
+   * @returns An Observable that emits an array of CustomTag objects that are not associated with the specified task.
+   */
   public getTagsNotInTask(id_task: number) {
     if (id_task == undefined) {
       return new Observable<CustomTag[]>();
@@ -84,6 +106,13 @@ export class TagsService {
       );
   }
 
+  /**
+   * Adds a tag to a specific task.
+   * It sends a POST request to the tasks-tag endpoint with the task ID and tag ID.
+   * @param id_task - The ID of the task to which the tag will be added.
+   * @param id_tag - The ID of the tag to be added to the task.
+   * @returns An Observable that emits the response from the server after adding the tag to the task.
+   */
   public addTagToTask(id_task: number, id_tag: number) {
     return this.http.post<any>(this.TASKS_TAGS_URL, {
       task_id: id_task,

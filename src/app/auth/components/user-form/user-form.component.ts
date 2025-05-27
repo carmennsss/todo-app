@@ -67,6 +67,10 @@ export class UserFormComponent implements OnInit {
   // METHODS
   //---------------------------------------
 
+  /**
+   * Submits the form based on the page content.
+   * @param form The FormGroup containing the form values.
+   */
   submitClient(form: FormGroup) {
     if (this.title === 'Login') {
       this.logClient(form);
@@ -75,6 +79,13 @@ export class UserFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Logs in the user with the provided credentials.
+   * 
+   * Checks if the username and password are correct, using the AuthService.
+   * If the credentials are valid, navigates to the main status page.
+   * @param form The FormGroup containing the login form values.
+   */
   logClient(form: FormGroup) {
     if (!this.authService) {
       throw new Error('AuthService is null');

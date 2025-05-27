@@ -1,5 +1,3 @@
-import { Category } from "./Category"
-
 export interface TaskDB {
     id: number,
     title: string,

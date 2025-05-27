@@ -5,3 +5,10 @@ h3 {
   color: #000;
   margin-bottom: 10px;
 }
+
+@media screen and (max-height: 825px) {
+  h3 {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+}

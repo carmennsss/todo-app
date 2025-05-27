@@ -1,10 +1,5 @@
-import { Store } from '@ngxs/store';
-
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { LocalStorageService } from '../../shared/services/local-storage.service';
-import { ClientState } from '../../auth/client-state/client.state';
-import { ClientDB } from '../interfaces/clients/ClientDB';
 
 /**
  * This guard checks if the user is logged in, if not, redirects to the root of the app.

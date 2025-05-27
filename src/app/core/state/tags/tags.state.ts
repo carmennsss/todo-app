@@ -25,6 +25,10 @@ export interface TagsStateModel {
 export class TagsState {
   constructor(private service: TagsService) {}
 
+  //---------------------------------------
+  // SELECTORS
+  //---------------------------------------
+
   @Selector()
   static tags(state: TagsStateModel) {
     return state.tags;
@@ -38,7 +42,17 @@ export class TagsState {
     return state.taskTags;
   }
 
+  //---------------------------------------
+  // ACTIONS
+  //---------------------------------------
+
   @Action(GetTagsClient)
+  /**
+   * Retrieves the tags for the current user.
+   * It sends a GET request to the tags endpoint and updates the state with the retrieved tags.
+   * @param ctx StateContext of the TagsStateModel
+   * @returns An Observable that emits the tags from the server.
+   */
   get(ctx: StateContext<TagsStateModel>) {
     return this.service
       .getTagsClient()

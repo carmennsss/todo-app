@@ -7,8 +7,7 @@
   scrollbar-color: #000000 #ffffff;
   scrollbar-width: thin;
   height: 100vh;
-  position:fixed;
-  overflow: scroll;
+  position: fixed;
   top: 0;
   left: 0;
   flex-direction: row;
@@ -40,4 +39,26 @@ sidebar-footer {
   padding-top: 15px;
   font-size: 13px;
   color: #666;
+}
+
+@media screen and (max-height: 825px) {
+  .sidebar {
+    padding: 10px;
+  }
+
+  .sidebar h2 {
+    font-size: 16px;
+  }
+
+  sidebar-task-status-list,
+  sidebar-categories,
+  sidebar-tag-list,
+  sidebar-footer {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  sidebar-footer {
+    font-size: 14px;
+  }
 }
