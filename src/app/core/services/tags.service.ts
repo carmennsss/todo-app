@@ -63,7 +63,6 @@ export class TagsService {
     if (id_task == undefined) {
       return new Observable<CustomTag[]>();
     }
-    console.log('getTagsTask', id_task);
     return this.http
       .get<any[]>(this.TASKS_TAGS_URL + 'task/included-tags', {
         params: {

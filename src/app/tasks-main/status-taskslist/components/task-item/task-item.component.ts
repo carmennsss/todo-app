@@ -49,8 +49,6 @@ export class TaskItemComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task']) {
       this.getListToString();
-    }
-    if (changes['selected'] && this.selected == true) {
       this.getSubtasksCount();
     }
   }

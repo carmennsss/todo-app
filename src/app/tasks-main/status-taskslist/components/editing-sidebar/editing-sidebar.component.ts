@@ -158,7 +158,6 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
     this.store
       .select(TagsState.excludedTags)
       .subscribe((tags) => this.combineExcludedTags.set(tags));
-    
   }
 
   getListToString() {
