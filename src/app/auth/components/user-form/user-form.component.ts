@@ -54,6 +54,10 @@ export class UserFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (localStorage.getItem('token')?.replaceAll(' ', '') != '' || localStorage.getItem('token') != null) {
+      localStorage.removeItem('token');
+    }
+
     this.authForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]],

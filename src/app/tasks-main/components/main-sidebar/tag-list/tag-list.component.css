@@ -14,7 +14,7 @@ h3 {
   cursor: pointer;
 }
 
-/* NEW TAGS */
+/* TAGS SIDEBAR */
 
 .sidebar-tags-list {
   margin-top: 10px;
@@ -28,20 +28,6 @@ h3 {
   -ms-overflow-style: none;
 }
 
-.newTags:hover {
-  scrollbar-width: thin;
-}
-
-#seeMoreTags {
-  display: none;
-}
-
-.tags-dialog {
-  width: 100%;
-  height: auto;
-}
-
-
 #sidebar-tags {
   display: flex;
   flex-direction: column;
@@ -49,6 +35,25 @@ h3 {
   margin-top: 0;
   height: 20px;
 }
+
+.newTags:hover {
+  scrollbar-width: thin;
+}
+
+/* DIALOG TAGS */
+
+.tags-dialog {
+  width: 100%;
+  height: auto;
+}
+
+/* BUTTON TAGS */
+
+#seeMoreTags {
+  display: none;
+}
+
+/* MEDIA QUERIES */
 
 @media screen and (max-height: 825px) {
   h3 {
@@ -76,9 +81,13 @@ h3 {
     background-color: #2e2e2e;
     padding: 6px;
     border-radius: 10px;
-    width: 100%;
+    width: 120px;
     cursor: pointer;
     overflow: hidden;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: Poppins, sans-serif;
+    font-style: italic;
     height: 32px;
     margin-top: -30px;
   }

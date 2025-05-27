@@ -71,6 +71,8 @@ p {
   color: #ffffff;
 }
 
+/* DELETE OPTION */
+
 .delete {
   background-color: #e75454;
   color: #fbd1d1;
@@ -140,6 +142,8 @@ i {
   flex-direction: row;
   gap: 3px;
 }
+
+/* MEDIA QUERIES */
 
 @media screen and (max-width: 910px) {
   .body > div {

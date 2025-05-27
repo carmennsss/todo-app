@@ -15,6 +15,7 @@
   display: flex;
   justify-content: center;
 }
+
 .create div:hover {
   background-color: rgba(255, 255, 255, 0.47);
   color: #000000;
