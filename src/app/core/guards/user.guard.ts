@@ -2,9 +2,10 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 /**
- * This guard checks if the user is logged in, if not, redirects to the root of the app.
- *
- * It takes the current route and state as parameters and returns a boolean or an url.
+ * Checks if the user is logged in, if not, redirects to the root of the app.
+ * Checks if the user is redirecting to the root of the app
+ * without signing out, if so, removes the token.
+ * 
  * @param route The route for the current location.
  * @param state The state of the router.
  * @returns Boolean or an url.
@@ -18,7 +19,12 @@ export const userGuard: CanActivateFn = (route, state) => {
     localStorage.getItem('token') == ''
   ) {
     return router.parseUrl('');
-  } else {
+  }
+
+  if (router.url === '' && localStorage.getItem('token') != null) {
+    localStorage.removeItem('token');
     return true;
   }
+
+  return true;
 };

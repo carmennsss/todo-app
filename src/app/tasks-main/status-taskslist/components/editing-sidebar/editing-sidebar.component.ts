@@ -292,8 +292,12 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    */
   saveChanges() {
     const selectedTagsList = this.selectedTags();
-
-    if (this.selectedTask.date != '' || this.selectedTask.date != null) {
+    debugger;
+    if (
+      this.selectedTask.date != '' &&
+      this.selectedTask.date != null &&
+      this.selectedTask.date != undefined
+    ) {
       var date = this.selectedTask.date.split('T')[0];
       if (
         parseInt(date.split('-')[1]) > 12 ||
