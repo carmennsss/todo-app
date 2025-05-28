@@ -7,6 +7,24 @@
   width: 85%;
 }
 
+#dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #515151;
+  width: 85%;
+  padding: 10px;
+  border-radius: 6px;
+  height: 100%;
+}
+
+h2 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: Poppins, sans-serif;
+}
+
 /* FORM STYLES */
 
 input {
@@ -23,7 +41,7 @@ input {
 
 button {
   border: none;
-  background-color: #1d1d1d;
+  background-color: #393939;
   cursor: pointer;
   width: 100%;
   border-radius: 6px;
@@ -35,6 +53,14 @@ button {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
+}
+
+#save-btn {
+  background-color: rgb(127, 207, 147);
+}
+
+#save-btn:hover {
+  background-color: rgba(86, 241, 130, 0.877);
 }
 
 button:hover {

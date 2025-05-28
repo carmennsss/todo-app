@@ -9,7 +9,9 @@
         [style]="{ width: '25rem' }"
       >
         <ng-template #header>
-          <h2>Create a new task</h2>
+          <div id="dialog-header">
+            <h2>Create a new task</h2>
+          </div>
         </ng-template>
 
         <div class="flex items-center gap-4 mb-4">
@@ -42,7 +44,12 @@
           >
             Cancel
           </button>
-          <button label="Save" severity="secondary" (click)="createTask()">
+          <button
+            label="Save"
+            id="save-btn"
+            severity="secondary"
+            (click)="createTask()"
+          >
             Save
           </button>
         </ng-template>
