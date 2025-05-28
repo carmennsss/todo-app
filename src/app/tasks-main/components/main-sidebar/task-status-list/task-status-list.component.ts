@@ -89,7 +89,6 @@ export class TaskStatusListComponent implements OnInit {
    * @returns void
    */
   goToPage(page: string) {
-    debugger;
     let currentUrl = this.router.url;
     if (currentUrl.includes(page.toLowerCase().replace(' ', ''))) {
       return;

@@ -1,26 +1,30 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
-import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
 
 @Component({
   selector: 'sidebar-footer',
   templateUrl: './sidebar-footer.component.html',
   standalone: true,
-  imports: [PanelMenu, ToastModule, ButtonModule],
+  imports: [PanelMenu, ButtonModule, PopConfirmMessageComponent],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarFooterComponent implements OnInit {
   items: MenuItem[] = [];
+
+   @ViewChild(PopConfirmMessageComponent) childConfirm:
+    | PopConfirmMessageComponent
+    | undefined;
 
   constructor(
     private messageService: MessageService,
@@ -60,13 +64,8 @@ export class SidebarFooterComponent implements OnInit {
    * Navigates to the home page.
    */
   signOut() {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Signed out',
-      detail: 'User logged out',
-      life: 3000,
-    });
-    localStorage.setItem('token', '');
+    localStorage.removeItem('token');
+    this.childConfirm?.showConfirm("User logged out");
     this.router.navigate(['']);
   }
 }

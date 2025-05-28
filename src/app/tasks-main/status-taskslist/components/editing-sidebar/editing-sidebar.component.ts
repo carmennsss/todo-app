@@ -3,7 +3,6 @@ import {
   Component,
   inject,
   Input,
-  input,
   OnChanges,
   OnInit,
   signal,
@@ -17,13 +16,11 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
 import { CustomTag } from '../../../../core/interfaces/tasks/CustomTag';
 import { SubTask } from '../../../../core/interfaces/tasks/SubTask';
 import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 import { MethodsService } from '../../../../shared/services/methods.service';
 import { AddNewComponent } from '../add-new/add-new.component';
-import { Client } from '../../../../core/interfaces/clients/Client';
 import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TagsService } from '../../../../core/services/tags.service';
 import { Category } from '../../../../core/interfaces/tasks/Category';
@@ -33,17 +30,12 @@ import { PopConfirmMessageComponent } from '../../../../shared/components/pop-co
 import { TasksService } from '../../../../core/services/tasks.service';
 import { Store } from '@ngxs/store';
 import {
-  AddTagToTask,
   GetExcludedTags,
   GetTaskTags,
 } from '../../../../core/state/tags/tags.actions';
 import { TagsState } from '../../../../core/state/tags/tags.state';
-import { CategoriesState } from '../../../../core/state/categories/categories.state';
 import { EditTask } from '../../../../core/state/tasks/tasks.actions';
 import { InputMask } from 'primeng/inputmask';
-import { FormsModule } from '@angular/forms';
-import { GetSubtasks } from '../../../../core/state/subtasks/subtask.actions';
-import { SubtasksState } from '../../../../core/state/subtasks/subtask.state';
 
 @Component({
   selector: 'editing-sidebar',
@@ -91,8 +83,6 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
   selectedTaskCategories = signal<Category[]>({} as Category[]);
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private store: Store
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
@@ -292,7 +282,6 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    */
   saveChanges() {
     const selectedTagsList = this.selectedTags();
-    debugger;
     if (
       this.selectedTask.date != '' &&
       this.selectedTask.date != null &&

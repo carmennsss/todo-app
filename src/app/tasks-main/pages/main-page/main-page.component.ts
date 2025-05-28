@@ -27,7 +27,7 @@ export default class MainPageComponent implements OnInit, OnDestroy {
 
   /**
    * Toggles the sidebar open or closed.
-   * This method is used to control the visibility of the sidebar.
+   * This method controls the visibility of the sidebar.
    */
   openSidebar() {
     const sidebar = document.querySelector('#sidebar') as HTMLElement;

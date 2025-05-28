@@ -127,7 +127,7 @@ export class UserFormComponent implements OnInit {
    *
    * Checks if the provided username and password are not empty,
    * and if the username does not already exist in the model.
-   * If the checks pass, adds the new client to the model and local storage,
+   * If the checks pass, adds the new client,
    * and navigates to the main status page.
    * @param form The FormGroup containing the registration form values.
    */
