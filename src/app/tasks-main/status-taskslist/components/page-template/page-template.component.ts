@@ -21,6 +21,7 @@ import { Dialog } from 'primeng/dialog';
 import { GetTasksByStatus } from '../../../../core/state/tasks/tasks.actions';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
+import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 
 @Component({
   selector: 'tasks-page-template',
@@ -32,6 +33,7 @@ import { PopConfirmMessageComponent } from '../../../../shared/components/pop-co
     TaskItemComponent,
     Dialog,
     PopConfirmMessageComponent,
+    PopMessageComponent,
   ],
   templateUrl: './page-template.component.html',
   styleUrl: './page-template.component.css',
@@ -49,6 +51,8 @@ export default class PageTemplateComponent implements OnInit {
   @ViewChild(PopConfirmMessageComponent) childConfirm:
     | PopConfirmMessageComponent
     | undefined;
+
+  @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
 
   newTask: TaskDB = {
     id: 0,
@@ -102,6 +106,11 @@ export default class PageTemplateComponent implements OnInit {
    */
   createTask() {
     this.isVisible = false;
+    if (this.newTask.title.replaceAll(' ', '') == '' || this.newTask.desc.replaceAll(' ', '') == '') {
+      this.child?.showConfirm('Task title/description cannot be empty!');
+      return;
+    }
+
     this.newTask.status = this.pageTitle.toLowerCase().replace(' ', '');
     this.tasksService.createNewTask(this.newTask).subscribe((task) => {
       console.log('Task created:', task);

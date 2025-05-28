@@ -270,6 +270,10 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    * @param title The title of the new subtask.
    */
   saveNewSubTask(title: string) {
+    if (title.replaceAll(' ', '') == '') {
+      this.child?.showConfirm('You cannot add an empty subtask');
+      return;
+    }
     let newSubtask: SubTask = {
       subtask_id: 0,
       subtask_title: title,
@@ -288,6 +292,17 @@ export class EditingSidebarComponent implements OnInit, OnChanges {
    */
   saveChanges() {
     const selectedTagsList = this.selectedTags();
+
+    if (this.selectedTask.date != '' || this.selectedTask.date != null) {
+      var date = this.selectedTask.date.split('T')[0];
+      if (
+        parseInt(date.split('-')[1]) > 12 ||
+        parseInt(date.split('-')[2]) > 31
+      ) {
+        this.child?.showConfirm('Invalid date');
+        return;
+      }
+    }
 
     if (selectedTagsList.length != 0) {
       for (const tag of selectedTagsList) {

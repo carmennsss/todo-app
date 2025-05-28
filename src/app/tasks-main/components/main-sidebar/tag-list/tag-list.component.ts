@@ -15,6 +15,7 @@ import { GetTagsClient } from '../../../../core/state/tags/tags.actions';
 import { DialogModule } from 'primeng/dialog';
 import { TagsState } from '../../../../core/state/tags/tags.state';
 import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
+import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 
 @Component({
   selector: 'sidebar-tag-list',
@@ -25,7 +26,8 @@ import { PopConfirmMessageComponent } from '../../../../shared/components/pop-co
     MatButtonModule,
     DialogModule,
     PopConfirmMessageComponent,
-  ],
+    PopMessageComponent
+],
   templateUrl: './tag-list.component.html',
   styleUrl: './tag-list.component.css',
   standalone: true,
@@ -39,6 +41,7 @@ export class TagListComponent {
   visibleDialogTag: boolean = false;
   tags = signal<CustomTag[]>([]);
 
+  @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
   @ViewChild(PopConfirmMessageComponent) childConfirm:
     | PopConfirmMessageComponent
     | undefined;
@@ -80,12 +83,14 @@ export class TagListComponent {
       console.log('Dialog result:', result);
       if (result !== undefined) {
         this.title.set(result);
-        if (this.title() !== '') {
+        if (this.title().replaceAll(' ', '') == '') {
+          this.child?.showConfirm('Tag title cannot be empty!');
+        } else {
           this.tagsService.addTag(this.title()).subscribe((response) => {
             console.log('Tag added:', response);
           });
           this.store.dispatch(new GetTagsClient());
-          this.childConfirm?.showConfirm("Tag added successfully!");
+          this.childConfirm?.showConfirm('Tag added successfully!');
         }
       }
     });

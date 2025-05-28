@@ -32,7 +32,7 @@ import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 export default class MainCalendarPageComponent {
   tasksService = inject(TasksService);
 
-  task_date: Date = new Date();
+  task_date: Date | undefined;
   dateTasks = signal<TaskDB[]>([]);
 
   constructor(private router: Router, private store: Store) {}
@@ -46,8 +46,8 @@ export default class MainCalendarPageComponent {
    * the same date as the date selected in the date picker.
    */
   onDateSelect() {
-    if (this.task_date === null) {
-      console.error('onDateSelect: task_date is null');
+    if (this.task_date === null || this.task_date === undefined) {
+      console.error('onDateSelect: task_date is null or undefined');
       return;
     }
 

@@ -114,7 +114,9 @@ export class TaskStatusListComponent implements OnInit {
     let tasks_length = 0;
     this.store.select(TasksStateHttp.allTasks).subscribe((tasks) => {
       tasks_length = tasks.filter(
-        (task) => task.status === label.toLowerCase().replace(' ', '')
+        (task) =>
+          task.status.toLowerCase().replaceAll(' ', '') ===
+          label.toLowerCase().replaceAll(' ', '')
       ).length;
     });
     return tasks_length || 0;

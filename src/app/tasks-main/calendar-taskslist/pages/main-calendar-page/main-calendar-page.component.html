@@ -5,9 +5,7 @@
     <p-datepicker
       [(ngModel)]="task_date"
       [showButtonBar]="true"
-      [iconDisplay]="'input'"
       [showIcon]="true"
-      inputId="icondisplay"
       dateFormat="dd/mm/yy"
       placeholder="Select Date"
       (onSelect)="onDateSelect()"
@@ -15,6 +13,9 @@
   </div>
   <p-divider />
   <div class="task-list">
+    <p *ngIf="dateTasks().length == 0" id="no-tasks-msg">
+      No tasks for {{ (task_date | date: 'dd/MM/yyyy') || 'current date'}}
+    </p>
     <task-item *ngFor="let task of dateTasks()" [task]="task"></task-item>
   </div>
 </div>

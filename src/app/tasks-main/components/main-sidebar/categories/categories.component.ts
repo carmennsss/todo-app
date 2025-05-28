@@ -26,6 +26,7 @@ import { TaskDB } from '../../../../core/interfaces/tasks/TaskDB';
 import { TasksStateHttp } from '../../../../core/state/tasks/tasks.state';
 import { GetCategories } from '../../../../core/state/categories/categories.actions';
 import { PopConfirmMessageComponent } from '../../../../shared/components/pop-confirm-message/pop-confirm-message.component';
+import { PopMessageComponent } from '../../../../shared/components/pop-message/pop-message.component';
 
 @Component({
   selector: 'sidebar-categories',
@@ -38,6 +39,7 @@ import { PopConfirmMessageComponent } from '../../../../shared/components/pop-co
     AddNewComponent,
     DialogModule,
     PopConfirmMessageComponent,
+    PopMessageComponent,
   ],
   templateUrl: './categories.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,7 +57,7 @@ export class SidebarCategoriesComponent implements OnInit {
   visibleDialogCategory: boolean = false;
 
   categories = signal<Category[]>([]);
-
+  @ViewChild(PopMessageComponent) child: PopMessageComponent | undefined;
   @ViewChild(PopConfirmMessageComponent) childConfirm:
     | PopConfirmMessageComponent
     | undefined;
@@ -104,11 +106,14 @@ export class SidebarCategoriesComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { title: this.title() },
     });
-
+    
     dialogRef.afterClosed().subscribe((result) => {
+      debugger;
       if (result !== undefined) {
         this.title.set(result);
-        if (this.title() !== '') {
+        if (this.title().replaceAll(' ', '') == '') {
+          this.child?.showConfirm('Category title cannot be empty!');
+        } else {
           const newCategory: Category = {
             category_title: this.title(),
             category_id: 0,
@@ -119,7 +124,7 @@ export class SidebarCategoriesComponent implements OnInit {
               console.log('Category created:', category);
               this.title.set('');
             });
-          this.childConfirm?.showConfirm("Category created successfully!");
+          this.childConfirm?.showConfirm('Category created successfully!');
           this.store.dispatch(new GetCategories());
         }
       }
